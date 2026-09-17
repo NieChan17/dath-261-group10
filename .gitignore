@@ -1,0 +1,91 @@
+# ==============================================================================
+# 1. SECURITY & SECRETS 
+# ==============================================================================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+*.crt
+id_rsa
+credentials.json
+secrets.yaml
+
+# ==============================================================================
+# 2. DEPENDENCIES & PACKAGES
+# ==============================================================================
+# Node.js / Frontend / NestJS
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+
+# Python / AI / FastAPI
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# ==============================================================================
+# 3. BUILD ARTIFACTS & CACHE
+# ==============================================================================
+# Next.js / React
+.next/
+out/
+.turbo/
+
+# NestJS / TypeScript
+dist/
+build/
+*.tsbuildinfo
+
+# Coverage & Testing (Jest / Playwright / Cypress)
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+videos/
+screenshots/
+
+# ==============================================================================
+# 4. DATABASE & RUNTIME DATA (Dữ liệu cục bộ không commit)
+# ==============================================================================
+# Local Postgres / Vector DB data volumes
+postgres_data/
+pgdata/
+*.sqlite
+*.sqlite3
+*.db
+
+# Uploads / Media files của người dùng khi test cục bộ (Video, PDF, avatar)
+uploads/
+storage/courseware/*
+!storage/courseware/.gitkeep
+
+# ==============================================================================
+# 5. OS & IDE METADATA
+# ==============================================================================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.swp
+*.swo
+
+# ==============================================================================
+# 6. DOCKER & LOGS
+# ==============================================================================
+*.log
+logs/
+docker-compose.override.yml
