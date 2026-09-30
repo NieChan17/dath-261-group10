@@ -7,6 +7,8 @@ services:
       POSTGRES_USER: ${DB_USER:-edupulse_user}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-secure_staging_password}
       POSTGRES_DB: ${DB_NAME:-edupulse_staging}
+    ports:
+      - "127.0.0.1:${DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -36,7 +38,7 @@ services:
 
   rag-service:
     build:
-      context: ./service
+      context: ./service/ai-service
       dockerfile: Dockerfile
     container_name: edupulse-rag
     restart: always
@@ -45,6 +47,17 @@ services:
         condition: service_healthy
     env_file:
       - .env
+    environment:
+      DATABASE_URL: postgresql://${DB_USER:-edupulse_user}:${DB_PASSWORD:-secure_staging_password}@postgres:5432/${DB_NAME:-edupulse_staging}
+      APP_ENV: ${APP_ENV:-development}
+      INTERNAL_TOKEN: ${AI_INTERNAL_TOKEN:-}
+      EMBED_MODEL: ${EMBED_MODEL:-BAAI/bge-m3}
+      EMBED_DIM: ${EMBED_DIM:-1024}
+      OOS_THRESHOLD: ${OOS_THRESHOLD:-0.65}
+    ports:
+      - "127.0.0.1:${AI_PORT:-8000}:8000"
+    volumes:
+      - hf_models:/models
     networks:
       - edupulse-network
 
@@ -85,3 +98,4 @@ networks:
 
 volumes:
   postgres_data:
+  hf_models:
