@@ -2,7 +2,7 @@
 
 Python/FastAPI microservice for the Track 1 advanced component. It ingests course materials, stores chunk embeddings in PostgreSQL + pgvector, runs course-scoped hybrid retrieval and streams cited answers to the lesson side-drawer.
 
-Related issues: #61 (chunking and ingestion), #63 (retrieval guardrails and out-of-scope fallback), #67 (RAGAS evaluation).
+Related issues: #115 (chunking and ingestion), #117 (retrieval guardrails and out-of-scope fallback), #122 (RAGAS evaluation).
 
 > **Prototype status.** Ingestion, hybrid retrieval, the out-of-scope gate, feedback and the review queue are real.
 > Answer generation is a **mock**: it extracts sentences from the top-ranked chunk and returns real citations
@@ -27,21 +27,21 @@ Run these commands from the repository root:
 cp .env.example .env
 ```
 
-Edit `.env`: set `POSTGRES_PASSWORD` (letters and digits only; compose stops if it is empty). If port `5432` or `8000`
-is already in use on your machine, change `DB_PORT` or `AI_PORT`.
+Edit `.env`: change `DB_PASSWORD` (letters and digits only). If port `5432` or `8000` is already in use on your machine,
+change `DB_PORT` or `AI_PORT`; both ports are published on `127.0.0.1` only.
 
 ```bash
-docker compose up -d --build db ai-service
+docker compose up -d --build postgres rag-service
 ```
 
-The first start downloads the embedding model (BGE-M3, about 2 GB) into the `hf-models` volume; follow it with
-`docker compose logs -f ai-service`. `GET /health` reports `"embedder": "loading"` until the model is ready.
+The first start downloads the embedding model (BGE-M3, about 2 GB) into the `hf_models` volume; follow it with
+`docker compose logs -f rag-service`. `GET /health` reports `"embedder": "loading"` until the model is ready.
 Interactive API docs: http://localhost:8000/docs (or your `AI_PORT`).
 
 For a faster first run, use a small English-only model instead (the vector dimension must match):
 
 ```bash
-EMBED_MODEL=sentence-transformers/all-MiniLM-L6-v2 EMBED_DIM=384 docker compose up -d --build db ai-service
+EMBED_MODEL=sentence-transformers/all-MiniLM-L6-v2 EMBED_DIM=384 docker compose up -d --build postgres rag-service
 ```
 
 Changing `EMBED_DIM` later requires recreating the `material_embedding` table (for example `docker compose down -v`,
@@ -50,11 +50,11 @@ which also deletes the database volume).
 ### Load the sample course
 
 ```bash
-docker compose exec ai-service python -m app.cli ingest sample_data/system-modeling-slides.pdf \
+docker compose exec rag-service python -m app.cli ingest sample_data/system-modeling-slides.pdf \
   --type slides --material-id se-slides-05 --course-id CO3001 --lesson-id L05
-docker compose exec ai-service python -m app.cli ingest sample_data/software-processes-notes.md \
+docker compose exec rag-service python -m app.cli ingest sample_data/software-processes-notes.md \
   --type notes --material-id se-notes-02 --course-id CO3001 --lesson-id L02
-docker compose exec ai-service python -m app.cli ingest sample_data/requirements-engineering-lecture.vtt \
+docker compose exec rag-service python -m app.cli ingest sample_data/requirements-engineering-lecture.vtt \
   --type transcript --material-id se-video-03 --course-id CO3001 --lesson-id L03
 ```
 
@@ -74,7 +74,7 @@ In Windows PowerShell, call `curl.exe` and escape the inner quotes as `\"`.
 
 ## Run without Docker
 
-Start a PostgreSQL server with pgvector first (for example the `db` service above). Then, in `service/ai-service`:
+Start a PostgreSQL server with pgvector first (for example the `postgres` service above). Then, in `service/ai-service`:
 
 ```bash
 python -m venv .venv
@@ -141,7 +141,7 @@ Chunking: one chunk per slide; Markdown split by heading, then by a recursive ch
 | `DATABASE_URL` | *(required)* | Set by docker compose; for local runs copy `.env.example` to `.env` |
 | `INTERNAL_TOKEN` | *(empty)* | Shared secret with the NestJS backend (`AI_INTERNAL_TOKEN` in the root `.env`) |
 | `EMBED_MODEL` / `EMBED_DIM` | `BAAI/bge-m3` / `1024` | Must match each other |
-| `OOS_THRESHOLD` | `0.65` | Placeholder from the proposal; calibrate on the evaluation question set (#67) |
+| `OOS_THRESHOLD` | `0.65` | Placeholder from the proposal; calibrate on the evaluation question set (#122) |
 | `TOP_K`, `CANDIDATE_POOL`, `RRF_K` | `5`, `20`, `60` | Retrieval tuning |
 | `LESSON_BOOST`, `VIDEO_WINDOW_BOOST` | `0.005`, `0.005` | Added to the fused RRF score |
 | `FILE_ROOT`, `MAX_DOWNLOAD_MB` | `/app/sample_data`, `50` | Limits for `file_url` |
@@ -166,6 +166,6 @@ The unit tests cover the parsers, chunking, rank fusion, boosts, citation labels
 
 ## Next steps
 
-- #63: agree the ingestion hook and table ownership with the backend, then open the pull request.
-- #67: build the evaluation question set, calibrate `OOS_THRESHOLD` and compare vector-only with hybrid retrieval.
+- #117: agree the ingestion hook and table ownership with the backend, then open the pull request.
+- #122: build the evaluation question set, calibrate `OOS_THRESHOLD` and compare vector-only with hybrid retrieval.
 - Replace the mock generator with an LLM that answers only from the retrieved chunks and keeps the citations.
