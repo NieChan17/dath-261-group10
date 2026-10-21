@@ -1,0 +1,5 @@
+flyway.url=jdbc:postgresql://localhost:5432/lms_db
+flyway.user=postgres
+flyway.password=CHANGE_ME
+flyway.locations=filesystem:sql
+flyway.validateMigrationNaming=true
