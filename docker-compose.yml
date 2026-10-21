@@ -7,8 +7,11 @@ services:
       POSTGRES_USER: ${DB_USER:-edupulse_user}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-secure_staging_password}
       POSTGRES_DB: ${DB_NAME:-edupulse_staging}
+<<<<<<< HEAD
     ports:
       - "127.0.0.1:${DB_PORT:-5432}:5432"
+=======
+>>>>>>> f8b1405 (Update backend)
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -38,7 +41,11 @@ services:
 
   rag-service:
     build:
+<<<<<<< HEAD
       context: ./service/ai-service
+=======
+      context: ./service
+>>>>>>> f8b1405 (Update backend)
       dockerfile: Dockerfile
     container_name: edupulse-rag
     restart: always
@@ -47,6 +54,7 @@ services:
         condition: service_healthy
     env_file:
       - .env
+<<<<<<< HEAD
     environment:
       DATABASE_URL: postgresql://${DB_USER:-edupulse_user}:${DB_PASSWORD:-secure_staging_password}@postgres:5432/${DB_NAME:-edupulse_staging}
       APP_ENV: ${APP_ENV:-development}
@@ -58,6 +66,8 @@ services:
       - "127.0.0.1:${AI_PORT:-8000}:8000"
     volumes:
       - hf_models:/models
+=======
+>>>>>>> f8b1405 (Update backend)
     networks:
       - edupulse-network
 
@@ -98,4 +108,7 @@ networks:
 
 volumes:
   postgres_data:
+<<<<<<< HEAD
   hf_models:
+=======
+>>>>>>> f8b1405 (Update backend)
