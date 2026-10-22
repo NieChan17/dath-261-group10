@@ -1,0 +1,16 @@
+Sample written answer - fictional coursework
+Assessment: Choosing a development process
+Student: Maya Tran
+
+For a small team building a campus event registration service, I would use short
+iterations with a shared backlog. The first iteration should cover creating an
+event and registering a student, so stakeholders can try a complete workflow.
+
+Each change should include a peer review and automated tests. A registration
+limit is a useful acceptance criterion: when the final seat is taken, a second
+request must not create an extra registration. The team should also test canceling
+a registration and make the seat available again.
+
+A short demonstration at the end of each iteration would reveal unclear
+requirements early. The team should record feedback in the backlog and agree on
+the next priority before starting another iteration.
