@@ -99,4 +99,3 @@ networks:
 volumes:
   postgres_data:
   hf_models:
-
