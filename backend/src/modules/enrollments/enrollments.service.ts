@@ -16,7 +16,7 @@ export class EnrollmentsService {
 
   private ensureStudent(user: CurrentUserPayload) {
     if (user.role !== Role.STUDENT) {
-      throw new ForbiddenException('Chỉ học viên mới có thể đăng ký và cập nhật tiến độ');
+      throw new ForbiddenException('Chỉ học viên mới có thể thực hiện thao tác này');
     }
   }
 
@@ -30,42 +30,84 @@ export class EnrollmentsService {
     if (!course) throw new NotFoundException('Không tìm thấy khóa học');
     if (!course.is_published) throw new ConflictException('Không thể đăng ký khóa học chưa xuất bản');
 
-    const inserted = await this.db.queryOne(
-      `INSERT INTO enrollments (student_id, course_id)
-       VALUES ($1, $2)
-       ON CONFLICT (student_id, course_id) DO UPDATE
-         SET status = 'active', enrolled_at = NOW()
-         WHERE enrollments.status = 'cancelled'
-       RETURNING id, student_id, course_id, status, enrolled_at`,
+    const existing = await this.db.queryOne<{
+      id: string;
+      student_id: string;
+      course_id: string;
+      status: string;
+      enrolled_at: Date;
+    }>(
+      'SELECT id, student_id, course_id, status, enrolled_at FROM enrollments WHERE student_id = $1 AND course_id = $2',
       [user.userId, courseId],
     );
-    const enrollment = inserted ?? await this.db.queryOne(
-      `SELECT id, student_id, course_id, status, enrolled_at
-       FROM enrollments WHERE student_id = $1 AND course_id = $2`,
+
+    if (existing) {
+      if (existing.status === 'suspended') {
+        throw new ForbiddenException('Đăng ký của bạn ở khóa học này đã bị tạm dừng');
+      }
+      if (existing.status === 'active') {
+        return {
+          success: true,
+          message: 'Bạn đã đăng ký khóa học này',
+          data: { ...existing, course: { id: course.id, title: course.title } },
+        };
+      }
+      if (existing.status === 'completed') {
+        return {
+          success: true,
+          message: 'Bạn đã hoàn thành khóa học này',
+          data: { ...existing, course: { id: course.id, title: course.title } },
+        };
+      }
+      if (existing.status === 'cancelled') {
+        const reactivated = await this.db.queryOne(
+          `UPDATE enrollments
+           SET status = 'active', enrolled_at = NOW()
+           WHERE id = $1
+           RETURNING id, student_id, course_id, status, enrolled_at`,
+          [existing.id],
+        );
+        return {
+          success: true,
+          message: 'Đăng ký lại khóa học thành công',
+          data: { ...reactivated, course: { id: course.id, title: course.title } },
+        };
+      }
+    }
+
+    const inserted = await this.db.queryOne(
+      `INSERT INTO enrollments (student_id, course_id, status, enrolled_at)
+       VALUES ($1, $2, 'active', NOW())
+       RETURNING id, student_id, course_id, status, enrolled_at`,
       [user.userId, courseId],
     );
 
     return {
       success: true,
-      message: inserted ? 'Đăng ký khóa học thành công' : 'Bạn đã đăng ký khóa học này',
-      data: { ...enrollment, course: { id: course.id, title: course.title } },
+      message: 'Đăng ký khóa học thành công',
+      data: { ...inserted, course: { id: course.id, title: course.title } },
     };
   }
 
   async findMine(user: CurrentUserPayload) {
     this.ensureStudent(user);
     const enrollments = await this.db.query(
-      `SELECT e.id, e.status, e.enrolled_at, c.id AS course_id, c.code AS course_code,
+      `SELECT e.id, e.status, e.enrolled_at,
+              c.id AS course_id, c.code AS course_code,
               c.title AS course_title, c.description AS course_description,
-              COUNT(l.id)::int AS total_lessons,
-              COUNT(l.id) FILTER (WHERE pr.is_completed)::int AS completed_lessons
+              c.thumbnail_url, c.category, c.level,
+              u.id AS instructor_id, u.full_name AS instructor_name,
+              COUNT(DISTINCT l.id)::int AS total_lessons,
+              COUNT(DISTINCT l.id) FILTER (WHERE pr.is_completed)::int AS completed_lessons,
+              MAX(pr.updated_at) AS last_activity_at
        FROM enrollments e
        JOIN courses c ON c.id = e.course_id
+       JOIN users u ON u.id = c.instructor_id
        LEFT JOIN sections s ON s.course_id = c.id
        LEFT JOIN lessons l ON l.section_id = s.id
        LEFT JOIN progress_records pr ON pr.enrollment_id = e.id AND pr.lesson_id = l.id
        WHERE e.student_id = $1
-       GROUP BY e.id, c.id
+       GROUP BY e.id, c.id, u.id
        ORDER BY e.enrolled_at DESC`,
       [user.userId],
     );
@@ -76,34 +118,93 @@ export class EnrollmentsService {
         id: row.id,
         status: row.status,
         enrolledAt: row.enrolled_at,
+        lastActivityAt: row.last_activity_at || null,
         course: {
           id: row.course_id,
           code: row.course_code,
           title: row.course_title,
           description: row.course_description,
+          thumbnailUrl: row.thumbnail_url,
+          category: row.category,
+          level: row.level,
+          instructor: {
+            id: row.instructor_id,
+            fullName: row.instructor_name,
+          },
         },
         progress: this.progressSummary(row.total_lessons, row.completed_lessons),
       })),
     };
   }
 
+  async getEnrollmentByCourse(courseId: string, user: CurrentUserPayload) {
+    this.ensureStudent(user);
+    const enrollment = await this.db.queryOne<{
+      id: string;
+      student_id: string;
+      course_id: string;
+      status: string;
+      enrolled_at: Date;
+    }>(
+      `SELECT id, student_id, course_id, status, enrolled_at
+       FROM enrollments WHERE course_id = $1 AND student_id = $2`,
+      [courseId, user.userId],
+    );
+
+    if (!enrollment) {
+      return {
+        success: true,
+        isEnrolled: false,
+        data: null,
+      };
+    }
+
+    return {
+      success: true,
+      isEnrolled: enrollment.status === 'active' || enrollment.status === 'completed',
+      data: enrollment,
+    };
+  }
+
+  async getProgressByCourse(courseId: string, user: CurrentUserPayload) {
+    this.ensureStudent(user);
+    const enrollment = await this.db.queryOne<{ id: string }>(
+      'SELECT id FROM enrollments WHERE course_id = $1 AND student_id = $2',
+      [courseId, user.userId],
+    );
+    if (!enrollment) {
+      throw new NotFoundException('Bạn chưa đăng ký khóa học này');
+    }
+    return this.getProgress(enrollment.id, user);
+  }
+
   async getProgress(enrollmentId: string, user: CurrentUserPayload) {
     this.ensureStudent(user);
     const enrollment = await this.getOwnedEnrollment(enrollmentId, user.userId);
     const lessons = await this.db.query(
-      `SELECT l.id AS lesson_id, l.title AS lesson_title, l.content_type,
+      `SELECT l.id AS lesson_id, l.title AS lesson_title, l.content_type, l.duration_minutes,
               l.order_index AS lesson_order, s.id AS section_id, s.title AS section_title,
               s.order_index AS section_order, pr.is_completed,
               pr.last_position_seconds, pr.updated_at AS progress_updated_at
-       FROM lessons l
-       JOIN sections s ON s.id = l.section_id
+       FROM sections s
+       JOIN lessons l ON l.section_id = s.id
        LEFT JOIN progress_records pr ON pr.enrollment_id = $1 AND pr.lesson_id = l.id
        WHERE s.course_id = $2
-       ORDER BY s.order_index, l.order_index`,
+       ORDER BY s.order_index ASC, l.order_index ASC`,
       [enrollmentId, enrollment.course_id],
     );
 
     const completed = lessons.filter((lesson) => lesson.is_completed).length;
+
+    // Resume point selection:
+    // 1. In-progress lesson with saved position
+    // 2. Or the first incomplete lesson
+    // 3. Or first lesson if none
+    let resumeLesson = lessons.find((l) => !l.is_completed && (l.last_position_seconds ?? 0) > 0);
+    if (!resumeLesson) {
+      resumeLesson = lessons.find((l) => !l.is_completed) || lessons[0] || null;
+    }
+
     return {
       success: true,
       data: {
@@ -113,10 +214,19 @@ export class EnrollmentsService {
           enrolledAt: enrollment.enrolled_at,
         },
         summary: this.progressSummary(lessons.length, completed),
+        resumeLesson: resumeLesson
+          ? {
+              lessonId: resumeLesson.lesson_id,
+              sectionId: resumeLesson.section_id,
+              title: resumeLesson.lesson_title,
+              lastPositionSeconds: resumeLesson.last_position_seconds ?? 0,
+            }
+          : null,
         lessons: lessons.map((lesson) => ({
           id: lesson.lesson_id,
           title: lesson.lesson_title,
           contentType: lesson.content_type,
+          durationMinutes: lesson.duration_minutes ?? 0,
           orderIndex: lesson.lesson_order,
           section: {
             id: lesson.section_id,
@@ -171,8 +281,8 @@ export class EnrollmentsService {
       if (!lesson.rows[0]) throw new NotFoundException('Bài học không thuộc khóa học đã đăng ký');
 
       const updated = await client.query(
-        `INSERT INTO progress_records (enrollment_id, lesson_id, is_completed, last_position_seconds)
-         VALUES ($1, $2, COALESCE($3, FALSE), COALESCE($4, 0))
+        `INSERT INTO progress_records (enrollment_id, lesson_id, is_completed, last_position_seconds, updated_at)
+         VALUES ($1, $2, COALESCE($3, FALSE), COALESCE($4, 0), NOW())
          ON CONFLICT (enrollment_id, lesson_id) DO UPDATE SET
            is_completed = COALESCE($3, progress_records.is_completed),
            last_position_seconds = COALESCE($4, progress_records.last_position_seconds),
@@ -194,14 +304,17 @@ export class EnrollmentsService {
       const { total, completed } = totals.rows[0];
       if (total > 0 && completed === total) {
         await client.query("UPDATE enrollments SET status = 'completed' WHERE id = $1 AND status = 'active'", [enrollmentId]);
-      } else if (enrollmentRow.status === 'completed') {
+      } else if (enrollmentRow.status === 'completed' && completed < total) {
         await client.query("UPDATE enrollments SET status = 'active' WHERE id = $1 AND status = 'completed'", [enrollmentId]);
       }
 
       return {
         success: true,
+        message: 'Cập nhật tiến độ bài học thành công',
         data: {
-          ...updated.rows[0],
+          id: updated.rows[0].id,
+          enrollmentId: updated.rows[0].enrollment_id,
+          lessonId: updated.rows[0].lesson_id,
           isCompleted: updated.rows[0].is_completed,
           lastPositionSeconds: updated.rows[0].last_position_seconds,
           updatedAt: updated.rows[0].updated_at,
@@ -229,8 +342,60 @@ export class EnrollmentsService {
     return { success: true, message: 'Đã hủy đăng ký khóa học', data: cancelled };
   }
 
+  async getCourseEnrollments(courseId: string, user: CurrentUserPayload) {
+    const course = await this.db.queryOne<{ id: string; instructor_id: string }>(
+      'SELECT id, instructor_id FROM courses WHERE id = $1',
+      [courseId],
+    );
+    if (!course) throw new NotFoundException('Không tìm thấy khóa học');
+
+    if (user.role === Role.INSTRUCTOR && course.instructor_id !== user.userId) {
+      throw new ForbiddenException('Bạn không phải giảng viên phụ trách khóa học này');
+    }
+
+    const enrollments = await this.db.query(
+      `SELECT e.id, e.status, e.enrolled_at,
+              u.id AS student_id, u.full_name AS student_name, u.email AS student_email, u.avatar_url AS student_avatar,
+              COUNT(DISTINCT l.id)::int AS total_lessons,
+              COUNT(DISTINCT l.id) FILTER (WHERE pr.is_completed)::int AS completed_lessons,
+              MAX(pr.updated_at) AS last_activity_at
+       FROM enrollments e
+       JOIN users u ON u.id = e.student_id
+       LEFT JOIN sections s ON s.course_id = e.course_id
+       LEFT JOIN lessons l ON l.section_id = s.id
+       LEFT JOIN progress_records pr ON pr.enrollment_id = e.id AND pr.lesson_id = l.id
+       WHERE e.course_id = $1
+       GROUP BY e.id, u.id
+       ORDER BY e.enrolled_at DESC`,
+      [courseId],
+    );
+
+    return {
+      success: true,
+      data: enrollments.map((r) => ({
+        id: r.id,
+        status: r.status,
+        enrolledAt: r.enrolled_at,
+        lastActivityAt: r.last_activity_at || null,
+        student: {
+          id: r.student_id,
+          fullName: r.student_name,
+          email: r.student_email,
+          avatarUrl: r.student_avatar,
+        },
+        progress: this.progressSummary(r.total_lessons, r.completed_lessons),
+      })),
+    };
+  }
+
   private async getOwnedEnrollment(enrollmentId: string, userId: string) {
-    const enrollment = await this.db.queryOne(
+    const enrollment = await this.db.queryOne<{
+      id: string;
+      student_id: string;
+      course_id: string;
+      status: string;
+      enrolled_at: Date;
+    }>(
       `SELECT id, student_id, course_id, status, enrolled_at
        FROM enrollments WHERE id = $1 AND student_id = $2`,
       [enrollmentId, userId],

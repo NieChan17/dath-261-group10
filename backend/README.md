@@ -113,7 +113,43 @@ npm run db:migrate
 
 ---
 
-## 🚀 5. Hướng dẫn Khởi chạy & Kiểm thử
+## 📝 5. Assessment Engine — Đánh giá & Kiểm tra (M4)
+
+### 5.1. Bài trắc nghiệm tính giờ & Chấm tự động (Quizzes):
+| Method | Endpoint | Vai trò | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/v1/lessons/:lessonId/quizzes` | Instructor, Admin | Tạo bài trắc nghiệm kèm danh sách câu hỏi |
+| `GET` | `/api/v1/quizzes/:id` | Authenticated | Chi tiết bài thi (ẩn đáp án đối với học viên) |
+| `PUT` | `/api/v1/quizzes/:id` | Instructor, Admin | Cập nhật thời gian làm bài, điểm sàn, xáo đề |
+| `DELETE` | `/api/v1/quizzes/:id` | Instructor, Admin | Xóa bài trắc nghiệm |
+| `POST` | `/api/v1/quizzes/:id/questions` | Instructor, Admin | Thêm câu hỏi vào bài thi |
+| `PUT` | `/api/v1/quizzes/questions/:questionId` | Instructor, Admin | Cập nhật nội dung/đáp án câu hỏi |
+| `DELETE` | `/api/v1/quizzes/questions/:questionId` | Instructor, Admin | Xóa câu hỏi khỏi bài thi |
+| `POST` | `/api/v1/quizzes/:id/start` | Student, Admin | Bắt đầu bài trắc nghiệm tính giờ (trả về thời gian đếm ngược, câu hỏi an toàn) |
+| `POST` | `/api/v1/quizzes/:id/submit` | Student, Admin | Nộp bài và chấm tự động tức thì (tự động cập nhật `progress_records` khi đạt) |
+| `GET` | `/api/v1/quizzes/:id/my-submissions` | Student, Admin | Xem lịch sử các lần làm bài trắc nghiệm |
+| `GET` | `/api/v1/quizzes/submissions/:submissionId` | Owner, Instructor, Admin | Xem bảng điểm phân tích chi tiết của 1 bài nộp |
+| `GET` | `/api/v1/quizzes/:id/analytics` | Instructor, Admin | Thống kê phổ điểm, tỷ lệ đỗ, điểm trung bình bài thi |
+
+### 5.2. Bài tập nộp file kèm Rubric chấm điểm (Assignments):
+| Method | Endpoint | Vai trò | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/v1/lessons/:lessonId/assignments` | Instructor, Admin | Tạo bài tập nộp file kèm bộ tiêu chí rubric |
+| `GET` | `/api/v1/assignments/:id` | Authenticated | Chi tiết bài tập, tiêu chí rubric và kết quả bài nộp cá nhân |
+| `PUT` | `/api/v1/assignments/:id` | Instructor, Admin | Cập nhật hạn nộp, dung lượng, định dạng file cho phép |
+| `DELETE` | `/api/v1/assignments/:id` | Instructor, Admin | Xóa bài tập nộp file |
+| `POST` | `/api/v1/assignments/:id/rubrics` | Instructor, Admin | Thêm tiêu chí rubric mới |
+| `PUT` | `/api/v1/assignments/rubrics/:rubricId` | Instructor, Admin | Cập nhật tiêu chí rubric và các mức đánh giá |
+| `DELETE` | `/api/v1/assignments/rubrics/:rubricId` | Instructor, Admin | Xóa tiêu chí rubric |
+| `POST` | `/api/v1/assignments/:id/submit` | Student, Admin | Nộp file bài tập (Multipart file upload hoặc fileUrl, kiểm tra hạn nộp) |
+| `GET` | `/api/v1/assignments/:id/my-submission` | Student, Admin | Xem bài nộp của học viên, điểm số và nhận xét từng tiêu chí rubric |
+| `GET` | `/api/v1/assignments/:id/submissions` | Instructor, Admin | Danh sách toàn bộ bài nộp của lớp, thống kê bài nộp trễ và điểm số |
+| `POST` | `/api/v1/assignments/submissions/:submissionId/grade` | Instructor, Admin | Chấm điểm bài nộp theo từng tiêu chí trong bảng Rubric (tự động cập nhật tiến độ) |
+| `GET` | `/api/v1/assignments/files/:filename` | Authenticated | Tải / xem file bài tập đã nộp an toàn |
+
+---
+
+## 🚀 6. Hướng dẫn Khởi chạy & Kiểm thử
 
 ### Cài đặt biến môi trường:
 Tạo file `.env` tại thư mục `backend/`:
@@ -136,7 +172,7 @@ npm run build
 # Chạy ở chế độ phát triển
 npm run start:dev
 
-# Chạy bộ test tự động (21 tests)
+# Chạy bộ test tự động (67 tests qua 7 test suites)
 npm test
 ```
 
