@@ -24,7 +24,7 @@ jobs:
       - name: Install Frontend Dependencies
         working-directory: ./frontend
         run: |
-          npm ci
+          npm ci || npm install
           npm install --no-save eslint eslint-config-next
 
       - name: Run Next.js Lint & Build Check
