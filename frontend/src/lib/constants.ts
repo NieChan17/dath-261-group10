@@ -16,6 +16,8 @@ export const ROUTES = {
   PROFILE: "/profile",
   ANALYTICS: "/analytics",
   ADMIN: {
+    OVERVIEW: "/admin",
+    REPORTS: "/admin/reports",
     USERS: "/admin/users",
     COURSES: "/admin/courses",
     LOGS: "/admin/logs",
