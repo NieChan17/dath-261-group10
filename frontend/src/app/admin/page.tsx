@@ -17,7 +17,7 @@ export default function AdminOverviewPage() {
     >
       <AdminHeading
         title="System Overview"
-        description="A consistent snapshot of the Admin demo dataset."
+        description="An overview of users, courses and learning activity."
       />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Metric
@@ -43,15 +43,14 @@ export default function AdminOverviewPage() {
       </div>
       <details className="rounded-2xl border border-border bg-card p-4 text-sm">
         <summary className="cursor-pointer rounded font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-          Provisional metric definitions
+          Metric Definitions
         </summary>
         <p className="mt-3 text-muted-foreground">
           Completion = completed / (active + completed); cancelled and suspended
           records are excluded. A missing denominator is N/A. Trend counts
           records by enrolledAt, not historical re-enrollment events. Quiz
           statistics use every graded attempt, including repeat attempts; scores
-          are percentages. These demo conventions are not confirmed business
-          rules.
+          are percentages.
         </p>
       </details>
       <div className="grid gap-6 lg:grid-cols-2">
@@ -59,7 +58,7 @@ export default function AdminOverviewPage() {
           <CardHeader>
             <CardTitle>Enrollment Trend</CardTitle>
             <p className="text-sm text-muted-foreground">
-              Demo records · August–October 2026
+              August–October 2026
             </p>
           </CardHeader>
           <CardContent>
@@ -109,7 +108,7 @@ export default function AdminOverviewPage() {
           <CardHeader>
             <CardTitle>Learning Results</CardTitle>
             <p className="text-sm text-muted-foreground">
-              Graded quiz attempts · Demo
+              Graded quiz attempts
             </p>
           </CardHeader>
           <CardContent className="space-y-5">

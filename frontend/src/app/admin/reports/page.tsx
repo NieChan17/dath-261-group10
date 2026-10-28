@@ -41,7 +41,7 @@ function ReportDetails({
   return (
     <DemoDialog
       title={`Review ${report.id}`}
-      description="Provisional demo review: report state only. Content is never hidden, removed or edited."
+      description="Reviews update report status only in this frontend session and are not saved to the server. Content is never hidden, removed or edited."
       onClose={onClose}
     >
       <Detail label="Status">
@@ -89,7 +89,7 @@ function ReportDetails({
           <option>Dismissed</option>
         </select>
         <p className="text-xs text-muted-foreground">
-          Provisional: Resolved records a completed review; Dismissed records
+          Resolved records a completed review; Dismissed records
           that no further report handling is needed. Neither action changes
           content.
         </p>
@@ -114,17 +114,17 @@ function ReportDetails({
         </p>
       </div>
       <Button disabled={!changed} onClick={() => setConfirm(true)}>
-        Review Demo Action
+        Review Changes
       </Button>
       {confirm && (
         <ConfirmDemo
-          title="Save this demo review?"
+          title="Apply this review?"
           onClose={() => setConfirm(false)}
           onConfirm={() => {
             dispatch({ type: "review", id: report.id, status: outcome, note });
             setConfirm(false);
             announce(
-              `Demo review saved for ${report.id}. Content unchanged; audit event recorded.`,
+              `Review updated for ${report.id} in this frontend session only. Content unchanged; audit event recorded locally. Changes are not saved to the server.`,
             );
           }}
         >
@@ -134,7 +134,7 @@ function ReportDetails({
             </p>
             <p className="whitespace-pre-wrap">{note.trim()}</p>
             <p className="text-sm text-muted-foreground">
-              Only the report and demo audit history will change.
+              Only the report and audit history in this frontend session will change.
             </p>
           </div>
         </ConfirmDemo>
@@ -178,10 +178,10 @@ export default function AdminReportsPage() {
     >
       <AdminHeading
         title="Content Reports"
-        description="Review reported discussion threads and comments in an isolated demo queue."
+        description="Review reported discussion threads and comments."
       />
       <p className="text-sm text-muted-foreground">
-        Provisional review outcomes: Pending, Resolved or Dismissed. Reviews
+        Review outcomes: Pending, Resolved or Dismissed. Reviews
         update reports only; content stays unchanged.
       </p>
       <div className="grid gap-4 sm:grid-cols-[1fr_220px]">
@@ -222,7 +222,7 @@ export default function AdminReportsPage() {
         </div>
       </div>
       <AdminTable
-        caption="Demo content reports"
+        caption="Content reports"
         columns={[
           "Report / Content",
           "Reason",

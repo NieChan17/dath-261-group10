@@ -116,7 +116,7 @@ export function ConfirmDemo({
   children,
   onClose,
   onConfirm,
-  confirmLabel = "Confirm Demo Change",
+  confirmLabel = "Confirm Change",
 }: {
   title: string;
   children: React.ReactNode;
@@ -127,7 +127,7 @@ export function ConfirmDemo({
   return (
     <DemoDialog
       title={title}
-      description="Demo — changes are not saved to the server."
+      description="Changes apply only in this frontend session and are not saved to the server. Reloading the page resets them."
       onClose={onClose}
     >
       <div>{children}</div>

@@ -34,7 +34,7 @@ function CourseDetails({
   return (
     <DemoDialog
       title={course.title}
-      description="Course details and demo publication controls."
+      description="Course details and publication controls."
       onClose={onClose}
     >
       <Detail label="Course Code / ID">
@@ -59,20 +59,20 @@ function CourseDetails({
         </Badge>
       </Detail>
       <Detail label="Active Enrollments">{metrics.active}</Detail>
-      <Detail label="Completion Rate (provisional)">
+      <Detail label="Completion Rate">
         {percent(metrics.completionRate)} · completed / (active + completed). No
         eligible enrollments = N/A.
       </Detail>
       <p className="text-xs text-muted-foreground">
-        Instructors retain publishing capabilities. This demo toggle does not
-        publish or unpublish a real course.
+        Changes apply only in this frontend session and are not saved to the
+        server. This control does not publish or unpublish a course on the server.
       </p>
       <Button onClick={() => setConfirm(true)}>
-        {course.isPublished ? "Move to Draft (Demo)" : "Publish (Demo)"}
+        {course.isPublished ? "Move to Draft" : "Publish"}
       </Button>
       {confirm && (
         <ConfirmDemo
-          title="Change demo publication?"
+          title="Change publication status?"
           onClose={() => setConfirm(false)}
           onConfirm={() => {
             dispatch({
@@ -82,7 +82,7 @@ function CourseDetails({
             });
             setConfirm(false);
             announce(
-              `Demo publication updated for ${course.code}. Audit event recorded.`,
+              `Publication status updated for ${course.code} in this frontend session only. Audit event recorded locally; changes are not saved to the server.`,
             );
           }}
         >
@@ -172,7 +172,7 @@ export default function AdminCoursesPage() {
         </div>
       </div>
       <AdminTable
-        caption="Demo courses"
+        caption="Courses"
         columns={[
           "Course",
           "Instructor",

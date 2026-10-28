@@ -58,13 +58,8 @@ export default function AdminLogsPage() {
     >
       <AdminHeading
         title="Audit Logs"
-        description="Administrative demo events, newest first."
+        description="Administrative events, newest first."
       />
-      <p className="text-sm text-muted-foreground">
-        Fixture events and successful demo changes only. Actor names are
-        snapshots, not authenticated identities. New event times advance from a
-        fixed demo clock.
-      </p>
       <div className="grid gap-4 sm:grid-cols-[1fr_220px]">
         <div className="space-y-2">
           <label htmlFor="log-search" className="text-sm font-medium">
@@ -107,7 +102,7 @@ export default function AdminLogsPage() {
         </div>
       </div>
       <AdminTable
-        caption="Administrative demo audit events"
+        caption="Administrative audit events"
         columns={["Event / Time", "Actor", "Action", "Target", "Details"]}
       >
         {result.rows.map((event) => (
@@ -146,7 +141,7 @@ export default function AdminLogsPage() {
       {selected && (
         <DemoDialog
           title={selected.action}
-          description="Administrative demo event details."
+          description="Administrative event details."
           onClose={() => setSelectedId(null)}
         >
           <Detail label="Event ID">

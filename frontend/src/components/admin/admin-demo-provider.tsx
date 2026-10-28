@@ -12,7 +12,6 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { ROUTES } from "@/lib/constants";
 import { adminDemoReducer, type AdminDemoAction } from "@/lib/admin-demo";
 import { createAdminDemo } from "@/lib/mock-admin-data";
@@ -61,30 +60,13 @@ export function AdminDemoProvider({ children }: { children: React.ReactNode }) {
             </span>
             <div>
               <p className="font-display text-lg font-bold">Admin Workspace</p>
-              <p className="text-xs text-muted-foreground">
-                M6 · Frontend prototype
-              </p>
             </div>
-            <Badge variant="secondary">Demo</Badge>
           </div>
           <Button variant="outline" onClick={() => setResetOpen(true)}>
             <RotateCcw aria-hidden="true" className="mr-2 h-4 w-4" />
-            Reset Demo
+            Reset Changes
           </Button>
         </div>
-        <aside
-          aria-label="Demo limitations"
-          className="rounded-2xl border border-primary/20 bg-primary/5 p-4 text-sm"
-        >
-          <p className="font-semibold">
-            Demo — changes are not saved to the server.
-          </p>
-          <p className="mt-1 text-muted-foreground">
-            Changes survive navigation between Admin pages. A full page reload
-            resets in-memory demo state. This preview does not authenticate
-            users or enforce authorization.
-          </p>
-        </aside>
         <nav
           aria-label="Admin navigation"
           className="flex flex-wrap gap-2 border-b border-border pb-4"
@@ -120,20 +102,20 @@ export function AdminDemoProvider({ children }: { children: React.ReactNode }) {
         {children}
         {resetOpen && (
           <ConfirmDemo
-            title="Reset all demo data?"
-            confirmLabel="Reset Demo Data"
+            title="Reset all frontend changes?"
+            confirmLabel="Reset Changes"
             onClose={() => setResetOpen(false)}
             onConfirm={() => {
               dispatch({ type: "reset" });
               setResetOpen(false);
               setMessage(
-                "Demo reset. Original users, courses, reports, metrics and audit history restored.",
+                "Frontend changes reset. Initial data restored in this session only; no server data was changed.",
               );
             }}
           >
             <p>
-              This discards all demo changes and restores the original fixture
-              and audit history. No server data is affected.
+              This discards all frontend changes and restores the initial data
+              and audit history in this session. No server data is affected.
             </p>
           </ConfirmDemo>
         )}

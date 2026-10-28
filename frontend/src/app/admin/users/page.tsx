@@ -28,7 +28,7 @@ function UserDetails({ user, onClose }: { user: User; onClose: () => void }) {
   return (
     <DemoDialog
       title={user.fullName}
-      description="User details and demo role management."
+      description="User details and role management."
       onClose={onClose}
     >
       <Detail label="User ID">
@@ -55,8 +55,8 @@ function UserDetails({ user, onClose }: { user: User; onClose: () => void }) {
           ))}
         </select>
         <p className="text-xs text-muted-foreground">
-          One role per user. This changes demo data only; it does not grant
-          access.
+          One role per user. Changes apply only in this frontend session, are
+          not saved to the server and do not grant access.
         </p>
       </div>
       <Button disabled={role === user.role} onClick={() => setConfirm(true)}>
@@ -64,13 +64,13 @@ function UserDetails({ user, onClose }: { user: User; onClose: () => void }) {
       </Button>
       {confirm && (
         <ConfirmDemo
-          title="Change this user's demo role?"
+          title="Change this user's role?"
           onClose={() => setConfirm(false)}
           onConfirm={() => {
             dispatch({ type: "role", id: user.id, role });
             setConfirm(false);
             announce(
-              `Demo role updated for ${user.fullName}. Audit event recorded.`,
+              `Role updated for ${user.fullName} in this frontend session only. Audit event recorded locally; changes are not saved to the server.`,
             );
           }}
         >
@@ -111,7 +111,7 @@ export default function AdminUsersPage() {
     >
       <AdminHeading
         title="Users"
-        description="Find accounts, inspect details and preview role changes."
+        description="Find accounts, inspect details and manage roles."
       />
       <div className="grid gap-4 sm:grid-cols-[1fr_220px]">
         <div className="space-y-2">
@@ -149,7 +149,7 @@ export default function AdminUsersPage() {
         </div>
       </div>
       <AdminTable
-        caption="Demo users"
+        caption="Users"
         columns={["User", "Role", "Created", "Actions"]}
       >
         {result.rows.map((user) => (
@@ -184,7 +184,7 @@ export default function AdminUsersPage() {
       </AdminTable>
       <Pagination {...result} onPage={setPage} />
       <p className="text-sm text-muted-foreground">
-        Account blocking is unavailable in this demo.
+        Account blocking is currently unavailable.
       </p>
       {selected && (
         <UserDetails
