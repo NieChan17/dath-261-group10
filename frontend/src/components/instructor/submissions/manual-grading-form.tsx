@@ -63,16 +63,16 @@ export function ManualGradingForm({ submission }: { submission: ManualGradingSub
   return (
     <Card data-component="ManualGradingForm" className="manual-grading__container_01 min-w-0 rounded-[15px]">
       <CardHeader className="manual-grading__header_01 space-y-2">
-        <h2 id="manual-grading-title" className="manual-grading__title_01 font-display text-lg font-bold">Local grading draft</h2>
+        <h2 id="manual-grading-title" className="manual-grading__title_01 font-display text-lg font-bold">Grading draft</h2>
         <p className="manual-grading__description_01 text-sm leading-relaxed text-muted-foreground">
-          Prepare a temporary score and feedback. Drafts stay within this submissions workspace and are lost on a full reload or when you leave it.
+          Prepare a draft score and feedback.
         </p>
       </CardHeader>
       <CardContent className="manual-grading__content_01 space-y-4">
         <p role="status" className="manual-grading__status_01 rounded-lg border border-border bg-muted p-3 text-sm">
           {!isHydrated ? "Grading requires JavaScript. Controls become available after this page finishes loading." : storedDraft
-            ? draft.reviewed ? "Confirmed locally. This draft is still temporary and has not been sent or saved to a server." : "Draft changes need review. The sample recorded grade is unchanged."
-            : "The fields start with the sample recorded values. Changes create a temporary local draft."}
+            ? draft.reviewed ? "Draft reviewed locally." : "Draft changes need review."
+            : "The fields start with the recorded values. Changes create a draft."}
         </p>
         <div role="form" aria-labelledby="manual-grading-title" className="manual-grading__form_01">
           <fieldset

@@ -8,7 +8,7 @@ import type { InstructorSubmission } from "@/types/submission";
 import { CodeSubmissionReview } from "./code-submission-review";
 import { ManualGradingForm } from "./manual-grading-form";
 import { QuizSubmissionReview } from "./quiz-submission-review";
-import { SubmissionMockNotice, SubmissionStatusBadge } from "./submission-shared";
+import { SubmissionStatusBadge } from "./submission-shared";
 import { WrittenSubmissionReview } from "./written-submission-review";
 
 interface SubmissionDetailProps {
@@ -30,10 +30,9 @@ export function SubmissionDetail({ submission, backHref }: SubmissionDetailProps
         <header className="submission-detail__header_01 space-y-2">
           <h1 className="submission-detail__title_01 font-display text-2xl font-bold tracking-tight sm:text-3xl">Submission review</h1>
           <p className="submission-detail__description_01 text-sm text-muted-foreground">
-            {submission.type === "quiz" ? "Review the submitted answers and automatic quiz scores. Manual quiz overrides are unavailable." : "Review the submitted work and prepare temporary grading drafts. Sample recorded grades stay unchanged."}
+            {submission.type === "quiz" ? "Review the submitted answers and automatic quiz scores. Manual quiz overrides are unavailable." : "Review the submitted work and prepare grading drafts."}
           </p>
         </header>
-        <SubmissionMockNotice />
         <Card className="submission-detail__summary_01 min-w-0 rounded-[15px]">
           <CardHeader className="submission-detail__summary-header_01 items-start gap-3 sm:flex-row sm:justify-between">
             <div className="submission-detail__assessment_01 min-w-0 space-y-1">
@@ -86,7 +85,7 @@ export function SubmissionDetail({ submission, backHref }: SubmissionDetailProps
           <div className="submission-detail__grading_01 min-w-0 space-y-6">
             <Card className="submission-detail__recorded-grade_01 min-w-0 rounded-[15px]">
               <CardHeader className="submission-detail__grade-header_01">
-                <h2 className="submission-detail__grade-title_01 font-display text-lg font-bold">Sample recorded grade</h2>
+                <h2 className="submission-detail__grade-title_01 font-display text-lg font-bold">Recorded grade</h2>
               </CardHeader>
               <CardContent className="submission-detail__grade-content_01 space-y-5">
                 <p className="submission-detail__score_01 text-2xl font-bold text-foreground">
@@ -97,7 +96,7 @@ export function SubmissionDetail({ submission, backHref }: SubmissionDetailProps
                   <p className="submission-detail__graded-at_01 text-xs text-muted-foreground">Graded <time dateTime={grading.gradedAt}>{formatSubmissionDate(grading.gradedAt)}</time> · ICT (UTC+7)</p>
                 )}
                 <div className="submission-detail__feedback_01 border-t border-border pt-4">
-                  <h3 className="submission-detail__feedback-title_01 text-sm font-semibold">Sample recorded feedback</h3>
+                  <h3 className="submission-detail__feedback-title_01 text-sm font-semibold">Recorded feedback</h3>
                   <p className="submission-detail__feedback-text_01 mt-2 whitespace-pre-wrap break-words text-sm leading-relaxed text-muted-foreground">{grading.feedback || "No feedback has been recorded."}</p>
                 </div>
               </CardContent>

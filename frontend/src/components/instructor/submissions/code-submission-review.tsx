@@ -53,10 +53,10 @@ export function CodeSubmissionReview({ submission }: { submission: InstructorCod
         </div>
         <section aria-labelledby="code-test-results-title" className="code-submission-review__test-results_01 border-t border-border pt-5">
           <h3 id="code-test-results-title" className="code-submission-review__results-title_01 text-sm font-semibold">Recorded test results</h3>
-          <p className="code-submission-review__results-notice_01 mt-2 text-xs leading-relaxed text-muted-foreground">These are sample results saved with the submission. Reviewing this page does not run the code.</p>
+          <p className="code-submission-review__results-notice_01 mt-2 text-xs leading-relaxed text-muted-foreground">Reviewing this page does not run the code.</p>
           {testResults ? (
             <div className="code-submission-review__results_01 mt-3 space-y-3">
-              <p className="code-submission-review__test-status_01 text-sm font-medium">{testResults.passed ? "Sample tests passed" : "Sample tests failed"} · {testResults.runtimeMs} ms</p>
+              <p className="code-submission-review__test-status_01 text-sm font-medium">{testResults.passed ? "Tests passed" : "Tests failed"} · {testResults.runtimeMs} ms</p>
               <pre role="region" tabIndex={0} aria-label="Recorded test output" className="code-submission-review__output_01 max-w-full overflow-x-auto whitespace-pre-wrap break-words rounded-lg bg-muted p-4 font-mono text-xs leading-relaxed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">{testResults.output}</pre>
             </div>
           ) : <p className="code-submission-review__no-results_01 mt-3 text-sm text-muted-foreground">No test result was recorded for this submission.</p>}

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { SubmissionFilterForm } from "./submission-filters";
 import { SubmissionDraftIndicator } from "./submission-draft-indicator";
-import { SubmissionMockNotice, SubmissionStatusBadge } from "./submission-shared";
+import { SubmissionStatusBadge } from "./submission-shared";
 import {
   filterSubmissions, formatSubmissionDate, submissionDetailHref, SUBMISSION_TYPE_LABELS, type SubmissionFilters,
 } from "@/lib/instructor-submission-view";
@@ -23,9 +23,8 @@ export function SubmissionList({ submissions, filters }: {
             Back to Instructor Workspace
           </Link>
           <h1 className="submission-list__title_01 font-display text-2xl font-bold tracking-tight sm:text-3xl">Submissions</h1>
-          <p className="submission-list__description_01 text-sm text-muted-foreground">Review student work and sample recorded grades across your courses. Filters use sample records; temporary drafts do not change these grades or statuses.</p>
+          <p className="submission-list__description_01 text-sm text-muted-foreground">Review student work and recorded grades across your courses.</p>
         </header>
-        <SubmissionMockNotice />
         <SubmissionFilterForm submissions={submissions} filters={filters} />
         <section aria-labelledby="submission-results-title" className="submission-list__results_01 space-y-4">
           <div className="submission-list__results-header_01 flex flex-wrap items-baseline justify-between gap-2">
@@ -68,7 +67,7 @@ export function SubmissionList({ submissions, filters }: {
                       <SubmissionDraftIndicator submissionId={submission.id} />
                       <div className="submission-list__footer_01 mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
                         <p className="submission-list__score_01 text-sm font-semibold">
-                          {submission.grading.score === null ? "Sample: Not graded" : `Sample score: ${formatGradeScore(submission.grading.score)} / ${formatGradeScore(submission.assessment.maxScore)}`}
+                          {submission.grading.score === null ? "Not graded" : `Score: ${formatGradeScore(submission.grading.score)} / ${formatGradeScore(submission.assessment.maxScore)}`}
                         </p>
                         <Button asChild variant="outline" size="sm">
                           <Link

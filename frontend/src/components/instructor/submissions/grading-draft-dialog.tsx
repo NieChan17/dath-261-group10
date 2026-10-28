@@ -53,8 +53,8 @@ export function GradingDraftDialog({
       <p className="grading-draft-dialog__assessment_01 mt-1 break-words text-sm text-muted-foreground">{assessmentTitle}</p>
       <p id="grading-draft-dialog-description" className="grading-draft-dialog__description_01 mt-4 text-sm leading-relaxed text-muted-foreground">
         {isReview
-          ? "Confirming keeps a temporary local grading draft in this submissions workspace. It is lost on a full reload or when leaving the workspace. Nothing is sent to students or saved to a server."
-          : "Discard this temporary score and feedback and return to the sample recorded values. This draft cannot be recovered after resetting."}
+          ? "Draft only: not saved to the server or sent to students. Reloading or leaving this workspace discards it."
+          : "Discard this temporary score and feedback and return to the recorded values. This draft cannot be recovered after resetting."}
       </p>
       {isReview && (
         <dl className="grading-draft-dialog__preview_01 mt-5 space-y-4 rounded-lg border border-border p-4">
