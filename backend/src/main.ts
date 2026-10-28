@@ -62,7 +62,9 @@ async function bootstrap() {
         'Bao gồm các phân hệ:\n' +
         '- **Authentication & RBAC**: JWT HttpOnly Cookie, Argon2/Bcrypt, 3 vai trò (Student, Instructor, Admin)\n' +
         '- **Course Catalog**: Tìm kiếm mờ, phân trang, bộ lọc đa tiêu chí (category, level, publish)\n' +
-        '- **Syllabus Hierarchy**: Cây phân cấp Course -> Section (Chapter) -> Lesson -> Materials/Quiz',
+        '- **Syllabus Hierarchy**: Cây phân cấp Course -> Section (Chapter) -> Lesson -> Materials/Quiz\n' +
+        '- **Enrollments & Progress**: Đăng ký khóa học, theo dõi tiến độ, resume playback\n' +
+        '- **Assessment Engine**: Làm bài trắc nghiệm tính giờ, chấm tự động trắc nghiệm & nộp file bài tập kèm rubric chấm điểm',
     )
     .setVersion('1.0.0')
     .addBearerAuth(

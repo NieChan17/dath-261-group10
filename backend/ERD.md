@@ -23,6 +23,7 @@ erDiagram
 
     LESSONS ||--o{ MATERIALS : "provides"
     LESSONS ||--o{ QUIZZES : "evaluates"
+    LESSONS ||--o{ ASSIGNMENTS : "assigns"
     LESSONS ||--o{ PROGRESS_RECORDS : "tracks"
     LESSONS ||--o{ DISCUSSION_THREADS : "hosts"
 
@@ -30,6 +31,12 @@ erDiagram
 
     QUIZZES ||--o{ QUESTIONS : "contains"
     QUIZZES ||--o{ SUBMISSIONS : "receives"
+
+    ASSIGNMENTS ||--o{ ASSIGNMENT_RUBRICS : "defines"
+    ASSIGNMENTS ||--o{ ASSIGNMENT_SUBMISSIONS : "collects"
+    ASSIGNMENT_SUBMISSIONS ||--o{ RUBRIC_EVALUATIONS : "evaluated_by"
+    ASSIGNMENT_RUBRICS ||--o{ RUBRIC_EVALUATIONS : "measured_in"
+    USERS ||--o{ ASSIGNMENT_SUBMISSIONS : "submits"
 
     MATERIALS ||--o{ MATERIAL_EMBEDDINGS : "vectorized_as"
     COMMENTS ||--o{ COMMENTS : "nested_under"
@@ -201,15 +208,19 @@ erDiagram
 ### 2.3. Nhóm Đánh giá & Kiểm tra (Assessment Engine)
 | Thực thể | Thuộc tính chính | Ràng buộc & Ghi chú |
 | :--- | :--- | :--- |
-| **`quizzes`** | `id`, `lesson_id`, `title`, `pass_score`, `time_limit_minutes`, `created_at` | FK tới `lessons.id` ON DELETE CASCADE. `pass_score` từ 0..100. |
-| **`questions`** | `id`, `quiz_id`, `prompt`, `question_type`, `points`, `options`, `correct_answer`, `order_index` | FK tới `quizzes.id` ON DELETE CASCADE. `options` dạng mảng JSONB các lựa chọn. UNIQUE(`quiz_id`, `order_index`). |
-| **`submissions`** | `id`, `quiz_id`, `student_id`, `score`, `status`, `answers`, `submitted_at` | `status` ∈ ('draft', 'submitted', 'graded', 'returned'). `answers` dạng JSONB lưu câu trả lời. |
+| **`quizzes`** | `id`, `lesson_id`, `title`, `description`, `pass_score`, `time_limit_minutes`, `max_attempts`, `shuffle_questions`, `created_at` | FK tới `lessons.id` ON DELETE CASCADE. `pass_score` từ 0..100. Hỗ trợ tính giờ và giới hạn số lần làm bài. |
+| **`questions`** | `id`, `quiz_id`, `prompt`, `question_type`, `points`, `options`, `correct_answer`, `explanation`, `order_index` | FK tới `quizzes.id` ON DELETE CASCADE. `options` dạng mảng JSONB các lựa chọn. `explanation` giải thích đáp án khi xem lại kết quả. |
+| **`submissions`** | `id`, `quiz_id`, `student_id`, `score`, `status`, `started_at`, `completed_at`, `attempt_number`, `time_spent_seconds`, `answers`, `submitted_at` | `status` ∈ ('draft', 'in_progress', 'submitted', 'graded', 'returned'). Chấm tự động lưu chi tiết điểm, thời gian làm và kết quả từng câu. |
+| **`assignments`** | `id`, `lesson_id`, `title`, `description`, `allowed_file_types`, `max_file_size_mb`, `due_date`, `total_points`, `pass_score`, `created_at`, `updated_at` | FK tới `lessons.id` ON DELETE CASCADE. `allowed_file_types` dạng JSONB, kiểm tra hạn nộp `due_date`. |
+| **`assignment_rubrics`** | `id`, `assignment_id`, `criterion_name`, `description`, `max_points`, `order_index`, `levels`, `created_at` | FK tới `assignments.id` ON DELETE CASCADE. `levels` lưu các thang bậc đánh giá tiêu chí dạng JSONB. |
+| **`assignment_submissions`** | `id`, `assignment_id`, `student_id`, `file_url`, `original_filename`, `file_size_bytes`, `mime_type`, `notes`, `status`, `total_score`, `is_late`, `feedback`, `graded_by`, `graded_at`, `submitted_at`, `updated_at` | UNIQUE(`student_id`, `assignment_id`). Lưu file nộp, cờ nộp trễ `is_late` và nhận xét của giảng viên. |
+| **`rubric_evaluations`** | `id`, `submission_id`, `rubric_id`, `points_awarded`, `feedback`, `created_at` | UNIQUE(`submission_id`, `rubric_id`). Điểm số chi tiết và nhận xét riêng cho từng tiêu chí rubric. |
 
 ### 2.4. Nhóm Đăng ký & Tiến độ học tập (Enrollment & Progress)
 | Thực thể | Thuộc tính chính | Ràng buộc & Ghi chú |
 | :--- | :--- | :--- |
 | **`enrollments`** | `id`, `student_id`, `course_id`, `status`, `enrolled_at` | UNIQUE(`student_id`, `course_id`). `status` ∈ ('active', 'completed', 'cancelled', 'suspended'). |
-| **`progress_records`** | `id`, `enrollment_id`, `lesson_id`, `is_completed`, `last_position_seconds`, `updated_at` | UNIQUE(`enrollment_id`, `lesson_id`). Phục vụ tính năng Resume playback và tỷ lệ hoàn thành. |
+| **`progress_records`** | `id`, `enrollment_id`, `lesson_id`, `is_completed`, `last_position_seconds`, `updated_at` | UNIQUE(`enrollment_id`, `lesson_id`). Tự động đánh dấu `is_completed = true` khi vượt qua quiz hoặc bài tập đạt điểm sàn. |
 
 ### 2.5. Nhóm AI & Kiểm toán (RAG AI & Audit)
 | Thực thể | Thuộc tính chính | Ràng buộc & Ghi chú |
@@ -235,3 +246,4 @@ erDiagram
 - `V007__query_audit_logs.sql`: Bảng `query_audit_logs`.
 - `V008__updated_at_triggers.sql`: Triggers tự động cập nhật `updated_at`.
 - `V009__course_metadata_and_seeds.sql`: Bổ sung metadata và seed dữ liệu khởi tạo.
+- `V010__assessment_engine_quizzes_assignments.sql`: Mở rộng tính năng làm bài trắc nghiệm tính giờ, chấm tự động trắc nghiệm, bài tập nộp file kèm rubric chấm điểm.
