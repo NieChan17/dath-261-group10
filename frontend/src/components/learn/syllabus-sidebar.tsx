@@ -3,7 +3,28 @@
 import * as React from "react";
 import { CheckCircle2, Lock, Play } from "lucide-react";
 
-export function SyllabusSidebar() {
+export interface SyllabusSidebarProps {
+  completedLessonIds?: string[];
+  activeLessonId?: string;
+  onSelectLesson?: (lessonId: string) => void;
+  progressPercent?: number;
+}
+
+export function SyllabusSidebar({
+  completedLessonIds = ["3.1", "3.2", "3.3"],
+  activeLessonId = "3.4",
+  onSelectLesson,
+  progressPercent,
+}: SyllabusSidebarProps = {}) {
+  const isLesson34Completed = completedLessonIds.includes("3.4");
+  const calculatedPercent =
+    progressPercent !== undefined
+      ? progressPercent
+      : isLesson34Completed
+      ? 80
+      : 68;
+  const completedInModule3 = isLesson34Completed ? 4 : 3;
+
   return (
     <aside
       data-component="SyllabusSidebar"
@@ -15,14 +36,19 @@ export function SyllabusSidebar() {
           <span className="text-[#2563eb] uppercase tracking-wider">
             MODULE 3 OF 5
           </span>
-          <span className="text-[#006a61]">68% completed</span>
+          <span className="text-[#006a61] transition-all duration-300">
+            {calculatedPercent}% completed
+          </span>
         </div>
         <h3 className="font-display text-base font-bold text-[#0b1c30] leading-snug">
           Deep Learning &amp; Transformers
         </h3>
         {/* Progress bar */}
         <div className="h-1.5 w-full rounded-full bg-[#e2e8f0] overflow-hidden">
-          <div className="h-full w-[68%] rounded-full bg-gradient-to-r from-[#2563eb] to-[#006a61]" />
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-[#2563eb] to-[#006a61] transition-all duration-500 ease-out"
+            style={{ width: `${calculatedPercent}%` }}
+          />
         </div>
       </div>
 
@@ -53,7 +79,7 @@ export function SyllabusSidebar() {
               3. MHA &amp; Rotary Embeddings
             </span>
             <span className="rounded-md bg-[#2563eb]/10 px-1.5 py-0.5 text-[10px] font-bold text-[#2563eb]">
-              3/5
+              {completedInModule3}/5
             </span>
           </div>
 
@@ -87,13 +113,32 @@ export function SyllabusSidebar() {
             </div>
 
             {/* 3.4 (Current Active Lesson) */}
-            <div className="flex items-center justify-between rounded-lg bg-white p-2 text-[11px] font-bold text-[#2563eb] shadow-xs border border-[#dce9ff]">
+            <div
+              onClick={() => onSelectLesson?.("3.4")}
+              className={`flex items-center justify-between rounded-lg p-2 text-[11px] font-bold shadow-xs border transition-colors cursor-pointer ${
+                activeLessonId === "3.4"
+                  ? "bg-white text-[#2563eb] border-[#dce9ff]"
+                  : "bg-transparent text-[#434655] border-transparent hover:bg-white"
+              }`}
+            >
               <div className="flex items-center gap-2">
-                <Play className="h-3.5 w-3.5 fill-[#2563eb] text-[#2563eb]" />
-                <span>3.4 RoPE Deep Dive</span>
+                {isLesson34Completed ? (
+                  <CheckCircle2 className="h-3.5 w-3.5 text-[#006a61] fill-[#86f2e4]/30 shrink-0" />
+                ) : (
+                  <Play className="h-3.5 w-3.5 fill-[#2563eb] text-[#2563eb] shrink-0" />
+                )}
+                <span className={isLesson34Completed ? "text-[#006a61]" : "text-[#2563eb]"}>
+                  3.4 RoPE Deep Dive
+                </span>
               </div>
-              <span className="rounded bg-[#eff4ff] px-1.5 py-0.5 text-[10px]">
-                28m
+              <span
+                className={`rounded px-1.5 py-0.5 text-[10px] font-mono transition-colors ${
+                  isLesson34Completed
+                    ? "bg-[#f0fdfa] text-[#006a61]"
+                    : "bg-[#eff4ff] text-[#2563eb]"
+                }`}
+              >
+                {isLesson34Completed ? "Done" : "28m"}
               </span>
             </div>
 

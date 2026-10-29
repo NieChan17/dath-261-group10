@@ -4,53 +4,64 @@ import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ROUTES } from "@/lib/constants";
-import { Bell, Search, ChevronLeft } from "lucide-react";
+import { Bell, Search, Sparkles } from "lucide-react";
+import { ChatDrawer } from "@/components/ai/chat-drawer";
 
 export function Header() {
   const pathname = usePathname();
   const [imgError, setImgError] = React.useState(false);
+  const [isAiDrawerOpen, setIsAiDrawerOpen] = React.useState(false);
 
   const navItems = [
-    { label: "Catalog", href: ROUTES.HOME },
+    { label: "Home", href: ROUTES.HOME },
+    { label: "Catalog", href: ROUTES.COURSES },
     { label: "My Learning", href: "/my-learning" },
-    { label: "Community Forum", href: ROUTES.DISCUSSIONS },
+    { label: "Assignments", href: ROUTES.ASSIGNMENTS },
     { label: "Analytics", href: ROUTES.ANALYTICS },
   ];
 
+  // Dedicated auth pages use their own specialized header from mockup
+  if (pathname === "/register" || pathname === "/forgot") {
+    return null;
+  }
+
   return (
-    <header
-      data-component="Header"
-      className="header__container_01 sticky top-0 z-40 w-full border-b border-[#e2e8f0] bg-[#ffffff]/95 backdrop-blur-md select-none"
-    >
+    <>
+      <header
+        data-component="Header"
+        className="header__container_01 sticky top-0 z-40 w-full border-b border-[#e2e8f0] bg-[#ffffff]/95 backdrop-blur-md select-none"
+      >
       <div className="header__content_01 mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Left: Brand & Dynamic Navigation Tabs */}
-        <div className="header__left_01 flex items-center gap-6 lg:gap-8">
+        <div className="header__left_01 flex items-center gap-4 lg:gap-6 shrink-0">
           {/* Logo as Clickable Link Button */}
           <Link
             href={ROUTES.HOME}
-            className="header__logo-btn_01 group inline-flex items-center gap-2.5 outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb] rounded-lg cursor-pointer"
+            className="header__logo-btn_01 group inline-flex items-center gap-2.5 outline-none focus-visible:ring-2 focus-visible:ring-[#2563eb] rounded-lg cursor-pointer shrink-0"
           >
-            <div className="header__logo-icon_01 h-7 w-7 rounded-full bg-[#2563eb] flex items-center justify-center text-white font-display font-bold text-sm shadow-sm group-hover:scale-105 transition-transform">
+            <div className="header__logo-icon_01 h-7 w-7 rounded-full bg-[#2563eb] flex items-center justify-center text-white font-display font-bold text-sm shadow-sm group-hover:scale-105 transition-transform shrink-0">
               E
             </div>
-            <span className="header__logo-text_01 font-display font-bold text-lg text-[#0b1c30] tracking-tight group-hover:text-[#2563eb] transition-colors">
+            <span className="header__logo-text_01 font-display font-bold text-lg text-[#0b1c30] tracking-tight group-hover:text-[#2563eb] transition-colors whitespace-nowrap">
               EduPulse
             </span>
           </Link>
 
           {/* Navigation Links with Active State */}
-          <nav className="header__nav_01 hidden md:flex items-center gap-1.5 text-sm font-medium">
+          <nav className="header__nav_01 hidden md:flex items-center gap-1 text-sm font-medium shrink-0">
             {navItems.map((item) => {
               const isActive =
-                item.href === "/"
-                  ? pathname === "/" || pathname === "/courses"
+                item.href === ROUTES.HOME
+                  ? pathname === "/"
+                  : item.href === ROUTES.COURSES
+                  ? pathname === "/courses" || pathname?.startsWith("/courses/")
                   : pathname?.startsWith(item.href);
 
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`header__nav-link_01 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-colors ${
+                  className={`header__nav-link_01 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 transition-colors ${
                     isActive
                       ? "bg-[#eff4ff] text-[#2563eb]"
                       : "text-[#434655] hover:text-[#0b1c30] hover:bg-[#f8f9ff]"
@@ -64,16 +75,16 @@ export function Header() {
         </div>
 
         {/* Right: Search, Notification, AI Assistant & Avatar Button */}
-        <div className="header__right_01 flex items-center gap-3 sm:gap-4">
+        <div className="header__right_01 flex items-center gap-2 sm:gap-2.5 shrink-0">
           {/* Search Input with properly spaced icon and ⌘K */}
-          <div className="header__search_01 relative hidden sm:flex items-center">
-            <Search className="header__search-icon_01 absolute left-3.5 h-4 w-4 text-[#737686] pointer-events-none" />
+          <div className="header__search_01 relative hidden sm:flex items-center shrink min-w-0">
+            <Search className="header__search-icon_01 absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#737686] pointer-events-none shrink-0" />
             <input
               type="text"
-              placeholder="Search courses, skills, references..."
-              className="header__search-input_01 h-9.5 w-64 lg:w-76 rounded-full border border-[#e2e8f0] bg-[#f8f9ff] pl-10 pr-11 text-xs text-[#0b1c30] placeholder:text-[#737686] focus:border-[#2563eb] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563eb]/20 transition-all"
+              placeholder="Search courses, skills..."
+              className="header__search-input_01 h-9.5 w-36 md:w-44 lg:w-56 xl:w-64 rounded-full border border-[#e2e8f0] bg-[#f8f9ff] pl-10 pr-11 text-xs text-[#0b1c30] placeholder:text-[#737686] focus:border-[#2563eb] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563eb]/20 transition-all shrink"
             />
-            <kbd className="header__search-kbd_01 absolute right-3 pointer-events-none select-none rounded border border-[#c3c6d7] bg-white px-1.5 py-0.5 text-[10px] font-medium text-[#737686] shadow-2xs">
+            <kbd className="header__search-kbd_01 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none select-none rounded border border-[#c3c6d7] bg-white px-1.5 py-0.5 text-[10px] font-medium text-[#737686] shadow-2xs shrink-0">
               ⌘K
             </kbd>
           </div>
@@ -81,7 +92,7 @@ export function Header() {
           {/* Notification Bell Button */}
           <button
             type="button"
-            className="header__bell-btn_01 relative flex h-9 w-9 items-center justify-center text-[#434655] hover:text-[#0b1c30] hover:bg-[#f8f9ff] rounded-full transition-colors cursor-pointer"
+            className="header__bell-btn_01 relative flex h-9 w-9 shrink-0 items-center justify-center text-[#434655] hover:text-[#0b1c30] hover:bg-[#f8f9ff] rounded-full transition-colors cursor-pointer"
             title="Notifications"
           >
             <Bell className="h-5 w-5" />
@@ -90,20 +101,40 @@ export function Header() {
             </span>
           </button>
 
-          {/* AI Assistant Button */}
+          {/* AI Assistant Icon Button */}
           <button
             type="button"
-            className="header__ai-btn_01 hidden sm:inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full bg-[#004d44] hover:bg-[#003d36] text-white text-xs font-semibold shadow-sm transition-all cursor-pointer active:scale-95"
+            onClick={() => setIsAiDrawerOpen((prev) => !prev)}
+            className="header__ai-btn_01 relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#004d44] hover:bg-[#003d36] text-white shadow-xs transition-all cursor-pointer active:scale-95"
+            title="AI Assistant"
+            aria-label="AI Assistant"
           >
-            <ChevronLeft className="h-3.5 w-3.5" />
-            <span>AI Assistant</span>
+            <Sparkles className="h-4.5 w-4.5" />
           </button>
 
+          {/* Quick Auth Links: Sign In & Register */}
+          <div className="header__auth-links_01 hidden md:flex items-center gap-1.5 border-l border-[#e2e8f0] pl-2.5 shrink-0">
+            {pathname !== ROUTES.LOGIN && (
+              <Link
+                href={ROUTES.LOGIN}
+                className="header__signin-link_01 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 text-[#434655] hover:text-[#0b1c30] hover:bg-[#f8f9ff] transition-colors"
+              >
+                Sign In
+              </Link>
+            )}
+            <Link
+              href={ROUTES.REGISTER}
+              className="header__register-btn_01 px-3.5 py-1.5 rounded-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-bold whitespace-nowrap shrink-0 shadow-xs transition-all active:scale-95"
+            >
+              Register
+            </Link>
+          </div>
+
           {/* User Profile Avatar Button */}
-          <Link href={ROUTES.PROFILE}>
+          <Link href={ROUTES.PROFILE} className="shrink-0">
             <button
               type="button"
-              className="header__avatar-btn_01 relative h-9 w-9 rounded-full overflow-hidden ring-2 ring-[#e2e8f0] hover:ring-[#2563eb] transition-all bg-[#eff4ff] flex items-center justify-center cursor-pointer active:scale-95"
+              className="header__avatar-btn_01 relative h-9 w-9 rounded-full overflow-hidden ring-2 ring-[#e2e8f0] hover:ring-[#2563eb] transition-all bg-[#eff4ff] flex items-center justify-center cursor-pointer active:scale-95 shrink-0"
               title="View Profile"
             >
               {!imgError ? (
@@ -124,5 +155,14 @@ export function Header() {
         </div>
       </div>
     </header>
+
+      {/* Slide-out AI Sidebar Chat Drawer */}
+      <ChatDrawer
+        isOpen={isAiDrawerOpen}
+        onClose={() => setIsAiDrawerOpen(false)}
+        courseTitle="EduPulse AI Assistant"
+        currentLessonTitle="General Learning & Systems Support"
+      />
+    </>
   );
 }
