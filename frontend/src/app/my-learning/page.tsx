@@ -6,6 +6,8 @@ import { LecturePlayer } from "@/components/learn/lecture-player";
 import { QuickCheck } from "@/components/learn/quick-check";
 import { GroundedPlayer } from "@/components/learn/grounded-player";
 import { AiGroundedPanel } from "@/components/learn/ai-grounded-panel";
+import { LessonDiscussionForum } from "@/components/discussion/lesson-discussion-forum";
+import { updateLessonProgress } from "@/lib/api/enrollments";
 import {
   GraduationCap,
   Download,
@@ -16,13 +18,36 @@ import {
   FileText,
   Copy,
   CheckCheck,
+  MessageSquare,
+  FolderDown,
 } from "lucide-react";
 
 export default function MyLearningPage() {
-  const [activeTab, setActiveTab] = React.useState<"overview" | "quiz" | "notes">("overview");
+  const [activeTab, setActiveTab] = React.useState<"overview" | "quiz" | "notes" | "discussion" | "resources">("discussion");
   const [isCopied, setIsCopied] = React.useState(false);
   // State toggling between Syllabus Layout and AI Grounded Workstation Layout
   const [isAiGroundedMode, setIsAiGroundedMode] = React.useState(false);
+
+  // Lesson completion state (connected with enrollments API)
+  const [completedLessons, setCompletedLessons] = React.useState<string[]>(["3.1", "3.2", "3.3"]);
+  const isLessonCompleted = completedLessons.includes("3.4");
+
+  const handleToggleComplete = async () => {
+    const nextCompleted = isLessonCompleted
+      ? completedLessons.filter((id) => id !== "3.4")
+      : [...completedLessons, "3.4"];
+    setCompletedLessons(nextCompleted);
+
+    // Call backend API if enrolled
+    try {
+      await updateLessonProgress("demo-enrollment-id", "lesson-3.4-rope", {
+        isCompleted: !isLessonCompleted,
+        lastPositionSeconds: 1680,
+      });
+    } catch {
+      // Graceful local state persistence for offline/development mode
+    }
+  };
 
   const pythonCode = `x_rot = torch.view_as_complex(x.reshape(*x.shape[:-1], -1, 2))\nreturn torch.view_as_real(x_rot).flatten(3)`;
 
@@ -62,7 +87,10 @@ export default function MyLearningPage() {
           <div className="my-learning__standard-layout_01 flex flex-col lg:flex-row gap-6 items-start transition-all duration-500 ease-out animate-in fade-in-0 slide-in-from-bottom-1">
             {/* Left Column: Course Syllabus Sidebar with Smooth Slide-in from Left */}
             <div className="transition-all duration-500 ease-out animate-in fade-in-0 slide-in-from-left-4 w-full lg:w-auto">
-              <SyllabusSidebar />
+              <SyllabusSidebar
+                completedLessonIds={completedLessons}
+                activeLessonId="3.4"
+              />
             </div>
 
             {/* Right Column: Main Learning Canvas */}
@@ -100,13 +128,27 @@ export default function MyLearningPage() {
                     <span>Ask AI Tutor</span>
                   </button>
 
-                  {/* Mark Complete */}
+                  {/* Mark Complete (Interactive State synced with Backend Progress API) */}
                   <button
                     type="button"
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-[#2563eb] px-3.5 py-1.5 text-xs font-bold text-white shadow-xs hover:bg-[#1d4ed8] transition-all"
+                    onClick={handleToggleComplete}
+                    className={`inline-flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-xs font-bold transition-all cursor-pointer active:scale-95 shadow-xs ${
+                      isLessonCompleted
+                        ? "border border-[#86f2e4] bg-[#f0fdfa] text-[#006a61] hover:bg-[#ccfbf1]"
+                        : "bg-[#2563eb] text-white hover:bg-[#1d4ed8]"
+                    }`}
                   >
-                    <span>Mark Complete</span>
-                    <Check className="h-3.5 w-3.5" />
+                    {isLessonCompleted ? (
+                      <>
+                        <CheckCheck className="h-3.5 w-3.5 text-[#006a61]" />
+                        <span>Completed</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Mark Complete</span>
+                        <Check className="h-3.5 w-3.5" />
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
@@ -115,52 +157,124 @@ export default function MyLearningPage() {
               <LecturePlayer />
 
               {/* 3. Bottom Tabs Header */}
-              <div className="my-learning__tabs-header_01 flex items-center gap-2 border-b border-[#e2e8f0] pb-2">
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("overview")}
-                  className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-semibold transition-all cursor-pointer ${
-                    activeTab === "overview"
-                      ? "bg-[#eff4ff] text-[#2563eb]"
-                      : "text-[#434655] hover:text-[#0b1c30] hover:bg-white"
-                  }`}
-                >
-                  <BookOpen className="h-3.5 w-3.5" />
-                  <span>Overview</span>
-                </button>
+              <div className="my-learning__tabs-header_01 flex flex-wrap items-center justify-between gap-3 border-b border-[#e2e8f0] pb-2">
+                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("overview")}
+                    className={`inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-semibold transition-all cursor-pointer ${
+                      activeTab === "overview"
+                        ? "bg-[#eff4ff] text-[#2563eb]"
+                        : "text-[#434655] hover:text-[#0b1c30] hover:bg-white"
+                    }`}
+                  >
+                    <BookOpen className="h-3.5 w-3.5" />
+                    <span>Overview</span>
+                  </button>
 
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("quiz")}
-                  className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-semibold transition-all cursor-pointer ${
-                    activeTab === "quiz"
-                      ? "bg-[#eff4ff] text-[#2563eb]"
-                      : "text-[#434655] hover:text-[#0b1c30] hover:bg-white"
-                  }`}
-                >
-                  <HelpCircle className="h-3.5 w-3.5" />
-                  <span>Quiz</span>
-                  <span className="rounded bg-[#86f2e4]/40 px-1.5 py-0.2 text-[10px] text-[#004f47]">
-                    3
-                  </span>
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("notes")}
+                    className={`inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-semibold transition-all cursor-pointer ${
+                      activeTab === "notes"
+                        ? "bg-[#eff4ff] text-[#2563eb]"
+                        : "text-[#434655] hover:text-[#0b1c30] hover:bg-white"
+                    }`}
+                  >
+                    <FileText className="h-3.5 w-3.5" />
+                    <span>Notes</span>
+                    <span className="rounded bg-[#86f2e4]/40 px-1.5 py-0.2 text-[10px] text-[#004f47]">
+                      3
+                    </span>
+                  </button>
 
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("notes")}
-                  className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-semibold transition-all cursor-pointer ${
-                    activeTab === "notes"
-                      ? "bg-[#eff4ff] text-[#2563eb]"
-                      : "text-[#434655] hover:text-[#0b1c30] hover:bg-white"
-                  }`}
-                >
-                  <FileText className="h-3.5 w-3.5" />
-                  <span>Notes</span>
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("discussion")}
+                    className={`inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-semibold transition-all cursor-pointer ${
+                      activeTab === "discussion"
+                        ? "bg-[#2563eb] text-white shadow-xs"
+                        : "text-[#434655] hover:text-[#0b1c30] hover:bg-white"
+                    }`}
+                  >
+                    <MessageSquare className="h-3.5 w-3.5" />
+                    <span>Discussion Forum</span>
+                    <span
+                      className={`rounded px-1.5 py-0.2 text-[10px] font-bold ${
+                        activeTab === "discussion" ? "bg-white/20 text-white" : "bg-blue-100 text-[#2563eb]"
+                      }`}
+                    >
+                      28
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("resources")}
+                    className={`inline-flex items-center gap-2 rounded-lg px-3.5 py-2 text-xs font-semibold transition-all cursor-pointer ${
+                      activeTab === "resources"
+                        ? "bg-[#eff4ff] text-[#2563eb]"
+                        : "text-[#434655] hover:text-[#0b1c30] hover:bg-white"
+                    }`}
+                  >
+                    <FolderDown className="h-3.5 w-3.5" />
+                    <span>Resources</span>
+                    <span className="rounded bg-slate-100 px-1.5 py-0.2 text-[10px] text-slate-700">
+                      6
+                    </span>
+                  </button>
+                </div>
+
+                {/* Right Presence Indicator */}
+                <div className="flex items-center gap-1.5 text-xs text-[#434655] font-medium pr-1">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>14 Online in this lesson</span>
+                </div>
               </div>
 
-              {/* 4. Tab Content: Two Columns (Notes & Key Takeaways + Quick Check) */}
-              <div className="my-learning__tab-body_01 grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
+              {/* 4. Tab Body */}
+              {activeTab === "discussion" ? (
+                <LessonDiscussionForum />
+              ) : activeTab === "resources" ? (
+                <div className="rounded-[15px] border border-[#e2e8f0] bg-white p-6 shadow-xs space-y-4">
+                  <h3 className="font-display text-base font-bold text-[#0b1c30]">
+                    Verified Lesson Resources &amp; Research Citations
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                    <a
+                      href="https://arxiv.org/abs/2104.09864"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between p-3.5 rounded-xl border border-[#e2e8f0] hover:border-[#2563eb] hover:bg-[#eff4ff]/40 transition-all text-xs"
+                    >
+                      <span className="font-semibold text-[#0b1c30]">RoFormer Paper (Su et al. 2021)</span>
+                      <span className="text-[#2563eb]">PDF &rarr;</span>
+                    </a>
+                    <a
+                      href="#"
+                      className="flex items-center justify-between p-3.5 rounded-xl border border-[#e2e8f0] hover:border-[#2563eb] hover:bg-[#eff4ff]/40 transition-all text-xs"
+                    >
+                      <span className="font-semibold text-[#0b1c30]">Module 3 Lecture Slides Deck</span>
+                      <span className="text-[#2563eb]">Keynote (Slide 12) &rarr;</span>
+                    </a>
+                    <a
+                      href="#"
+                      className="flex items-center justify-between p-3.5 rounded-xl border border-[#e2e8f0] hover:border-[#2563eb] hover:bg-[#eff4ff]/40 transition-all text-xs"
+                    >
+                      <span className="font-semibold text-[#0b1c30]">Custom Triton RoPE Kernel Implementation</span>
+                      <span className="text-[#2563eb]">GitHub &rarr;</span>
+                    </a>
+                    <a
+                      href="#"
+                      className="flex items-center justify-between p-3.5 rounded-xl border border-[#e2e8f0] hover:border-[#2563eb] hover:bg-[#eff4ff]/40 transition-all text-xs"
+                    >
+                      <span className="font-semibold text-[#0b1c30]">Interactive 2D Rotation Matrix Playground</span>
+                      <span className="text-[#2563eb]">Colab &rarr;</span>
+                    </a>
+                  </div>
+                </div>
+              ) : (
+                <div className="my-learning__tab-body_01 grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
                 {/* Left Column (2 Cols Span): Geometric Foundations & Code Block */}
                 <div className="lg:col-span-2 space-y-5 rounded-[15px] border border-[#e2e8f0] bg-white p-6 shadow-xs">
                   <div className="space-y-2">
@@ -244,6 +358,7 @@ export default function MyLearningPage() {
                   <QuickCheck />
                 </div>
               </div>
+              )}
             </main>
           </div>
         )}

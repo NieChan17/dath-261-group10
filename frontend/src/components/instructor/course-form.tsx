@@ -281,7 +281,6 @@ export function CourseForm(props: CourseFormProps) {
           </h1>
           <p className="course-form__notice_01 text-sm text-muted-foreground">
             Changes are not saved to a server. Leaving or refreshing discards them.
-            {mode === "edit" && " You are editing sample course metadata."}
           </p>
         </div>
 

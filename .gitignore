@@ -89,6 +89,5 @@ Thumbs.db
 *.log
 logs/
 docker-compose.override.yml
-
 *.exe
 cloudflared*
