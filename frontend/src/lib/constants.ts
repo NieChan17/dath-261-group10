@@ -16,6 +16,13 @@ export const ROUTES = {
   DISCUSSIONS: "/discussions",
   PROFILE: "/profile",
   ANALYTICS: "/analytics",
+  PORTAL: "/portal",
+  INSTRUCTOR: {
+    OVERVIEW: "/instructor",
+    COURSES: "/instructor/courses",
+    CREATE_COURSE: "/instructor/courses/create",
+    SUBMISSIONS: "/instructor/submissions",
+  },
   ADMIN: {
     OVERVIEW: "/admin",
     REPORTS: "/admin/reports",

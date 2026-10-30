@@ -1,10 +1,12 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import { HeroBanner } from "@/components/dashboard/hero-banner";
 import { VerificationBanner } from "@/components/dashboard/verification-banner";
 import { CourseCard, type CourseCardData } from "@/components/course/course-card";
-import { ChevronDown, GitFork } from "lucide-react";
+import { ChevronDown, GitFork, Loader2 } from "lucide-react";
+import { ROUTES } from "@/lib/constants";
 
 const INITIAL_COURSES: CourseCardData[] = [
   {
@@ -83,12 +85,45 @@ const CATEGORIES = [
 ];
 
 export default function LearnerDashboardPage() {
+  const router = useRouter();
   const [selectedCategory, setSelectedCategory] = React.useState("All");
+  const [isAuthChecking, setIsAuthChecking] = React.useState(true);
+
+  // Auto-route on app entry: If no role selected, redirect to /portal
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedRole = localStorage.getItem("edupulse_role");
+      if (!savedRole) {
+        router.replace(ROUTES.PORTAL);
+        return;
+      }
+      if (savedRole === "instructor") {
+        router.replace(ROUTES.INSTRUCTOR.OVERVIEW);
+        return;
+      }
+      if (savedRole === "admin") {
+        router.replace(ROUTES.ADMIN.OVERVIEW);
+        return;
+      }
+      setIsAuthChecking(false);
+    }
+  }, [router]);
 
   const filteredCourses = React.useMemo(() => {
     if (selectedCategory === "All") return INITIAL_COURSES;
     return INITIAL_COURSES.filter((c) => c.category === selectedCategory);
   }, [selectedCategory]);
+
+  if (isAuthChecking) {
+    return (
+      <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center bg-[#f8f9ff]">
+        <div className="flex items-center gap-2 text-xs text-[#737686]">
+          <Loader2 className="h-4 w-4 animate-spin text-[#2563eb]" />
+          <span>Navigating to EduPulse portal...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -108,70 +143,48 @@ export default function LearnerDashboardPage() {
 
         {/* 2. Filter & Sort Bar */}
         <div className="learner-dashboard__filter-bar_01 flex flex-wrap items-center justify-between gap-4 pt-2">
-          {/* Category Filter Pills */}
-          <div className="learner-dashboard__category-pills_01 flex flex-wrap items-center gap-2">
-            {CATEGORIES.map((cat) => {
-              const isActive = selectedCategory === cat;
-              return (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`rounded-full px-4 py-2 text-xs font-semibold transition-all ${
-                    isActive
-                      ? "bg-[#004ac6] text-white shadow-sm"
-                      : "bg-white text-[#434655] border border-[#e2e8f0] hover:border-[#cbdbf5] hover:text-[#0b1c30]"
-                  }`}
-                >
-                  {cat}
-                </button>
-              );
-            })}
+          {/* Categories Pill List */}
+          <div className="learner-dashboard__categories_01 flex flex-wrap items-center gap-2">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setSelectedCategory(cat)}
+                className={`learner-dashboard__category-btn_01 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                  selectedCategory === cat
+                    ? "bg-[#2563eb] text-white shadow-xs font-bold"
+                    : "bg-white text-[#434655] border border-[#e2e8f0] hover:border-[#2563eb] hover:text-[#0b1c30]"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
 
-          {/* Sort Dropdown */}
-          <div className="learner-dashboard__sort-wrapper_01">
+          {/* Sort By Dropdown Button */}
+          <div className="learner-dashboard__sort_01 flex items-center gap-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#737686]">
+              Sort By:
+            </span>
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-lg border border-[#e2e8f0] bg-white px-3.5 py-2 text-xs font-semibold text-[#0b1c30] shadow-2xs hover:bg-[#f8f9ff] transition-all"
+              className="learner-dashboard__sort-btn_01 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[#e2e8f0] bg-white text-xs font-semibold text-[#0b1c30] hover:bg-[#f8f9ff] transition-colors cursor-pointer"
             >
-              <span>Sort: Most Popular</span>
+              <span>Most Relevant</span>
               <ChevronDown className="h-3.5 w-3.5 text-[#737686]" />
             </button>
           </div>
         </div>
 
-        {/* 3. Section Title & Syllabus Tree Link */}
-        <div className="learner-dashboard__section-header_01 flex flex-wrap items-baseline justify-between gap-2 border-b border-[#e2e8f0]/60 pb-3">
-          <div className="flex items-baseline gap-3">
-            <h2 className="font-display text-xl font-bold text-[#0b1c30] tracking-tight">
-              Specialized Engineering Curricula
-            </h2>
-            <span className="text-xs text-[#737686]">
-              {filteredCourses.length} matching verified tracks
-            </span>
-          </div>
-
-          <button
-            type="button"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#004ac6] hover:text-[#1d4ed8] hover:underline transition-all"
-          >
-            <span>View Syllabus Tree</span>
-            <GitFork className="h-3.5 w-3.5" />
-          </button>
-        </div>
-
-        {/* 4. Course Cards Grid (3 Columns) */}
-        <div className="learner-dashboard__course-grid_01 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* 3. Course Card Grid */}
+        <div className="learner-dashboard__grid_01 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCourses.map((course) => (
             <CourseCard key={course.id} course={course} />
           ))}
         </div>
 
-        {/* 5. Bottom Ground Truth Verification Banner */}
-        <div className="pt-4">
-          <VerificationBanner />
-        </div>
+        {/* 4. Verified Academic Certification Banner */}
+        <VerificationBanner />
       </div>
     </div>
   );
