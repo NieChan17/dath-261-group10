@@ -65,6 +65,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: /api
     container_name: edupulse-frontend
     restart: always
     depends_on:
@@ -73,6 +75,7 @@ services:
       - .env
     environment:
       PORT: 3000
+      NEXT_PUBLIC_API_URL: /api
     networks:
       - edupulse-network
 
