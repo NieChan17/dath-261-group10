@@ -1,22 +1,31 @@
 @echo off
+cd /d "%~dp0"
 title EduPulse Web & Tunnel Launcher
 echo ========================================================
 echo        STARTING EDUPULSE STAGING ENVIRONMENT
 echo ========================================================
 echo.
 
-echo [1/3] Checking Docker containers...
+echo [1/3] Starting Docker containers...
 docker-compose up -d
+if %ERRORLEVEL% NEQ 0 (
+    echo.
+    echo [ERROR] Docker-compose failed to start.
+    echo Please make sure Docker Desktop is running!
+    pause
+    exit /b %ERRORLEVEL%
+)
 
 echo.
-echo [2/3] Containers are running!
+echo [2/3] Containers are running healthy!
 docker-compose ps
 
 echo.
-echo [3/3] Starting Public Tunnel (https://edupulse-group10.loca.lt)...
-echo NOTE: Keep this command prompt window open while using the web!
-echo Press Ctrl+C anytime if you want to stop the tunnel.
+echo ========================================================
+echo [3/3] Starting Cloudflare Tunnel...
+echo NOTE: Keep this window OPEN while using the website!
+echo ========================================================
 echo.
 
-start https://edupulse-group10.loca.lt
-npx localtunnel --port 80 --subdomain edupulse-group10
+.\cloudflared.exe tunnel --url http://127.0.0.1:80
+pause
