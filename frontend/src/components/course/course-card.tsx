@@ -172,13 +172,15 @@ export function CourseCard({ course }: CourseCardProps) {
       className="course-card__container_01 flex flex-col justify-between rounded-[15px] border border-[#e2e8f0] bg-white p-4 sm:p-5 shadow-sm hover:shadow-md hover:border-[#cbdbf5] transition-all"
     >
       <div className="space-y-3">
-        {/* Schematic Diagram Thumbnail */}
-        {renderThumbnail()}
+        {/* Schematic Diagram Thumbnail (Clicks to Course Detail) */}
+        <Link href={`/courses/${course.id}`} className="block cursor-pointer">
+          {renderThumbnail()}
+        </Link>
 
         {/* Title & Description */}
         <div className="space-y-1">
           <h3 className="course-card__title_01 font-display text-base font-bold text-[#0b1c30] line-clamp-1 hover:text-[#2563eb] transition-colors">
-            <Link href={ROUTES.LEARN(course.id)}>{course.title}</Link>
+            <Link href={`/courses/${course.id}`}>{course.title}</Link>
           </h3>
           <p className="course-card__desc_01 text-xs text-[#434655] line-clamp-1">
             {course.description}
@@ -207,20 +209,22 @@ export function CourseCard({ course }: CourseCardProps) {
           <Link href="/my-learning" className="w-full">
             <button
               type="button"
-              className="course-card__resume-btn_01 flex w-full items-center justify-center gap-2 rounded-lg bg-[#2563eb] py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#1d4ed8] transition-colors cursor-pointer"
+              className="course-card__resume-btn_01 flex w-full items-center justify-center gap-2 rounded-lg bg-[#2563eb] py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#1d4ed8] transition-colors cursor-pointer active:scale-98"
             >
               <span>Resume</span>
               <PlayCircle className="h-3.5 w-3.5" />
             </button>
           </Link>
         ) : (
-          <button
-            type="button"
-            className="course-card__enroll-btn_01 flex w-full items-center justify-center gap-1.5 rounded-lg bg-[#eff4ff] py-2.5 text-xs font-bold text-[#2563eb] hover:bg-[#dbeafe] transition-colors cursor-pointer"
-          >
-            <span>Enroll</span>
-            <ArrowRight className="h-3.5 w-3.5" />
-          </button>
+          <Link href={`/courses/${course.id}`} className="w-full">
+            <button
+              type="button"
+              className="course-card__enroll-btn_01 flex w-full items-center justify-center gap-1.5 rounded-lg bg-[#eff4ff] py-2.5 text-xs font-bold text-[#2563eb] hover:bg-[#dbeafe] transition-colors cursor-pointer active:scale-98"
+            >
+              <span>Enroll</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </button>
+          </Link>
         )}
       </div>
     </div>

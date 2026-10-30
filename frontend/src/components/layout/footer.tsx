@@ -1,8 +1,18 @@
+"use client";
+
 import * as React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ROUTES } from "@/lib/constants";
 
 export function Footer() {
+  const pathname = usePathname();
+
+  // Dedicated auth pages use their own specialized footer from mockup
+  if (pathname === "/register" || pathname === "/forgot") {
+    return null;
+  }
+
   return (
     <footer
       data-component="Footer"
