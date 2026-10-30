@@ -1,0 +1,2 @@
+# Admin Audit Logs is an App Router source directory, not runtime log output.
+!/src/app/admin/logs/
