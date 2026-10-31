@@ -18,6 +18,8 @@ jobs:
           host: ${{ secrets.STAGING_SERVER_HOST }}
           username: ${{ secrets.STAGING_SERVER_USER }}
           key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.STAGING_SSH_PASSPHRASE }}
+          password: ${{ secrets.STAGING_SERVER_PASSWORD }}
           script: |
             cd ~/dath-261-group10
             TARGET_BRANCH="${{ github.ref_name }}"
