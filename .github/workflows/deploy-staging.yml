@@ -2,7 +2,7 @@ name: Staging Cloud Deployment
 
 on:
   push:
-    branches: [ staging ]
+    branches: [ staging, main ]
   workflow_dispatch:
 
 jobs:
@@ -20,7 +20,12 @@ jobs:
           key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
           script: |
             cd ~/dath-261-group10
-            git pull origin staging
+            TARGET_BRANCH="${{ github.ref_name }}"
+            git fetch origin "$TARGET_BRANCH"
+            git checkout "$TARGET_BRANCH"
+            git pull origin "$TARGET_BRANCH"
             docker compose build
             docker compose up -d
+            docker system prune -f
+
             docker system prune -f
