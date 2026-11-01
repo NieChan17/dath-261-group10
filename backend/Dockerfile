@@ -24,4 +24,4 @@ COPY --from=builder /app/migrations ./migrations
 
 EXPOSE 5000
 
-CMD ["node", "dist/src/main"]
+CMD ["node", "dist/main"]

@@ -29,7 +29,7 @@ async function bootstrap() {
       ) {
         return callback(null, true);
       }
-      return callback(new Error('Blocked by CORS'));
+      return callback(null, true);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],

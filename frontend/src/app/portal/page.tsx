@@ -30,8 +30,8 @@ const PORTALS: PortalCardConfig[] = [
     role: "Learner & Student",
     title: "Learner Portal",
     description: "Explore computer science curricula, solve interactive code challenges, and collaborate with peers.",
-    href: ROUTES.HOME,
-    buttonText: "Enter Learner Portal",
+    href: `${ROUTES.LOGIN}?role=learner`,
+    buttonText: "Continue as Learner",
     icon: GraduationCap,
     accentColor: "border-[#2563eb] text-[#2563eb] hover:border-[#1d4ed8]",
     badgeBg: "bg-[#eff4ff] text-[#2563eb] border-[#bfdbfe]",
@@ -47,8 +47,8 @@ const PORTALS: PortalCardConfig[] = [
     role: "Faculty & Instructor",
     title: "Instructor Workspace",
     description: "Author course curricula, organize assignments, and evaluate student submissions.",
-    href: ROUTES.INSTRUCTOR.OVERVIEW,
-    buttonText: "Enter Instructor Workspace",
+    href: `${ROUTES.LOGIN}?role=instructor`,
+    buttonText: "Continue as Instructor",
     icon: Presentation,
     accentColor: "border-[#006a61] text-[#006a61] hover:border-[#004d44]",
     badgeBg: "bg-[#e6f7f5] text-[#006a61] border-[#99ded7]",
@@ -64,8 +64,8 @@ const PORTALS: PortalCardConfig[] = [
     role: "System Administrator",
     title: "System Admin Portal",
     description: "Platform operations center, user role provisioning, and system auditing.",
-    href: ROUTES.ADMIN.OVERVIEW,
-    buttonText: "Enter Admin Portal",
+    href: `${ROUTES.LOGIN}?role=admin`,
+    buttonText: "Continue as Admin",
     icon: ShieldCheck,
     accentColor: "border-[#0b1c30] text-[#0b1c30] hover:border-[#2563eb]",
     badgeBg: "bg-[#f1f5f9] text-[#0b1c30] border-[#cbd5e1]",
@@ -84,7 +84,6 @@ export default function PortalPage() {
       localStorage.setItem("edupulse_role", roleId);
     }
   };
-
   return (
     <div
       data-component="PortalPage"

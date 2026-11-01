@@ -1,10 +1,12 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import { HeroBanner } from "@/components/dashboard/hero-banner";
 import { VerificationBanner } from "@/components/dashboard/verification-banner";
 import { CourseCard, type CourseCardData } from "@/components/course/course-card";
-import { ChevronDown, GitFork } from "lucide-react";
+import { ChevronDown, GitFork, Loader2 } from "lucide-react";
+import { ROUTES } from "@/lib/constants";
 
 const INITIAL_COURSES: CourseCardData[] = [
   {
@@ -83,12 +85,45 @@ const CATEGORIES = [
 ];
 
 export default function LearnerDashboardPage() {
+  const router = useRouter();
   const [selectedCategory, setSelectedCategory] = React.useState("All");
+  const [isAuthChecking, setIsAuthChecking] = React.useState(true);
+
+  // Auto-route on app entry: If no role selected, redirect to /portal
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedRole = localStorage.getItem("edupulse_role");
+      if (!savedRole) {
+        router.replace(ROUTES.PORTAL);
+        return;
+      }
+      if (savedRole === "instructor") {
+        router.replace(ROUTES.INSTRUCTOR.OVERVIEW);
+        return;
+      }
+      if (savedRole === "admin") {
+        router.replace(ROUTES.ADMIN.OVERVIEW);
+        return;
+      }
+      setIsAuthChecking(false);
+    }
+  }, [router]);
 
   const filteredCourses = React.useMemo(() => {
     if (selectedCategory === "All") return INITIAL_COURSES;
     return INITIAL_COURSES.filter((c) => c.category === selectedCategory);
   }, [selectedCategory]);
+
+  if (isAuthChecking) {
+    return (
+      <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center bg-[#f8f9ff]">
+        <div className="flex items-center gap-2 text-xs text-[#737686]">
+          <Loader2 className="h-4 w-4 animate-spin text-[#2563eb]" />
+          <span>Navigating to EduPulse portal...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
