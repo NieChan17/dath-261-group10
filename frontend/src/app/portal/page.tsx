@@ -8,6 +8,7 @@ import {
   ShieldCheck,
   ArrowRight,
 } from "lucide-react";
+import { ROUTES } from "@/lib/constants";
 
 interface PortalCardConfig {
   id: string;
@@ -29,8 +30,8 @@ const PORTALS: PortalCardConfig[] = [
     role: "Learner & Student",
     title: "Learner Portal",
     description: "Explore computer science curricula, solve interactive code challenges, and collaborate with peers.",
-    href: "/login?role=learner",
-    buttonText: "Continue as Learner",
+    href: ROUTES.HOME,
+    buttonText: "Enter Learner Portal",
     icon: GraduationCap,
     accentColor: "border-[#2563eb] text-[#2563eb] hover:border-[#1d4ed8]",
     badgeBg: "bg-[#eff4ff] text-[#2563eb] border-[#bfdbfe]",
@@ -46,8 +47,8 @@ const PORTALS: PortalCardConfig[] = [
     role: "Faculty & Instructor",
     title: "Instructor Workspace",
     description: "Author course curricula, organize assignments, and evaluate student submissions.",
-    href: "/login?role=instructor",
-    buttonText: "Continue as Instructor",
+    href: ROUTES.INSTRUCTOR.OVERVIEW,
+    buttonText: "Enter Instructor Workspace",
     icon: Presentation,
     accentColor: "border-[#006a61] text-[#006a61] hover:border-[#004d44]",
     badgeBg: "bg-[#e6f7f5] text-[#006a61] border-[#99ded7]",
@@ -63,8 +64,8 @@ const PORTALS: PortalCardConfig[] = [
     role: "System Administrator",
     title: "System Admin Portal",
     description: "Platform operations center, user role provisioning, and system auditing.",
-    href: "/login?role=admin",
-    buttonText: "Continue as Admin",
+    href: ROUTES.ADMIN.OVERVIEW,
+    buttonText: "Enter Admin Portal",
     icon: ShieldCheck,
     accentColor: "border-[#0b1c30] text-[#0b1c30] hover:border-[#2563eb]",
     badgeBg: "bg-[#f1f5f9] text-[#0b1c30] border-[#cbd5e1]",
@@ -78,6 +79,12 @@ const PORTALS: PortalCardConfig[] = [
 ];
 
 export default function PortalPage() {
+  const handleSelectRole = (roleId: string) => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("edupulse_role", roleId);
+    }
+  };
+
   return (
     <div
       data-component="PortalPage"
@@ -146,6 +153,7 @@ export default function PortalPage() {
                 <div className="portal__card-bottom_01 pt-6 mt-6 border-t border-[#f1f5f9]">
                   <Link
                     href={portal.href}
+                    onClick={() => handleSelectRole(portal.id)}
                     className={`portal__action-btn_01 inline-flex w-full items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold text-white transition-all shadow-xs group-hover:shadow-md cursor-pointer ${
                       portal.id === "learner"
                         ? "bg-[#2563eb] hover:bg-[#1d4ed8]"
