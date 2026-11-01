@@ -89,7 +89,7 @@ export default function LearnerDashboardPage() {
   const [selectedCategory, setSelectedCategory] = React.useState("All");
   const [isAuthChecking, setIsAuthChecking] = React.useState(true);
 
-  // Auto-route on app entry: If no role selected, redirect to /portal
+  // Prototype onboarding: direct to portal selection on first visit
   React.useEffect(() => {
     if (typeof window !== "undefined") {
       const savedRole = localStorage.getItem("edupulse_role");
@@ -119,7 +119,7 @@ export default function LearnerDashboardPage() {
       <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center bg-[#f8f9ff]">
         <div className="flex items-center gap-2 text-xs text-[#737686]">
           <Loader2 className="h-4 w-4 animate-spin text-[#2563eb]" />
-          <span>Navigating to EduPulse portal...</span>
+          <span>Entering EduPulse workspace...</span>
         </div>
       </div>
     );
