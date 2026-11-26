@@ -1,0 +1,106 @@
+{"id": "C01", "course_id": "CO3001", "lang": "en", "question": "What is software engineering concerned with?", "gold": [{"contains": "concerned with all aspects of software production"}]}
+{"id": "C02", "course_id": "CO3001", "lang": "vi", "question": "Với sản phẩm đặt hàng riêng (customized product), ai chịu trách nhiệm đặc tả phần mềm?", "gold": [{"contains": "who is in charge for the specification"}]}
+{"id": "C03", "course_id": "CO3001", "lang": "en", "question": "What is the difference between software engineering and computer science?", "gold": [{"contains": "computer science focuses on theory and fundamentals"}]}
+{"id": "C04", "course_id": "CO3001", "lang": "en", "question": "What general issues affect most software?", "gold": [{"contains": "general issues that affect most software"}]}
+{"id": "C05", "course_id": "CO3001", "lang": "vi", "question": "Có những loại hệ thống phần mềm nào (software diversity)?", "gold": [{"contains": "software diversity"}]}
+{"id": "C06", "course_id": "CO3001", "lang": "en", "question": "Which fundamental principles apply to all types of software system?", "gold": [{"contains": "fundamental principles apply to all types of software system"}]}
+{"id": "C07", "course_id": "CO3001", "lang": "vi", "question": "Đạo đức nghề nghiệp của kỹ sư phần mềm là gì?", "gold": [{"contains": "software engineering ethics"}]}
+{"id": "C08", "course_id": "CO3001", "lang": "en", "question": "What is the first law of software engineering?", "gold": [{"contains": "first law of software engineering"}]}
+{"id": "C09", "course_id": "CO3001", "lang": "en", "question": "What is the main drawback of the waterfall model?", "gold": [{"contains": "difficulty of accommodating change"}]}
+{"id": "C10", "course_id": "CO3001", "lang": "vi", "question": "Mô hình thác nước phù hợp với loại dự án nào?", "gold": [{"contains": "waterfall model usages"}]}
+{"id": "C11", "course_id": "CO3001", "lang": "en", "question": "What is reuse-oriented software engineering based on?", "gold": [{"contains": "reuse-oriented software engineering"}]}
+{"id": "C12", "course_id": "CO3001", "lang": "en", "question": "What are the four basic process activities?", "gold": [{"contains": "four basic process activities"}]}
+{"id": "C13", "course_id": "CO3001", "lang": "vi", "question": "Debugging là gì?", "gold": [{"contains": "debugging is the activity of finding program faults"}]}
+{"id": "C14", "course_id": "CO3001", "lang": "en", "question": "What is a software prototype used for?", "gold": [{"contains": "a prototype is an initial version of a system"}]}
+{"id": "C15", "course_id": "CO3001", "lang": "vi", "question": "Cải tiến quy trình phần mềm nhằm mục đích gì?", "gold": [{"contains": "software process improvement enhancing the quality"}]}
+{"id": "C16", "course_id": "CO3001", "lang": "en", "question": "What characterises the highest level of the Capability Maturity Model?", "gold": [{"contains": "process improvement strategies defined and used"}]}
+{"id": "C17", "course_id": "CO3001", "lang": "en", "question": "What is a requirement?", "gold": [{"contains": "descriptions of the system services and constraints"}]}
+{"id": "C18", "course_id": "CO3001", "lang": "vi", "question": "Phân biệt mục tiêu (goal) và yêu cầu (requirement).", "gold": [{"contains": "goals vs. requirements"}]}
+{"id": "C19", "course_id": "CO3001", "lang": "en", "question": "Who are system stakeholders?", "gold": [{"contains": "any person or organization who is affected by the system"}]}
+{"id": "C20", "course_id": "CO3001", "lang": "en", "question": "What are the problems of requirements elicitation?", "gold": [{"contains": "problems of requirements elicitation"}]}
+{"id": "C21", "course_id": "CO3001", "lang": "vi", "question": "Khi phỏng vấn để thu thập yêu cầu cần lưu ý gì?", "gold": [{"contains": "discovery technique - interviewing"}]}
+{"id": "C22", "course_id": "CO3001", "lang": "en", "question": "Which notations can be used to write a system requirements specification?", "gold": [{"contains": "ways of writing a system requirements specification"}]}
+{"id": "C23", "course_id": "CO3001", "lang": "en", "question": "What does a structured specification contain?", "gold": [{"contains": "structured specifications"}]}
+{"id": "C24", "course_id": "CO3001", "lang": "vi", "question": "Các phương pháp Agile xử lý tài liệu yêu cầu như thế nào?", "gold": [{"contains": "agile methods and requirements"}]}
+{"id": "C25", "course_id": "CO3001", "lang": "en", "question": "What are organisational requirements?", "gold": [{"contains": "requirements which are a consequence of organisational policies"}]}
+{"id": "C26", "course_id": "CO3001", "lang": "en", "question": "Who are the stakeholders in the Mentcare system?", "gold": [{"contains": "stakeholders in the mentcare system"}]}
+{"id": "C27", "course_id": "CO3001", "lang": "vi", "question": "Quy trình thu thập và phân tích yêu cầu gồm những bước nào?", "gold": [{"contains": "the requirements elicitation and analysis process"}]}
+{"id": "C28", "course_id": "CO3001", "lang": "en", "question": "What is system modeling?", "gold": [{"contains": "the process of developing abstract models of a system"}]}
+{"id": "C29", "course_id": "CO3001", "lang": "vi", "question": "Bốn góc nhìn (perspective) khi mô hình hóa hệ thống là gì?", "gold": [{"contains": "system perspectives"}]}
+{"id": "C30", "course_id": "CO3001", "lang": "en", "question": "What does an activity diagram show?", "gold": [{"contains": "activity diagrams, which show the activities involved"}]}
+{"id": "C31", "course_id": "CO3001", "lang": "en", "question": "How do process models differ from context models?", "gold": [{"contains": "process models reveal how the system being developed is used"}]}
+{"id": "C32", "course_id": "CO3001", "lang": "vi", "question": "Mỗi use case đại diện cho điều gì?", "gold": [{"contains": "each use case represents a discrete task"}]}
+{"id": "C33", "course_id": "CO3001", "lang": "en", "question": "Give an example of a use-case description from the lecture.", "gold": [{"contains": "search club events"}]}
+{"id": "C34", "course_id": "CO3001", "lang": "en", "question": "What is the difference between static and dynamic structural models?", "gold": [{"contains": "structural models may be static models"}]}
+{"id": "C35", "course_id": "CO3001", "lang": "vi", "question": "Mô hình hành vi phản ứng với những loại kích thích (stimuli) nào?", "gold": [{"contains": "behavioral models are models of the dynamic behavior"}]}
+{"id": "C36", "course_id": "CO3001", "lang": "en", "question": "How does software architecture describe a system?", "gold": [{"contains": "organized as a set of communicating components"}]}
+{"id": "C37", "course_id": "CO3001", "lang": "vi", "question": "Lợi ích của việc thiết kế kiến trúc tường minh là gì?", "gold": [{"contains": "advantages of explicit architecture"}]}
+{"id": "C38", "course_id": "CO3001", "lang": "en", "question": "What are the goals of architecture decomposition?", "gold": [{"contains": "maximizing cohesion"}]}
+{"id": "C39", "course_id": "CO3001", "lang": "vi", "question": "Cohesion và coupling khác nhau thế nào?", "gold": [{"contains": "degree of communication among modules"}]}
+{"id": "C40", "course_id": "CO3001", "lang": "en", "question": "Which views make up the 4+1 view model?", "gold": [{"contains": "4 + 1 view model"}]}
+{"id": "C41", "course_id": "CO3001", "lang": "en", "question": "What does the Controller component do in MVC?", "gold": [{"contains": "the controller component"}]}
+{"id": "C42", "course_id": "CO3001", "lang": "vi", "question": "Mẫu kiến trúc Repository hoạt động như thế nào?", "gold": [{"contains": "all data in a system is managed in a central repository"}]}
+{"id": "C43", "course_id": "CO3001", "lang": "en", "question": "How can application architectures be used?", "gold": [{"contains": "as a starting point for architectural design"}]}
+{"id": "C44", "course_id": "CO3001", "lang": "en", "question": "What is a streaming platform?", "gold": [{"contains": "streaming platform is an on-demand online entertainment"}]}
+{"id": "C45", "course_id": "CO3001", "lang": "en", "question": "What are the steps to implement code?", "gold": [{"contains": "plan the structure and residual design"}]}
+{"id": "C46", "course_id": "CO3001", "lang": "vi", "question": "\"Think globally, program locally\" có nghĩa là gì?", "gold": [{"contains": "program locally"}]}
+{"id": "C47", "course_id": "CO3001", "lang": "en", "question": "Which naming convention is recommended for constants?", "gold": [{"contains": "constants with capitals"}]}
+{"id": "C48", "course_id": "CO3001", "lang": "vi", "question": "Thuộc tính (attribute) của lớp nên được khởi tạo như thế nào?", "gold": [{"contains": "attributes should be always be initialized"}]}
+{"id": "C49", "course_id": "CO3001", "lang": "en", "question": "What are the goals of code refactoring?", "gold": [{"contains": "change the internal structure without changing external behavior"}]}
+{"id": "C50", "course_id": "CO3001", "lang": "vi", "question": "Code smell là gì?", "gold": [{"contains": "code smells are any violation of fundamental design principles"}]}
+{"id": "C51", "course_id": "CO3001", "lang": "en", "question": "Which defect types does inspection find better than testing?", "gold": [{"contains": "inspection finds types of defects different from testing"}]}
+{"id": "C52", "course_id": "CO3001", "lang": "en", "question": "How is code review done at Google?", "gold": [{"contains": "mondrian"}]}
+{"id": "C53", "course_id": "CO3001", "lang": "vi", "question": "Khi nào nên bắt (catch) một exception?", "gold": [{"contains": "catch only those exceptions that you know how to handle"}]}
+{"id": "C54", "course_id": "CO3001", "lang": "en", "question": "Why do we need software inspection?", "gold": [{"contains": "why do we need inspection"}]}
+{"id": "C55", "course_id": "CO3001", "lang": "en", "question": "How does ISO define quality?", "gold": [{"contains": "totality of characteristics of an entity"}]}
+{"id": "C56", "course_id": "CO3001", "lang": "vi", "question": "System testing tập trung kiểm tra điều gì?", "gold": [{"contains": "focus on testing the interactions between components"}]}
+{"id": "C57", "course_id": "CO3001", "lang": "en", "question": "What does robustness mean in testing?", "gold": [{"contains": "robustness means how much sensitive a system is"}]}
+{"id": "C58", "course_id": "CO3001", "lang": "en", "question": "What should a test plan state?", "gold": [{"contains": "test plan should state"}]}
+{"id": "C59", "course_id": "CO3001", "lang": "vi", "question": "Theo Myers, mục tiêu của kiểm thử nên là gì?", "gold": [{"contains": "if your goal is to show absence of errors"}]}
+{"id": "C60", "course_id": "CO3001", "lang": "en", "question": "What are the values of the Agile Manifesto?", "gold": [{"contains": "the agile manifesto"}]}
+{"id": "C61", "course_id": "CO3001", "lang": "vi", "question": "Product Owner trong Scrum có trách nhiệm gì?", "gold": [{"contains": "define the features of the product"}]}
+{"id": "C62", "course_id": "CO3001", "lang": "en", "question": "How many people are typically in a Scrum team?", "gold": [{"contains": "typically 5-9 people"}]}
+{"id": "C63", "course_id": "CO3001", "lang": "en", "question": "What happens in a sprint review meeting?", "gold": [{"contains": "team presents what it accomplished during the sprint"}]}
+{"id": "C64", "course_id": "CO3001", "lang": "vi", "question": "Vì sao cần phát triển phần mềm nhanh (rapid software development)?", "gold": [{"contains": "rapid development and delivery is now often the most important requirement"}]}
+{"id": "C65", "course_id": "CO3001", "lang": "vi", "question": "Môn Công nghệ phần mềm có môn tiên quyết là gì?", "gold": [{"contains": "co1027"}]}
+{"id": "C66", "course_id": "CO3001", "lang": "vi", "question": "Chương mô hình hóa hệ thống gồm những nội dung nào?", "gold": [{"contains": "5.1 mô hình ngữ cảnh"}]}
+{"id": "C67", "course_id": "CO3001", "lang": "vi", "question": "Bài tập lớn học kỳ này là đề tài gì?", "gold": [{"contains": "smart e-mobility hub"}]}
+{"id": "C68", "course_id": "CO3001", "lang": "vi", "question": "Sinh viên có được dùng AI khi làm bài tập lớn không?", "gold": [{"contains": "không bị cấm"}]}
+{"id": "C69", "course_id": "CO3001", "lang": "en", "question": "What must be submitted in Submission #1 of the project?", "gold": [{"contains": "submission #1 detail"}]}
+{"id": "C70", "course_id": "CO3001", "lang": "vi", "question": "Use-case diagram trong rubric báo cáo được chấm như thế nào?", "gold": [{"contains": "use-case diagram; desc"}]}
+{"id": "C71", "course_id": "CO3001", "lang": "vi", "question": "Nhóm bài tập lớn được chia như thế nào?", "gold": [{"contains": "teams are formed randomly by the lecturer"}]}
+{"id": "C72", "course_id": "CO3001", "lang": "en", "question": "What does a lexical analyzer do in a compiler?", "gold": [{"contains": "a lexical analyzer"}]}
+{"id": "X01", "course_id": "CO2003", "lang": "en", "question": "Which hash functions are covered in the course?", "gold": [{"contains": "modulo division"}]}
+{"id": "X02", "course_id": "CO2003", "lang": "vi", "question": "Thuật toán tính số Fibonacci bằng đệ quy như thế nào?", "gold": [{"contains": "fibonacci number"}]}
+{"id": "X03", "course_id": "CO2003", "lang": "vi", "question": "Các phép toán cơ bản của stack là gì?", "gold": [{"contains": "basic operations of stacks"}]}
+{"id": "X04", "course_id": "CO2003", "lang": "en", "question": "How do you insert a node into a heap?", "gold": [{"contains": "empty leaf in the array"}]}
+{"id": "X05", "course_id": "CO2003", "lang": "vi", "question": "Vì sao bảng băm cần phương pháp giải quyết đụng độ?", "gold": [{"contains": "one-to-one mapping"}]}
+{"id": "X06", "course_id": "CO2003", "lang": "en", "question": "What are the zig and zag rotations in a splay tree?", "gold": [{"contains": "rotate right at parent"}]}
+{"id": "X07", "course_id": "CO2003", "lang": "vi", "question": "Thuật toán selection sort hoạt động thế nào?", "gold": [{"contains": "selection sort"}]}
+{"id": "X08", "course_id": "CO3005", "lang": "en", "question": "What are the roles of lexical analysis?", "gold": [{"contains": "identify lexemes"}]}
+{"id": "X09", "course_id": "CO3005", "lang": "vi", "question": "Python được tạo ra bởi ai và vào năm nào?", "gold": [{"contains": "guido van rossum"}]}
+{"id": "X10", "course_id": "CO3005", "lang": "en", "question": "What are the benefits of studying programming languages?", "gold": [{"contains": "increased capacity to express idea"}]}
+{"id": "X11", "course_id": "CO3005", "lang": "en", "question": "What does a syntax analyzer produce?", "gold": [{"contains": "parse tree or abstract syntax tree"}]}
+{"id": "X12", "course_id": "CO1023", "lang": "en", "question": "How does sequential logic differ from combinational logic?", "gold": [{"contains": "sequential logic circuits"}]}
+{"id": "X13", "course_id": "CO1023", "lang": "vi", "question": "Đại số Boole cho phép những giá trị nào?", "gold": [{"contains": "boolean algebra allows only two values"}]}
+{"id": "X14", "course_id": "CO1023", "lang": "en", "question": "What are the important flip-flop timing parameters?", "gold": [{"contains": "setup and hold times"}]}
+{"id": "X15", "course_id": "CO1023", "lang": "vi", "question": "Dịch trái N bit tương đương với phép toán gì?", "gold": [{"contains": "left shifting by n bits multiplies"}]}
+{"id": "O01", "course_id": "CO3001", "lang": "en", "question": "What is the capital of France?", "gold": []}
+{"id": "O02", "course_id": "CO3001", "lang": "en", "question": "How do I cook a bowl of pho?", "gold": []}
+{"id": "O03", "course_id": "CO3001", "lang": "en", "question": "Who won the 2022 FIFA World Cup?", "gold": []}
+{"id": "O04", "course_id": "CO3001", "lang": "en", "question": "Explain the TCP three-way handshake.", "gold": []}
+{"id": "O05", "course_id": "CO3001", "lang": "en", "question": "How does photosynthesis work?", "gold": []}
+{"id": "O06", "course_id": "CO3001", "lang": "en", "question": "Write a Python function that reverses a string.", "gold": []}
+{"id": "O07", "course_id": "CO3001", "lang": "vi", "question": "Đạo hàm của sin x là gì?", "gold": []}
+{"id": "O08", "course_id": "CO3001", "lang": "vi", "question": "Giá vàng hôm nay bao nhiêu?", "gold": []}
+{"id": "O09", "course_id": "CO3001", "lang": "vi", "question": "Ai là tác giả của Truyện Kiều?", "gold": []}
+{"id": "O10", "course_id": "CO3001", "lang": "vi", "question": "Thời tiết TP.HCM ngày mai thế nào?", "gold": []}
+{"id": "O11", "course_id": "CO3001", "lang": "vi", "question": "Bảng băm giải quyết đụng độ bằng open addressing như thế nào?", "gold": []}
+{"id": "O12", "course_id": "CO3001", "lang": "en", "question": "How does an AVL tree rebalance after a deletion?", "gold": []}
+{"id": "O13", "course_id": "CO3001", "lang": "vi", "question": "Định lý De Morgan dùng để làm gì?", "gold": []}
+{"id": "O14", "course_id": "CO3001", "lang": "vi", "question": "Tính tích phân bội hai lớp như thế nào?", "gold": []}
+{"id": "O15", "course_id": "CO3001", "lang": "en", "question": "What is the central limit theorem?", "gold": []}
+{"id": "O16", "course_id": "CO3001", "lang": "vi", "question": "Phản ứng oxi hóa khử là gì?", "gold": []}
+{"id": "O17", "course_id": "CO3001", "lang": "en", "question": "How do flip-flops store a bit?", "gold": []}
+{"id": "O18", "course_id": "CO3001", "lang": "vi", "question": "Cách đăng ký học phần trên myBK như thế nào?", "gold": []}
+{"id": "O19", "course_id": "CO3001", "lang": "en", "question": "Who teaches the Calculus 2 course?", "gold": []}

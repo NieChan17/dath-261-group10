@@ -1,0 +1,2320 @@
+{
+  "date": "2026-10-24",
+  "questions_file": "questions.jsonl",
+  "embed_model": "BAAI/bge-m3",
+  "course_id": "CO3001",
+  "top_k": 5,
+  "oos_threshold": 0.65,
+  "questions": {
+    "in_scope": 87,
+    "out_of_scope": 19
+  },
+  "retrieval": {
+    "hybrid": {
+      "n": 87,
+      "hit@1": 0.7816091954022989,
+      "hit@3": 0.9310344827586207,
+      "recall@5": 0.9655172413793104,
+      "mrr": 0.8555555555555556
+    },
+    "vector_only": {
+      "n": 87,
+      "hit@1": 0.8045977011494253,
+      "hit@3": 0.9310344827586207,
+      "recall@5": 0.9655172413793104,
+      "mrr": 0.8689655172413793
+    },
+    "hybrid_by_group": {
+      "en": {
+        "n": 50,
+        "hit@1": 0.76,
+        "hit@3": 0.94,
+        "recall@5": 0.98,
+        "mrr": 0.8446666666666667
+      },
+      "vi": {
+        "n": 37,
+        "hit@1": 0.8108108108108109,
+        "hit@3": 0.918918918918919,
+        "recall@5": 0.9459459459459459,
+        "mrr": 0.8702702702702704
+      },
+      "CO3001": {
+        "n": 72,
+        "hit@1": 0.8055555555555556,
+        "hit@3": 0.9444444444444444,
+        "recall@5": 0.9583333333333334,
+        "mrr": 0.8685185185185185
+      },
+      "other courses": {
+        "n": 15,
+        "hit@1": 0.6666666666666666,
+        "hit@3": 0.8666666666666667,
+        "recall@5": 1.0,
+        "mrr": 0.7933333333333333
+      }
+    }
+  },
+  "answers": {
+    "groundedness": 1.0,
+    "citation_precision_first": 0.7816091954022989,
+    "citation_precision_all": 0.44061302681992337
+  },
+  "gate_current": {
+    "threshold": 0.65,
+    "answer_rate_in_scope": 0.6091954022988506,
+    "refusal_rate_oos": 1.0,
+    "accuracy": 0.6792452830188679
+  },
+  "gate_sweep": [
+    {
+      "threshold": 0.3,
+      "answer_rate_in_scope": 1.0,
+      "refusal_rate_oos": 0.0,
+      "accuracy": 0.8207547169811321
+    },
+    {
+      "threshold": 0.35,
+      "answer_rate_in_scope": 1.0,
+      "refusal_rate_oos": 0.15789473684210525,
+      "accuracy": 0.8490566037735849
+    },
+    {
+      "threshold": 0.4,
+      "answer_rate_in_scope": 1.0,
+      "refusal_rate_oos": 0.42105263157894735,
+      "accuracy": 0.8962264150943396
+    },
+    {
+      "threshold": 0.45,
+      "answer_rate_in_scope": 1.0,
+      "refusal_rate_oos": 0.8421052631578947,
+      "accuracy": 0.9716981132075472
+    },
+    {
+      "threshold": 0.5,
+      "answer_rate_in_scope": 1.0,
+      "refusal_rate_oos": 0.8947368421052632,
+      "accuracy": 0.9811320754716981
+    },
+    {
+      "threshold": 0.55,
+      "answer_rate_in_scope": 0.9540229885057471,
+      "refusal_rate_oos": 1.0,
+      "accuracy": 0.9622641509433962
+    },
+    {
+      "threshold": 0.6,
+      "answer_rate_in_scope": 0.8505747126436781,
+      "refusal_rate_oos": 1.0,
+      "accuracy": 0.8773584905660378
+    },
+    {
+      "threshold": 0.65,
+      "answer_rate_in_scope": 0.6091954022988506,
+      "refusal_rate_oos": 1.0,
+      "accuracy": 0.6792452830188679
+    },
+    {
+      "threshold": 0.7,
+      "answer_rate_in_scope": 0.3103448275862069,
+      "refusal_rate_oos": 1.0,
+      "accuracy": 0.4339622641509434
+    },
+    {
+      "threshold": 0.75,
+      "answer_rate_in_scope": 0.08045977011494253,
+      "refusal_rate_oos": 1.0,
+      "accuracy": 0.24528301886792453
+    },
+    {
+      "threshold": 0.8,
+      "answer_rate_in_scope": 0.011494252873563218,
+      "refusal_rate_oos": 1.0,
+      "accuracy": 0.18867924528301888
+    }
+  ],
+  "latency_ms_median": 651.7,
+  "rows": [
+    {
+      "id": "C01",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What is software engineering concerned with?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7884,
+      "latency_ms": 605.6,
+      "hybrid_top3": [
+        "Slide 12",
+        "Slide 6",
+        "Slide 4"
+      ],
+      "rank_hybrid": 2,
+      "rank_vector": 1,
+      "citations": [
+        false,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C02",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Với sản phẩm đặt hàng riêng (customized product), ai chịu trách nhiệm đặc tả phần mềm?",
+      "in_scope_gold": true,
+      "top_cosine": 0.652,
+      "latency_ms": 614.1,
+      "hybrid_top3": [
+        "Slide 7",
+        "Slide 20",
+        "Slide 3"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C03",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What is the difference between software engineering and computer science?",
+      "in_scope_gold": true,
+      "top_cosine": 0.793,
+      "latency_ms": 995.4,
+      "hybrid_top3": [
+        "Slide 12",
+        "Slide 6",
+        "Slide 4"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C04",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What general issues affect most software?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7185,
+      "latency_ms": 375.5,
+      "hybrid_top3": [
+        "Slide 16",
+        "Slide 26",
+        "Slide 4"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C05",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Có những loại hệ thống phần mềm nào (software diversity)?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7016,
+      "latency_ms": 463.8,
+      "hybrid_top3": [
+        "Slide 17",
+        "Slide 4",
+        "Slide 16"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C06",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "Which fundamental principles apply to all types of software system?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7403,
+      "latency_ms": 848.0,
+      "hybrid_top3": [
+        "Slide 18",
+        "Slide 4",
+        "Slide 26"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C07",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Đạo đức nghề nghiệp của kỹ sư phần mềm là gì?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6528,
+      "latency_ms": 652.8,
+      "hybrid_top3": [
+        "Slide 19",
+        "Slide 4",
+        "Slide 14"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C08",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What is the first law of software engineering?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6615,
+      "latency_ms": 677.2,
+      "hybrid_top3": [
+        "Slide 14",
+        "Slide 4",
+        "Slide 6"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C09",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What is the main drawback of the waterfall model?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6941,
+      "latency_ms": 714.0,
+      "hybrid_top3": [
+        "Slide 8",
+        "Slide 6",
+        "Slide 5"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C10",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Mô hình thác nước phù hợp với loại dự án nào?",
+      "in_scope_gold": true,
+      "top_cosine": 0.5342,
+      "latency_ms": 505.6,
+      "hybrid_top3": [
+        "Slide 8",
+        "Slide 5",
+        "Slide 6"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C11",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What is reuse-oriented software engineering based on?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7079,
+      "latency_ms": 809.3,
+      "hybrid_top3": [
+        "Slide 16",
+        "Slide 18",
+        "Slide 23"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C12",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What are the four basic process activities?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6347,
+      "latency_ms": 665.2,
+      "hybrid_top3": [
+        "Slide 22",
+        "Slide 26",
+        "Slide 44"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C13",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Debugging là gì?",
+      "in_scope_gold": true,
+      "top_cosine": 0.5712,
+      "latency_ms": 390.7,
+      "hybrid_top3": [
+        "Slide 27",
+        "Slide 19",
+        "Slide 38"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C14",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What is a software prototype used for?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7934,
+      "latency_ms": 878.4,
+      "hybrid_top3": [
+        "Slide 34",
+        "Slide 4",
+        "Slide 19"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C15",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Cải tiến quy trình phần mềm nhằm mục đích gì?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6862,
+      "latency_ms": 880.8,
+      "hybrid_top3": [
+        "Slide 39",
+        "Slide 4",
+        "Slide 10"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C16",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What characterises the highest level of the Capability Maturity Model?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6223,
+      "latency_ms": 482.0,
+      "hybrid_top3": [
+        "Slide 41",
+        "Slide 42",
+        "Slide 10"
+      ],
+      "rank_hybrid": 2,
+      "rank_vector": 2,
+      "citations": [
+        false,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C17",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What is a requirement?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6652,
+      "latency_ms": 650.6,
+      "hybrid_top3": [
+        "Slide 6",
+        "Slide 9",
+        "Slide 20"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C18",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Phân biệt mục tiêu (goal) và yêu cầu (requirement).",
+      "in_scope_gold": true,
+      "top_cosine": 0.7486,
+      "latency_ms": 577.3,
+      "hybrid_top3": [
+        "Slide 10",
+        "Slide 21",
+        "Slide 22"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        true
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C19",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "Who are system stakeholders?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7168,
+      "latency_ms": 609.4,
+      "hybrid_top3": [
+        "Slide 13",
+        "Slide 23",
+        "Slide 24"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C20",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What are the problems of requirements elicitation?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6877,
+      "latency_ms": 541.6,
+      "hybrid_top3": [
+        "Slide 19",
+        "Slide 31",
+        "Slide 30"
+      ],
+      "rank_hybrid": 2,
+      "rank_vector": 2,
+      "citations": [
+        false,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C21",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Khi phỏng vấn để thu thập yêu cầu cần lưu ý gì?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6371,
+      "latency_ms": 788.5,
+      "hybrid_top3": [
+        "Slide 23",
+        "Slide 34",
+        "Slide 19"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C22",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "Which notations can be used to write a system requirements specification?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6883,
+      "latency_ms": 551.7,
+      "hybrid_top3": [
+        "Slide 27",
+        "Slide 45",
+        "Slide 30"
+      ],
+      "rank_hybrid": 3,
+      "rank_vector": 3,
+      "citations": [
+        false,
+        false,
+        true
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C23",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What does a structured specification contain?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6354,
+      "latency_ms": 643.5,
+      "hybrid_top3": [
+        "Slide 31",
+        "Slide 49",
+        "Slide 20"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C24",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Các phương pháp Agile xử lý tài liệu yêu cầu như thế nào?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6599,
+      "latency_ms": 392.1,
+      "hybrid_top3": [
+        "Slide 39",
+        "Slide 59",
+        "Slide 4"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C25",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What are organisational requirements?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6432,
+      "latency_ms": 620.7,
+      "hybrid_top3": [
+        "Slide 18",
+        "Slide 13",
+        "Slide 53"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C26",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "Who are the stakeholders in the Mentcare system?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6766,
+      "latency_ms": 673.1,
+      "hybrid_top3": [
+        "Slide 24",
+        "Slide 12",
+        "Slide 11"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C27",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Quy trình thu thập và phân tích yêu cầu gồm những bước nào?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6362,
+      "latency_ms": 618.3,
+      "hybrid_top3": [
+        "Slide 54",
+        "Slide 74",
+        "Slide 19"
+      ],
+      "rank_hybrid": 5,
+      "rank_vector": 5,
+      "citations": [
+        false,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C28",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What is system modeling?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6596,
+      "latency_ms": 719.7,
+      "hybrid_top3": [
+        "Slide 35",
+        "Slide 37",
+        "Slide 3"
+      ],
+      "rank_hybrid": 3,
+      "rank_vector": 1,
+      "citations": [
+        false,
+        false,
+        true
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C29",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Bốn góc nhìn (perspective) khi mô hình hóa hệ thống là gì?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6477,
+      "latency_ms": 493.7,
+      "hybrid_top3": [
+        "Slide 5",
+        "Slide 5",
+        "Slide 15"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C30",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What does an activity diagram show?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6591,
+      "latency_ms": 729.5,
+      "hybrid_top3": [
+        "Slide 7",
+        "Slide 7",
+        "Slide 20"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C31",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "How do process models differ from context models?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6571,
+      "latency_ms": 614.1,
+      "hybrid_top3": [
+        "Slide 11",
+        "Slide 12",
+        "Slide 44"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C32",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Mỗi use case đại diện cho điều gì?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6544,
+      "latency_ms": 693.0,
+      "hybrid_top3": [
+        "Slide 42",
+        "Slide 16",
+        "Slide 56"
+      ],
+      "rank_hybrid": 2,
+      "rank_vector": 2,
+      "citations": [
+        false,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C33",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "Give an example of a use-case description from the lecture.",
+      "in_scope_gold": true,
+      "top_cosine": 0.7268,
+      "latency_ms": 1029.7,
+      "hybrid_top3": [
+        "Slide 56",
+        "Slide 32",
+        "Slide 31"
+      ],
+      "rank_hybrid": null,
+      "rank_vector": null,
+      "citations": [
+        false,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C34",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What is the difference between static and dynamic structural models?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6189,
+      "latency_ms": 667.0,
+      "hybrid_top3": [
+        "Slide 27",
+        "Slide 28",
+        "Slide 44"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C35",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Mô hình hành vi phản ứng với những loại kích thích (stimuli) nào?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6242,
+      "latency_ms": 459.6,
+      "hybrid_top3": [
+        "Slide 35",
+        "Slide 37",
+        "Slide 45"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C36",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "How does software architecture describe a system?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7527,
+      "latency_ms": 843.2,
+      "hybrid_top3": [
+        "Slide 50",
+        "Slide 51",
+        "Slide 3"
+      ],
+      "rank_hybrid": 3,
+      "rank_vector": 3,
+      "citations": [
+        false,
+        false,
+        true
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C37",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Lợi ích của việc thiết kế kiến trúc tường minh là gì?",
+      "in_scope_gold": true,
+      "top_cosine": 0.5526,
+      "latency_ms": 627.0,
+      "hybrid_top3": [
+        "Slide 7",
+        "Slide 7",
+        "Slide 37"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C38",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What are the goals of architecture decomposition?",
+      "in_scope_gold": true,
+      "top_cosine": 0.5849,
+      "latency_ms": 696.6,
+      "hybrid_top3": [
+        "Slide 10",
+        "Slide 10",
+        "Slide 15"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C39",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Cohesion và coupling khác nhau thế nào?",
+      "in_scope_gold": true,
+      "top_cosine": 0.638,
+      "latency_ms": 677.8,
+      "hybrid_top3": [
+        "Slide 10",
+        "Slide 10",
+        "Slide 33"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C40",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "Which views make up the 4+1 view model?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6318,
+      "latency_ms": 486.5,
+      "hybrid_top3": [
+        "Slide 18",
+        "Slide 18",
+        "Slide 17"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        true
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C41",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What does the Controller component do in MVC?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6937,
+      "latency_ms": 784.4,
+      "hybrid_top3": [
+        "Slide 21",
+        "Slide 21",
+        "Slide 22"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C42",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Mẫu kiến trúc Repository hoạt động như thế nào?",
+      "in_scope_gold": true,
+      "top_cosine": 0.5877,
+      "latency_ms": 500.9,
+      "hybrid_top3": [
+        "Slide 26",
+        "Slide 27",
+        "Slide 26"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C43",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "How can application architectures be used?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7363,
+      "latency_ms": 448.6,
+      "hybrid_top3": [
+        "Slide 38",
+        "Slide 39",
+        "Slide 39"
+      ],
+      "rank_hybrid": 3,
+      "rank_vector": 3,
+      "citations": [
+        false,
+        false,
+        true
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C44",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What is a streaming platform?",
+      "in_scope_gold": true,
+      "top_cosine": 0.8215,
+      "latency_ms": 659.7,
+      "hybrid_top3": [
+        "Slide 33",
+        "Slide 34",
+        "Slide 4"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C45",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What are the steps to implement code?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6996,
+      "latency_ms": 730.7,
+      "hybrid_top3": [
+        "Slide 4",
+        "Slide 6",
+        "Slide 25"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C46",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "\"Think globally, program locally\" có nghĩa là gì?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6083,
+      "latency_ms": 531.2,
+      "hybrid_top3": [
+        "Slide 8",
+        "Slide 6",
+        "Slide 4"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C47",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "Which naming convention is recommended for constants?",
+      "in_scope_gold": true,
+      "top_cosine": 0.5832,
+      "latency_ms": 692.4,
+      "hybrid_top3": [
+        "Slide 8",
+        "Slide 10",
+        "Slide 12"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C48",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Thuộc tính (attribute) của lớp nên được khởi tạo như thế nào?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6182,
+      "latency_ms": 494.1,
+      "hybrid_top3": [
+        "Slide 13",
+        "Slide 15",
+        "Slide 8"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C49",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What are the goals of code refactoring?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6505,
+      "latency_ms": 603.9,
+      "hybrid_top3": [
+        "Slide 18",
+        "Slide 22",
+        "Slide 25"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C50",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Code smell là gì?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6725,
+      "latency_ms": 766.7,
+      "hybrid_top3": [
+        "Slide 15",
+        "Slide 17",
+        "Slide 18"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C51",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "Which defect types does inspection find better than testing?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6985,
+      "latency_ms": 529.8,
+      "hybrid_top3": [
+        "Slide 40",
+        "Slide 24",
+        "Slide 23"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C52",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "How is code review done at Google?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7424,
+      "latency_ms": 652.8,
+      "hybrid_top3": [
+        "Slide 26",
+        "Slide 43",
+        "Slide 38"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C53",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Khi nào nên bắt (catch) một exception?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7014,
+      "latency_ms": 874.5,
+      "hybrid_top3": [
+        "Slide 9",
+        "Slide 7",
+        "Slide 24"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C54",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "Why do we need software inspection?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7744,
+      "latency_ms": 490.4,
+      "hybrid_top3": [
+        "Slide 23",
+        "Slide 39",
+        "Slide 4"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C55",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "How does ISO define quality?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7374,
+      "latency_ms": 619.5,
+      "hybrid_top3": [
+        "Slide 5",
+        "Slide 4",
+        "Slide 8"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C56",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "System testing tập trung kiểm tra điều gì?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7407,
+      "latency_ms": 694.4,
+      "hybrid_top3": [
+        "Slide 29",
+        "Slide 20",
+        "Slide 34"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C57",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What does robustness mean in testing?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7236,
+      "latency_ms": 453.1,
+      "hybrid_top3": [
+        "Slide 34",
+        "Slide 33",
+        "Slide 37"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C58",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What should a test plan state?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7051,
+      "latency_ms": 785.0,
+      "hybrid_top3": [
+        "Slide 55",
+        "Slide 59",
+        "Slide 63"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C59",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Theo Myers, mục tiêu của kiểm thử nên là gì?",
+      "in_scope_gold": true,
+      "top_cosine": 0.641,
+      "latency_ms": 631.6,
+      "hybrid_top3": [
+        "Slide 16",
+        "Slide 13",
+        "Slide 37"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C60",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What are the values of the Agile Manifesto?",
+      "in_scope_gold": true,
+      "top_cosine": 0.5252,
+      "latency_ms": 830.5,
+      "hybrid_top3": [
+        "Slide 7",
+        "Slide 4",
+        "Slide 7"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C61",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Product Owner trong Scrum có trách nhiệm gì?",
+      "in_scope_gold": true,
+      "top_cosine": 0.5966,
+      "latency_ms": 751.4,
+      "hybrid_top3": [
+        "Slide 19",
+        "Slide 20",
+        "Slide 17"
+      ],
+      "rank_hybrid": 2,
+      "rank_vector": 2,
+      "citations": [
+        false,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C62",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "How many people are typically in a Scrum team?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6495,
+      "latency_ms": 545.7,
+      "hybrid_top3": [
+        "Slide 22",
+        "Slide 27",
+        "Slide 25"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C63",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What happens in a sprint review meeting?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7019,
+      "latency_ms": 635.1,
+      "hybrid_top3": [
+        "Slide 27",
+        "Slide 26",
+        "Slide 24"
+      ],
+      "rank_hybrid": 2,
+      "rank_vector": 2,
+      "citations": [
+        false,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C64",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Vì sao cần phát triển phần mềm nhanh (rapid software development)?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7394,
+      "latency_ms": 629.1,
+      "hybrid_top3": [
+        "Slide 3",
+        "Slide 4",
+        "Slide 18"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C65",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Môn Công nghệ phần mềm có môn tiên quyết là gì?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6538,
+      "latency_ms": 642.8,
+      "hybrid_top3": [
+        "Slide 2",
+        "Slide 4",
+        "Slide 14"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C66",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Chương mô hình hóa hệ thống gồm những nội dung nào?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6471,
+      "latency_ms": 786.5,
+      "hybrid_top3": [
+        "Slide 7",
+        "Slide 34",
+        "Slide 29"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C67",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Bài tập lớn học kỳ này là đề tài gì?",
+      "in_scope_gold": true,
+      "top_cosine": 0.5695,
+      "latency_ms": 710.4,
+      "hybrid_top3": [
+        "Slide 5",
+        "Slide 8",
+        "Slide 7"
+      ],
+      "rank_hybrid": null,
+      "rank_vector": null,
+      "citations": [
+        false,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C68",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Sinh viên có được dùng AI khi làm bài tập lớn không?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7096,
+      "latency_ms": 669.4,
+      "hybrid_top3": [
+        "Slide 7",
+        "Slide 5",
+        "Slide 3"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C69",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What must be submitted in Submission #1 of the project?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6786,
+      "latency_ms": 722.0,
+      "hybrid_top3": [
+        "Slide 6",
+        "Slide 5",
+        "Slide 5"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C70",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Use-case diagram trong rubric báo cáo được chấm như thế nào?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6367,
+      "latency_ms": 540.9,
+      "hybrid_top3": [
+        "Slide 8",
+        "Slide 42",
+        "Slide 34"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C71",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Nhóm bài tập lớn được chia như thế nào?",
+      "in_scope_gold": true,
+      "top_cosine": 0.5767,
+      "latency_ms": 590.7,
+      "hybrid_top3": [
+        "Slide 5",
+        "Slide 28",
+        "Slide 22"
+      ],
+      "rank_hybrid": null,
+      "rank_vector": null,
+      "citations": [
+        false,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "C72",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What does a lexical analyzer do in a compiler?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7182,
+      "latency_ms": 578.5,
+      "hybrid_top3": [
+        "Slide 48",
+        "Slide 49",
+        "Slide 46"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "X01",
+      "course_id": "CO2003",
+      "lang": "en",
+      "question": "Which hash functions are covered in the course?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6806,
+      "latency_ms": 503.3,
+      "hybrid_top3": [
+        "Slide 18",
+        "Slide 47",
+        "Slide 2"
+      ],
+      "rank_hybrid": 5,
+      "rank_vector": 5,
+      "citations": [
+        false,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "X02",
+      "course_id": "CO2003",
+      "lang": "vi",
+      "question": "Thuật toán tính số Fibonacci bằng đệ quy như thế nào?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6121,
+      "latency_ms": 563.6,
+      "hybrid_top3": [
+        "Slide 23",
+        "Slide 24",
+        "Slide 21"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        true
+      ],
+      "grounded": true
+    },
+    {
+      "id": "X03",
+      "course_id": "CO2003",
+      "lang": "vi",
+      "question": "Các phép toán cơ bản của stack là gì?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7609,
+      "latency_ms": 731.5,
+      "hybrid_top3": [
+        "Slide 5",
+        "Slide 52",
+        "Slide 17"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "X04",
+      "course_id": "CO2003",
+      "lang": "en",
+      "question": "How do you insert a node into a heap?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7102,
+      "latency_ms": 722.2,
+      "hybrid_top3": [
+        "Slide 26",
+        "Slide 23",
+        "Slide 28"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "X05",
+      "course_id": "CO2003",
+      "lang": "vi",
+      "question": "Vì sao bảng băm cần phương pháp giải quyết đụng độ?",
+      "in_scope_gold": true,
+      "top_cosine": 0.5433,
+      "latency_ms": 866.3,
+      "hybrid_top3": [
+        "Slide 32",
+        "Slide 33",
+        "Slide 41"
+      ],
+      "rank_hybrid": 2,
+      "rank_vector": 2,
+      "citations": [
+        false,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "X06",
+      "course_id": "CO2003",
+      "lang": "en",
+      "question": "What are the zig and zag rotations in a splay tree?",
+      "in_scope_gold": true,
+      "top_cosine": 0.7439,
+      "latency_ms": 567.8,
+      "hybrid_top3": [
+        "Slide 1",
+        "Slide 8",
+        "Slide 13"
+      ],
+      "rank_hybrid": 5,
+      "rank_vector": 5,
+      "citations": [
+        false,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "X07",
+      "course_id": "CO2003",
+      "lang": "vi",
+      "question": "Thuật toán selection sort hoạt động thế nào?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6995,
+      "latency_ms": 642.1,
+      "hybrid_top3": [
+        "Slide 28",
+        "Slide 37",
+        "Slide 9"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "X08",
+      "course_id": "CO3005",
+      "lang": "en",
+      "question": "What are the roles of lexical analysis?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6788,
+      "latency_ms": 966.2,
+      "hybrid_top3": [
+        "Slide 5",
+        "Slide 25",
+        "Slide 7"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "X09",
+      "course_id": "CO3005",
+      "lang": "vi",
+      "question": "Python được tạo ra bởi ai và vào năm nào?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6249,
+      "latency_ms": 798.2,
+      "hybrid_top3": [
+        "Slide 2",
+        "Slide 1",
+        "Slide 26"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "X10",
+      "course_id": "CO3005",
+      "lang": "en",
+      "question": "What are the benefits of studying programming languages?",
+      "in_scope_gold": true,
+      "top_cosine": 0.697,
+      "latency_ms": 976.6,
+      "hybrid_top3": [
+        "Slide 7",
+        "Slide 19",
+        "Slide 6"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "X11",
+      "course_id": "CO3005",
+      "lang": "en",
+      "question": "What does a syntax analyzer produce?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6349,
+      "latency_ms": 681.1,
+      "hybrid_top3": [
+        "Slide 25",
+        "Slide 3",
+        "Slide 1"
+      ],
+      "rank_hybrid": 2,
+      "rank_vector": 2,
+      "citations": [
+        false,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "X12",
+      "course_id": "CO1023",
+      "lang": "en",
+      "question": "How does sequential logic differ from combinational logic?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6058,
+      "latency_ms": 606.1,
+      "hybrid_top3": [
+        "Slide 2",
+        "Slide 2",
+        "Slide 5"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "X13",
+      "course_id": "CO1023",
+      "lang": "vi",
+      "question": "Đại số Boole cho phép những giá trị nào?",
+      "in_scope_gold": true,
+      "top_cosine": 0.5933,
+      "latency_ms": 707.6,
+      "hybrid_top3": [
+        "Bài tập Mạch TỔ HỢP > ĐẠI SỐ BOOLE VÀ CÁC CỔNG LUẬN LÝ > Hình 2",
+        "Slide 2",
+        "Slide 6"
+      ],
+      "rank_hybrid": 2,
+      "rank_vector": 2,
+      "citations": [
+        false,
+        true,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "X14",
+      "course_id": "CO1023",
+      "lang": "en",
+      "question": "What are the important flip-flop timing parameters?",
+      "in_scope_gold": true,
+      "top_cosine": 0.6784,
+      "latency_ms": 620.0,
+      "hybrid_top3": [
+        "Slide 41",
+        "Slide 10",
+        "Slide 28"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "X15",
+      "course_id": "CO1023",
+      "lang": "vi",
+      "question": "Dịch trái N bit tương đương với phép toán gì?",
+      "in_scope_gold": true,
+      "top_cosine": 0.5478,
+      "latency_ms": 888.1,
+      "hybrid_top3": [
+        "Slide 18",
+        "Slide 32",
+        "Slide 35"
+      ],
+      "rank_hybrid": 1,
+      "rank_vector": 1,
+      "citations": [
+        true,
+        false,
+        false
+      ],
+      "grounded": true
+    },
+    {
+      "id": "O01",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What is the capital of France?",
+      "in_scope_gold": false,
+      "top_cosine": 0.3152,
+      "latency_ms": 394.7,
+      "hybrid_top3": [
+        "Slide 10",
+        "Slide 13",
+        "Slide 3"
+      ]
+    },
+    {
+      "id": "O02",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "How do I cook a bowl of pho?",
+      "in_scope_gold": false,
+      "top_cosine": 0.4032,
+      "latency_ms": 609.0,
+      "hybrid_top3": [
+        "Slide 44",
+        "Slide 42",
+        "Slide 35"
+      ]
+    },
+    {
+      "id": "O03",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "Who won the 2022 FIFA World Cup?",
+      "in_scope_gold": false,
+      "top_cosine": 0.3759,
+      "latency_ms": 586.4,
+      "hybrid_top3": [
+        "Slide 14",
+        "Slide 35",
+        "Slide 35"
+      ]
+    },
+    {
+      "id": "O04",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "Explain the TCP three-way handshake.",
+      "in_scope_gold": false,
+      "top_cosine": 0.4417,
+      "latency_ms": 835.5,
+      "hybrid_top3": [
+        "Slide 41",
+        "Slide 38",
+        "Slide 42"
+      ]
+    },
+    {
+      "id": "O05",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "How does photosynthesis work?",
+      "in_scope_gold": false,
+      "top_cosine": 0.4481,
+      "latency_ms": 523.1,
+      "hybrid_top3": [
+        "Slide 30",
+        "Slide 31",
+        "Slide 4"
+      ]
+    },
+    {
+      "id": "O06",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "Write a Python function that reverses a string.",
+      "in_scope_gold": false,
+      "top_cosine": 0.5321,
+      "latency_ms": 992.4,
+      "hybrid_top3": [
+        "Slide 27",
+        "Slide 24",
+        "Slide 50"
+      ]
+    },
+    {
+      "id": "O07",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Đạo hàm của sin x là gì?",
+      "in_scope_gold": false,
+      "top_cosine": 0.3414,
+      "latency_ms": 529.0,
+      "hybrid_top3": [
+        "Slide 38",
+        "Slide 25",
+        "Slide 9"
+      ]
+    },
+    {
+      "id": "O08",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Giá vàng hôm nay bao nhiêu?",
+      "in_scope_gold": false,
+      "top_cosine": 0.4446,
+      "latency_ms": 394.7,
+      "hybrid_top3": [
+        "Slide 8",
+        "Slide 10",
+        "Slide 14"
+      ]
+    },
+    {
+      "id": "O09",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Ai là tác giả của Truyện Kiều?",
+      "in_scope_gold": false,
+      "top_cosine": 0.3406,
+      "latency_ms": 532.7,
+      "hybrid_top3": [
+        "Slide 4",
+        "Slide 43",
+        "Slide 26"
+      ]
+    },
+    {
+      "id": "O10",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Thời tiết TP.HCM ngày mai thế nào?",
+      "in_scope_gold": false,
+      "top_cosine": 0.4236,
+      "latency_ms": 743.2,
+      "hybrid_top3": [
+        "Slide 36",
+        "Slide 1",
+        "Slide 10"
+      ]
+    },
+    {
+      "id": "O11",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Bảng băm giải quyết đụng độ bằng open addressing như thế nào?",
+      "in_scope_gold": false,
+      "top_cosine": 0.4324,
+      "latency_ms": 616.1,
+      "hybrid_top3": [
+        "Slide 35",
+        "Slide 58",
+        "Slide 8"
+      ]
+    },
+    {
+      "id": "O12",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "How does an AVL tree rebalance after a deletion?",
+      "in_scope_gold": false,
+      "top_cosine": 0.3851,
+      "latency_ms": 848.1,
+      "hybrid_top3": [
+        "Slide 21",
+        "Slide 21",
+        "Slide 4"
+      ]
+    },
+    {
+      "id": "O13",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Định lý De Morgan dùng để làm gì?",
+      "in_scope_gold": false,
+      "top_cosine": 0.394,
+      "latency_ms": 1055.7,
+      "hybrid_top3": [
+        "Slide 11",
+        "Slide 24",
+        "Slide 31"
+      ]
+    },
+    {
+      "id": "O14",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Tính tích phân bội hai lớp như thế nào?",
+      "in_scope_gold": false,
+      "top_cosine": 0.4799,
+      "latency_ms": 935.4,
+      "hybrid_top3": [
+        "Slide 6",
+        "Slide 6",
+        "Slide 5"
+      ]
+    },
+    {
+      "id": "O15",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "What is the central limit theorem?",
+      "in_scope_gold": false,
+      "top_cosine": 0.3865,
+      "latency_ms": 683.6,
+      "hybrid_top3": [
+        "Slide 10",
+        "Slide 5",
+        "Slide 33"
+      ]
+    },
+    {
+      "id": "O16",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Phản ứng oxi hóa khử là gì?",
+      "in_scope_gold": false,
+      "top_cosine": 0.3541,
+      "latency_ms": 787.0,
+      "hybrid_top3": [
+        "Slide 5",
+        "Slide 38",
+        "Slide 6"
+      ]
+    },
+    {
+      "id": "O17",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "How do flip-flops store a bit?",
+      "in_scope_gold": false,
+      "top_cosine": 0.4437,
+      "latency_ms": 798.8,
+      "hybrid_top3": [
+        "Slide 26",
+        "Slide 27",
+        "Slide 30"
+      ]
+    },
+    {
+      "id": "O18",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "question": "Cách đăng ký học phần trên myBK như thế nào?",
+      "in_scope_gold": false,
+      "top_cosine": 0.523,
+      "latency_ms": 544.1,
+      "hybrid_top3": [
+        "Slide 5",
+        "Slide 2",
+        "Slide 5"
+      ]
+    },
+    {
+      "id": "O19",
+      "course_id": "CO3001",
+      "lang": "en",
+      "question": "Who teaches the Calculus 2 course?",
+      "in_scope_gold": false,
+      "top_cosine": 0.4377,
+      "latency_ms": 813.6,
+      "hybrid_top3": [
+        "Slide 8",
+        "Slide 9",
+        "Slide 7"
+      ]
+    }
+  ]
+}
