@@ -17,11 +17,14 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
       this.configService.get<string>('DATABASE_URL') ||
       'postgresql://edupulse_user:secure_staging_password@localhost:5432/edupulse_staging';
 
+    const useSsl = this.configService.get<string>('DATABASE_SSL') === 'true';
+
     this.pool = new Pool({
       connectionString,
       max: 20,
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 5000,
+      ...(useSsl ? { ssl: { rejectUnauthorized: false } } : {}),
     });
 
     this.pool.on('error', (err) => {
