@@ -42,6 +42,18 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
+const SAFE_FILENAME_RE = /^[a-zA-Z0-9._-]+$/;
+
+const cleanupTempUpload = (file?: Express.Multer.File) => {
+  if (file?.path && fs.existsSync(file.path)) {
+    try {
+      fs.unlinkSync(file.path);
+    } catch {
+      // Ignore cleanup errors on already-removed temporary files
+    }
+  }
+};
+
 @ApiTags('Assessment Engine — Assignments & Rubrics (Bài tập nộp file & Chấm Rubric)')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -174,7 +186,12 @@ export class AssignmentsController {
     @Body() dto: SubmitAssignmentDto,
     @CurrentUser() user: CurrentUserPayload,
   ) {
-    return this.assignmentsService.submitAssignment(id, file, dto, user);
+    try {
+      return await this.assignmentsService.submitAssignment(id, file, dto, user);
+    } catch (error) {
+      cleanupTempUpload(file);
+      throw error;
+    }
   }
 
   @Get('assignments/:id/my-submission')
@@ -221,24 +238,47 @@ export class AssignmentsController {
   }
 
   // ---------------------------------------------------------------------------
-  // 5. Tải file bài nộp an toàn
+  // 5. Authorized & Path-Safe Assignment File Download
   // ---------------------------------------------------------------------------
   @Get('assignments/files/:filename')
-  @ApiOperation({ summary: 'Tải file bài nộp đã upload' })
+  @ApiOperation({ summary: 'Download assignment submission file (Authorized owner, course instructor, or admin)' })
+  @ApiResponse({ status: 200, description: 'File stream' })
+  @ApiResponse({ status: 403, description: 'Forbidden: unauthorized file access' })
+  @ApiResponse({ status: 404, description: 'File not found' })
   async downloadFile(
     @Param('filename') filename: string,
+    @CurrentUser() user: CurrentUserPayload,
     @Res() res: Response,
   ) {
     const sanitizedFilename = path.basename(filename);
-    const filePath = path.join(uploadDir, sanitizedFilename);
-
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({
-        statusCode: 404,
-        message: 'Không tìm thấy file bài nộp trên hệ thống',
+    if (
+      !sanitizedFilename ||
+      sanitizedFilename !== filename ||
+      !SAFE_FILENAME_RE.test(sanitizedFilename)
+    ) {
+      return res.status(400).json({
+        success: false,
+        statusCode: 400,
+        message: 'Invalid filename format',
       });
     }
 
+    await this.assignmentsService.verifyFileDownloadAccess(sanitizedFilename, user);
+
+    const filePath = path.resolve(uploadDir, sanitizedFilename);
+    if (!filePath.startsWith(uploadDir + path.sep) || !fs.existsSync(filePath)) {
+      return res.status(404).json({
+        success: false,
+        statusCode: 404,
+        message: 'Submission file not found on storage',
+      });
+    }
+
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="${sanitizedFilename}"`,
+    );
     return res.sendFile(filePath);
   }
 }

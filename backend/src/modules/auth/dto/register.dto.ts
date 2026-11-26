@@ -1,33 +1,68 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsIn,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Matches,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { Role } from '../../../common/constants/roles.enum';
 
+export const SELF_REGISTER_ROLES = [Role.STUDENT, Role.INSTRUCTOR] as const;
+
 export class RegisterDto {
-  @ApiProperty({ example: 'student@edupulse.hcmut.edu.vn', description: 'Địa chỉ email người dùng' })
-  @IsEmail({}, { message: 'Email không hợp lệ' })
+  @ApiProperty({
+    example: 'student@edupulse.hcmut.edu.vn',
+    description: 'User email address',
+  })
+  @IsEmail({}, { message: 'Invalid email address' })
+  @MaxLength(255)
   email: string;
 
-  @ApiProperty({ example: 'Password@123', description: 'Mật khẩu tối thiểu 6 ký tự', minLength: 6 })
+  @ApiProperty({
+    example: 'Student@123456',
+    description: 'Strong password (minimum 8 chars, including uppercase, lowercase, and digit)',
+    minLength: 8,
+  })
   @IsString()
-  @MinLength(6, { message: 'Mật khẩu phải chứa ít nhất 6 ký tự' })
+  @MinLength(8, { message: 'Password must be at least 8 characters long' })
+  @MaxLength(128, { message: 'Password must not exceed 128 characters' })
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/, {
+    message:
+      'Password must include at least one uppercase letter, one lowercase letter, and one digit',
+  })
   password: string;
 
-  @ApiProperty({ example: 'Nguyễn Văn A', description: 'Họ và tên đầy đủ' })
+  @ApiProperty({ example: 'Nguyen Van A', description: 'Full name' })
   @IsString()
-  @IsNotEmpty({ message: 'Họ và tên không được để trống' })
+  @IsNotEmpty({ message: 'Full name is required' })
+  @MaxLength(120)
   fullName: string;
 
   @ApiPropertyOptional({
-    enum: Role,
+    enum: SELF_REGISTER_ROLES,
     default: Role.STUDENT,
-    description: 'Vai trò: student (mặc định) hoặc instructor',
+    description: 'Self-registration role (student by default, or instructor)',
   })
   @IsOptional()
-  @IsEnum(Role, { message: 'Vai trò không hợp lệ (chỉ chấp nhận student, instructor hoặc admin)' })
+  @IsIn(SELF_REGISTER_ROLES, {
+    message: 'Public registration only permits student or instructor roles',
+  })
   role?: Role = Role.STUDENT;
 
-  @ApiPropertyOptional({ example: 'https://example.com/avatar.png', description: 'Ảnh đại diện' })
+  @ApiPropertyOptional({
+    example: 'https://example.com/avatar.png',
+    description: 'Profile avatar URL (HTTP/HTTPS only)',
+  })
   @IsOptional()
-  @IsString()
+  @IsUrl(
+    { protocols: ['http', 'https'], require_protocol: true },
+    { message: 'Avatar URL must use http:// or https://' },
+  )
+  @MaxLength(1024)
   avatarUrl?: string;
 }

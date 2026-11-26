@@ -4,6 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 import { DatabaseService } from '../../../database/database.service';
+import { getJwtSecrets } from '../../../common/config/security.config';
 
 export interface JwtPayload {
   sub: string;
@@ -32,9 +33,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         ExtractJwt.fromAuthHeaderAsBearerToken(),
       ]),
       ignoreExpiration: false,
-      secretOrKey:
-        configService.get<string>('JWT_SECRET') ||
-        'super-secret-edupulse-jwt-key-2026-hk261',
+      secretOrKey: getJwtSecrets(configService).accessSecret,
     });
   }
 

@@ -1,102 +1,143 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, Logger } from '@nestjs/common';
+import { ForbiddenException, Logger, ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
+import {
+  getJwtSecrets,
+  isOriginAllowed,
+  isStrictEnvironment,
+  parseCorsOrigins,
+} from './common/config/security.config';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
+  const nodeEnv = configService.get<string>('NODE_ENV') ?? process.env.NODE_ENV;
 
-  // 1. Cookie Parser Middleware (required for HttpOnly cookies)
+  // Fail fast outside development if required JWT secrets are missing or weak.
+  getJwtSecrets(configService);
+
+  // Trust first reverse-proxy hop (Nginx / Cloud Load Balancer) for accurate IP rate limiting.
+  const expressInstance = app.getHttpAdapter().getInstance();
+  expressInstance.set('trust proxy', 1);
+  expressInstance.disable('x-powered-by');
+
+  // 1. Security HTTP Headers (Helmet)
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'"],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          imgSrc: ["'self'", 'data:', 'https:'],
+          connectSrc: ["'self'", 'https:', 'http://localhost:*'],
+          frameAncestors: ["'self'"],
+        },
+      },
+      crossOriginEmbedderPolicy: false,
+      hsts: isStrictEnvironment(nodeEnv)
+        ? { maxAge: 31536000, includeSubDomains: true }
+        : false,
+    }),
+  );
+
+  // 2. Cookie Parser Middleware (required for HttpOnly cookies)
   app.use(cookieParser());
 
-  // 2. CORS configuration with credentials support for Next.js frontend
-  const corsOrigins = process.env.CORS_ORIGIN
-    ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
-    : ['http://localhost:3000', 'http://127.0.0.1:3000'];
+  // 3. Strict CORS allowlist configuration with credentials support
+  const corsOrigins = parseCorsOrigins(
+    configService.get<string>('CORS_ORIGIN') ?? process.env.CORS_ORIGIN,
+  );
 
   app.enableCors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, Postman)
-      if (!origin) return callback(null, true);
-      if (
-        corsOrigins.includes(origin) ||
-        process.env.NODE_ENV !== 'production' ||
-        origin.includes('localhost') ||
-        origin.includes('127.0.0.1')
-      ) {
+      if (isOriginAllowed(origin, corsOrigins, nodeEnv)) {
         return callback(null, true);
       }
-      return callback(null, true);
+      logger.warn(`Blocked CORS request from unauthorized origin: ${origin}`);
+      return callback(
+        new ForbiddenException('Origin is not allowed by CORS policy'),
+        false,
+      );
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   });
 
-  // 3. Global API Route Prefix
+  // 4. Global API Route Prefix
   app.setGlobalPrefix('api/v1');
 
-  // 4. Global Validation Pipe
+  // 5. Global Validation Pipe (strip & reject unknown properties)
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
       transform: true,
-      forbidNonWhitelisted: false,
+      forbidNonWhitelisted: true,
       transformOptions: {
         enableImplicitConversion: true,
       },
     }),
   );
 
-  // 5. Global Exception Filter
+  // 6. Global Exception Filter
   app.useGlobalFilters(new AllExceptionsFilter());
 
-  // 6. Swagger OpenAPI Setup
-  const config = new DocumentBuilder()
-    .setTitle('EduPulse LMS API')
-    .setDescription(
-      'Hệ thống API RESTful cho Nền tảng học trực tuyến EduPulse (Môn học CO3103 - HK261 - Group 10)\n\n' +
-        'Bao gồm các phân hệ:\n' +
-        '- **Authentication & RBAC**: JWT HttpOnly Cookie, Argon2/Bcrypt, 3 vai trò (Student, Instructor, Admin)\n' +
-        '- **Course Catalog**: Tìm kiếm mờ, phân trang, bộ lọc đa tiêu chí (category, level, publish)\n' +
-        '- **Syllabus Hierarchy**: Cây phân cấp Course -> Section (Chapter) -> Lesson -> Materials/Quiz\n' +
-        '- **Enrollments & Progress**: Đăng ký khóa học, theo dõi tiến độ, resume playback\n' +
-        '- **Assessment Engine**: Làm bài trắc nghiệm tính giờ, chấm tự động trắc nghiệm & nộp file bài tập kèm rubric chấm điểm',
-    )
-    .setVersion('1.0.0')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-        name: 'Authorization',
-        description: 'Nhập access token JWT (nếu không dùng cookie)',
-        in: 'header',
-      },
-      'bearer',
-    )
-    .addCookieAuth('access_token', {
-      type: 'apiKey',
-      in: 'cookie',
-      name: 'access_token',
-      description: 'HttpOnly Access Token Cookie',
-    })
-    .build();
+  // 7. Swagger OpenAPI Setup (disabled in production unless ENABLE_SWAGGER=true)
+  const enableSwagger =
+    !isStrictEnvironment(nodeEnv) || process.env.ENABLE_SWAGGER === 'true';
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document, {
-    swaggerOptions: {
-      persistAuthorization: true,
-    },
-  });
+  if (enableSwagger) {
+    const config = new DocumentBuilder()
+      .setTitle('EduPulse LMS API')
+      .setDescription(
+        'RESTful API for EduPulse Online Learning Platform (CO3103 - HK261 - Group 10)\n\n' +
+          'Modules:\n' +
+          '- **Authentication & RBAC**: JWT HttpOnly Cookie, Argon2id/Bcrypt, 3 roles (Student, Instructor, Admin)\n' +
+          '- **Course Catalog & Syllabus**: Search, filtering, pagination, Course -> Section -> Lesson hierarchy\n' +
+          '- **Enrollments & Progress**: Course enrollment, completion tracking, resume playback\n' +
+          '- **Assessment Engine**: Timed auto-graded quizzes & file assignments with rubric scoring',
+      )
+      .setVersion('1.0.0')
+      .addBearerAuth(
+        {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          name: 'Authorization',
+          description: 'JWT Access Token (optional if using HttpOnly cookie)',
+          in: 'header',
+        },
+        'bearer',
+      )
+      .addCookieAuth('access_token', {
+        type: 'apiKey',
+        in: 'cookie',
+        name: 'access_token',
+        description: 'HttpOnly Access Token Cookie',
+      })
+      .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api/docs', app, document, {
+      swaggerOptions: {
+        persistAuthorization: true,
+      },
+    });
+  }
 
   const port = process.env.PORT || 5000;
   await app.listen(port);
-  logger.log(`🚀 EduPulse Backend Server is running on: http://localhost:${port}/api/v1`);
-  logger.log(`📚 Swagger API Documentation is live at: http://localhost:${port}/api/docs`);
+  logger.log(`EduPulse Backend Server is running on: http://localhost:${port}/api/v1`);
+  if (enableSwagger) {
+    logger.log(`Swagger API Documentation is live at: http://localhost:${port}/api/docs`);
+  }
 }
 
 bootstrap();

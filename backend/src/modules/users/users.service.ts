@@ -1,11 +1,14 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
 import { PaginationQueryDto, PaginatedResponse } from '../../common/dto/pagination.dto';
 import { Role } from '../../common/constants/roles.enum';
+import { CurrentUserPayload } from '../../common/decorators/current-user.decorator';
+import { escapeLikePattern } from '../../common/config/security.config';
 
 @Injectable()
 export class UsersService {
@@ -22,9 +25,9 @@ export class UsersService {
 
     if (query.search && query.search.trim()) {
       whereClauses.push(
-        `(u.full_name ILIKE $${paramIndex} OR u.email ILIKE $${paramIndex})`,
+        `(u.full_name ILIKE $${paramIndex} ESCAPE '\\' OR u.email ILIKE $${paramIndex} ESCAPE '\\')`,
       );
-      params.push(`%${query.search.trim()}%`);
+      params.push(`%${escapeLikePattern(query.search.trim())}%`);
       paramIndex++;
     }
 
@@ -74,7 +77,17 @@ export class UsersService {
     };
   }
 
-  async findById(id: string) {
+  async findById(id: string, currentUser?: CurrentUserPayload) {
+    if (
+      currentUser &&
+      currentUser.role !== Role.ADMIN &&
+      currentUser.userId !== id
+    ) {
+      throw new ForbiddenException(
+        'Forbidden: You do not have permission to view another user profile',
+      );
+    }
+
     const user = await this.db.queryOne(
       `SELECT u.id, u.email, u.full_name, u.avatar_url, u.created_at, r.name as role, r.permissions
        FROM users u

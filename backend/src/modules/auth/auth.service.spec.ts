@@ -4,8 +4,9 @@ import { DatabaseService } from '../../database/database.service';
 import { PasswordService } from './security/password.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { ConflictException, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import { Response } from 'express';
+import { Role } from '../../common/constants/roles.enum';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -111,6 +112,22 @@ describe('AuthService', () => {
         'mock.jwt.token',
         expect.objectContaining({ httpOnly: true }),
       );
+    });
+
+    it('should reject public admin role registration (privilege escalation guard)', async () => {
+      mockDb.queryOne.mockResolvedValueOnce(null); // no existing email
+
+      await expect(
+        service.register(
+          {
+            email: 'attacker@example.com',
+            password: 'Password@123',
+            fullName: 'Attacker',
+            role: Role.ADMIN,
+          },
+          mockResponse as Response,
+        ),
+      ).rejects.toThrow(ForbiddenException);
     });
   });
 
