@@ -378,4 +378,32 @@ describe('AssignmentsService', () => {
       expect(res.data.evaluations).toHaveLength(2);
     });
   });
+
+  describe('verifyFileDownloadAccess (IDOR protection)', () => {
+    it('should forbid unrelated student from downloading another student submission', async () => {
+      mockDb.queryOne.mockResolvedValueOnce({
+        student_id: 'owner-student-id',
+        instructor_id: instructorUser.userId,
+      });
+
+      await expect(
+        service.verifyFileDownloadAccess('submission-123.zip', studentUser),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('should allow owner student and course instructor to download submission', async () => {
+      mockDb.queryOne.mockResolvedValue({
+        student_id: studentUser.userId,
+        instructor_id: instructorUser.userId,
+      });
+
+      await expect(
+        service.verifyFileDownloadAccess('submission-123.zip', studentUser),
+      ).resolves.toBeUndefined();
+
+      await expect(
+        service.verifyFileDownloadAccess('submission-123.zip', instructorUser),
+      ).resolves.toBeUndefined();
+    });
+  });
 });

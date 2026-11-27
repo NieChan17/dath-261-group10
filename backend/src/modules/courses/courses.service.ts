@@ -13,6 +13,7 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 import { PaginatedResponse } from '../../common/dto/pagination.dto';
 import { CurrentUserPayload } from '../../common/decorators/current-user.decorator';
 import { Role } from '../../common/constants/roles.enum';
+import { escapeLikePattern } from '../../common/config/security.config';
 
 @Injectable()
 export class CoursesService {
@@ -50,9 +51,9 @@ export class CoursesService {
 
     // 2. Search keyword filter
     if (query.search && query.search.trim()) {
-      const searchPattern = `%${query.search.trim()}%`;
+      const searchPattern = `%${escapeLikePattern(query.search.trim())}%`;
       whereClauses.push(
-        `(c.title ILIKE $${paramIndex} OR c.code ILIKE $${paramIndex} OR c.description ILIKE $${paramIndex})`,
+        `(c.title ILIKE $${paramIndex} ESCAPE '\\' OR c.code ILIKE $${paramIndex} ESCAPE '\\' OR c.description ILIKE $${paramIndex} ESCAPE '\\')`,
       );
       params.push(searchPattern);
       paramIndex++;
@@ -60,8 +61,8 @@ export class CoursesService {
 
     // 3. Category filter
     if (query.category && query.category.trim()) {
-      whereClauses.push(`c.category ILIKE $${paramIndex}`);
-      params.push(`%${query.category.trim()}%`);
+      whereClauses.push(`c.category ILIKE $${paramIndex} ESCAPE '\\'`);
+      params.push(`%${escapeLikePattern(query.category.trim())}%`);
       paramIndex++;
     }
 

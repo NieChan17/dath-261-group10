@@ -33,11 +33,31 @@ export default function RegisterPage() {
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState<string | null>(null);
 
+  const passwordStrengthScore = React.useMemo(() => {
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
+    if (/\d/.test(password)) score++;
+    if (/[^a-zA-Z0-9]/.test(password) || password.length >= 12) score++;
+    return score;
+  }, [password]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     setError(null);
     setSuccess(null);
+
+    if (
+      password.length < 8 ||
+      !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/.test(password)
+    ) {
+      setError(
+        "Password must be at least 8 characters and include uppercase, lowercase, and a number."
+      );
+      return;
+    }
+
+    setIsLoading(true);
 
     try {
       await registerUser({
@@ -348,9 +368,10 @@ export default function RegisterPage() {
                     <input
                       type={showPassword ? "text" : "password"}
                       required
+                      minLength={8}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Min. 12 chars, letters &amp; symbols"
+                      placeholder="Min. 8 chars (upper, lower &amp; number)"
                       className="w-full h-10.5 rounded-lg border border-[#e2e8f0] bg-[#f8f9ff] pl-3.5 pr-10 text-xs font-mono text-[#0b1c30] placeholder:font-sans placeholder:text-[#737686] focus:border-[#2563eb] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2563eb]/20 transition-all"
                     />
                     <button
@@ -362,12 +383,20 @@ export default function RegisterPage() {
                     </button>
                   </div>
 
-                  {/* Password Strength 4-segment meter (3 active green) */}
-                  <div className="flex gap-1.5 pt-1.5">
-                    <div className="h-1 flex-1 rounded-full bg-[#006a61]" />
-                    <div className="h-1 flex-1 rounded-full bg-[#006a61]" />
-                    <div className="h-1 flex-1 rounded-full bg-[#006a61]" />
-                    <div className="h-1 flex-1 rounded-full bg-[#e2e8f0]" />
+                  {/* Dynamic Password Strength 4-segment meter */}
+                  <div className="flex gap-1.5 pt-1.5" aria-label="Password strength">
+                    {[1, 2, 3, 4].map((segment) => (
+                      <div
+                        key={segment}
+                        className={`h-1 flex-1 rounded-full transition-colors ${
+                          passwordStrengthScore >= segment
+                            ? passwordStrengthScore >= 3
+                              ? "bg-[#006a61]"
+                              : "bg-amber-500"
+                            : "bg-[#e2e8f0]"
+                        }`}
+                      />
+                    ))}
                   </div>
                 </div>
 

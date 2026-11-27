@@ -1,14 +1,16 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   GraduationCap,
   Presentation,
   ShieldCheck,
   ArrowRight,
+  Loader2,
 } from "lucide-react";
 import { ROUTES } from "@/lib/constants";
+import { getCurrentUser } from "@/lib/api/auth";
 
 interface PortalCardConfig {
   id: string;
@@ -16,12 +18,26 @@ interface PortalCardConfig {
   title: string;
   description: string;
   href: string;
+  requiresServerAuth: boolean;
+  allowedServerRoles: string[];
   buttonText: string;
   icon: React.ComponentType<{ className?: string }>;
   accentColor: string;
   badgeBg: string;
   badgeText: string;
   features: string[];
+}
+
+function extractAuthUser(res: any): { id: string; email: string; fullName: string; role: string } | null {
+  if (!res) return null;
+  const user = res?.data?.user ?? res?.data ?? res?.user;
+  if (!user || typeof user !== "object") return null;
+  return {
+    id: String(user.id ?? ""),
+    email: String(user.email ?? ""),
+    fullName: String(user.fullName ?? user.full_name ?? ""),
+    role: String(user.role ?? ""),
+  };
 }
 
 const PORTALS: PortalCardConfig[] = [
@@ -31,6 +47,8 @@ const PORTALS: PortalCardConfig[] = [
     title: "Learner Portal",
     description: "Explore computer science curricula, solve interactive code challenges, and collaborate with peers.",
     href: ROUTES.HOME,
+    requiresServerAuth: false,
+    allowedServerRoles: ["student", "instructor", "admin"],
     buttonText: "Enter Learner Portal",
     icon: GraduationCap,
     accentColor: "border-[#2563eb] text-[#2563eb] hover:border-[#1d4ed8]",
@@ -48,6 +66,8 @@ const PORTALS: PortalCardConfig[] = [
     title: "Instructor Workspace",
     description: "Author course curricula, organize assignments, and evaluate student submissions.",
     href: ROUTES.INSTRUCTOR.OVERVIEW,
+    requiresServerAuth: true,
+    allowedServerRoles: ["instructor", "admin"],
     buttonText: "Enter Instructor Workspace",
     icon: Presentation,
     accentColor: "border-[#006a61] text-[#006a61] hover:border-[#004d44]",
@@ -65,6 +85,8 @@ const PORTALS: PortalCardConfig[] = [
     title: "System Admin Portal",
     description: "Platform operations center, user role provisioning, and system auditing.",
     href: ROUTES.ADMIN.OVERVIEW,
+    requiresServerAuth: true,
+    allowedServerRoles: ["admin"],
     buttonText: "Enter Admin Portal",
     icon: ShieldCheck,
     accentColor: "border-[#0b1c30] text-[#0b1c30] hover:border-[#2563eb]",
@@ -79,10 +101,37 @@ const PORTALS: PortalCardConfig[] = [
 ];
 
 export default function PortalPage() {
-  const handleSelectRole = (roleId: string) => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("edupulse_role", roleId);
+  const router = useRouter();
+  const [loadingPortalId, setLoadingPortalId] = React.useState<string | null>(null);
+
+  const handleSelectPortal = async (portal: PortalCardConfig) => {
+    setLoadingPortalId(portal.id);
+
+    if (!portal.requiresServerAuth) {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("edupulse_role", "learner");
+      }
+      router.push(portal.href);
+      return;
     }
+
+    try {
+      const res = await getCurrentUser();
+      const user = extractAuthUser(res);
+      if (user && portal.allowedServerRoles.includes(user.role)) {
+        if (typeof window !== "undefined") {
+          const uiRole = user.role === "student" ? "learner" : user.role;
+          localStorage.setItem("edupulse_role", uiRole);
+          localStorage.setItem("edupulse_user", JSON.stringify(user));
+        }
+        router.push(portal.href);
+        return;
+      }
+    } catch {
+      // Unauthenticated session redirects cleanly to role-scoped login
+    }
+
+    router.push(`/login?role=${portal.id}`);
   };
 
   return (
@@ -105,6 +154,7 @@ export default function PortalPage() {
         <div className="portal__grid_01 grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
           {PORTALS.map((portal) => {
             const Icon = portal.icon;
+            const isLoading = loadingPortalId === portal.id;
             return (
               <div
                 key={portal.id}
@@ -151,10 +201,11 @@ export default function PortalPage() {
 
                 {/* Bottom Action Button */}
                 <div className="portal__card-bottom_01 pt-6 mt-6 border-t border-[#f1f5f9]">
-                  <Link
-                    href={portal.href}
-                    onClick={() => handleSelectRole(portal.id)}
-                    className={`portal__action-btn_01 inline-flex w-full items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold text-white transition-all shadow-xs group-hover:shadow-md cursor-pointer ${
+                  <button
+                    type="button"
+                    disabled={loadingPortalId !== null}
+                    onClick={() => handleSelectPortal(portal)}
+                    className={`portal__action-btn_01 inline-flex w-full items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold text-white transition-all shadow-xs group-hover:shadow-md cursor-pointer disabled:opacity-70 ${
                       portal.id === "learner"
                         ? "bg-[#2563eb] hover:bg-[#1d4ed8]"
                         : portal.id === "instructor"
@@ -162,9 +213,18 @@ export default function PortalPage() {
                         : "bg-[#0b1c30] hover:bg-[#1e293b]"
                     }`}
                   >
-                    <span>{portal.buttonText}</span>
-                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </Link>
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span>Verifying session...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>{portal.buttonText}</span>
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
             );

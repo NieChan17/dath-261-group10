@@ -850,4 +850,36 @@ export class AssignmentsService {
       },
     };
   }
+
+  async verifyFileDownloadAccess(filename: string, user: CurrentUserPayload) {
+    const expectedUrl = `/uploads/assignments/${filename}`;
+    const record = await this.db.queryOne<{
+      student_id: string;
+      instructor_id: string;
+    }>(
+      `SELECT s.student_id, c.instructor_id
+       FROM assignment_submissions s
+       JOIN assignments a ON s.assignment_id = a.id
+       JOIN lessons l ON a.lesson_id = l.id
+       JOIN sections sec ON l.section_id = sec.id
+       JOIN courses c ON sec.course_id = c.id
+       WHERE s.file_url = $1`,
+      [expectedUrl],
+    );
+
+    if (!record) {
+      throw new NotFoundException('Submission file record not found');
+    }
+
+    const isAllowed =
+      user.role === Role.ADMIN ||
+      user.userId === record.student_id ||
+      user.userId === record.instructor_id;
+
+    if (!isAllowed) {
+      throw new ForbiddenException(
+        'Forbidden: you do not have permission to download this submission file',
+      );
+    }
+  }
 }

@@ -1,4 +1,4 @@
-name: CI Code Quality & Linting
+name: CI Code Quality, Testing & Security Audit
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   lint-frontend:
-    name: Frontend Lint & Check
+    name: Frontend Lint, Build & Domain Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -27,14 +27,15 @@ jobs:
           npm ci || npm install
           npm install --no-save eslint eslint-config-next
 
-      - name: Run Next.js Lint & Build Check
+      - name: Run Next.js Lint, Domain Tests & Build Check
         working-directory: ./frontend
         run: |
           npm run lint || true
+          node tests/admin-demo.test.cjs
           npm run build
 
   check-backend:
-    name: Backend Typecheck & Build
+    name: Backend Typecheck, Build & Security Unit Tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -59,8 +60,12 @@ jobs:
         working-directory: ./backend
         run: npm run build
 
+      - name: Run Jest Unit & Security Tests
+        working-directory: ./backend
+        run: npm test -- --runInBand
+
   check-ai-service:
-    name: AI Service Syntax & Compile Check
+    name: AI Service Syntax & Unit Checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -75,3 +80,28 @@ jobs:
         working-directory: ./service/ai-service
         run: python -m compileall app/
 
+  security-audit:
+    name: OWASP Secret Hygiene & Dependency Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Verify No Committed Secrets or Env Files
+        run: |
+          if git ls-files | grep -E '(^|/)\.env$|\.pem$|\.key$|id_rsa'; then
+            echo "ERROR: Sensitive environment or key files committed to repository!"
+            exit 1
+          fi
+          if git grep -n -E 'BEGIN (RSA|OPENSSH|EC|PRIVATE) KEY' -- ':!SECURITY.md'; then
+            echo "ERROR: Private key material detected in repository!"
+            exit 1
+          fi
+          echo "Secret hygiene check passed."
+
+      - name: Run Production Dependency Audit (Non-blocking Advisory Report)
+        run: |
+          echo "=== Backend Production Dependency Audit ==="
+          npm --prefix backend audit --omit=dev || true
+          echo "=== Frontend Production Dependency Audit ==="
+          npm --prefix frontend audit --omit=dev || true

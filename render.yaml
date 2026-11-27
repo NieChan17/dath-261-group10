@@ -1,0 +1,72 @@
+# ==============================================================================
+# EduPulse LMS - Render Blueprint (PaaS Deployment)
+# Deploy Managed PostgreSQL + Hardened Backend + Next.js Frontend.
+# See DEPLOYMENT.md for step-by-step instructions.
+# ==============================================================================
+
+databases:
+  - name: edupulse-db
+    databaseName: edupulse_prod
+    user: edupulse_user
+    plan: free
+    region: singapore
+
+services:
+  - type: web
+    name: edupulse-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    region: singapore
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "5000"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: edupulse-db
+          property: connectionString
+      - key: DATABASE_SSL
+        value: "false"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 1h
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: 7d
+      - key: AI_INTERNAL_TOKEN
+        generateValue: true
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: ENABLE_SWAGGER
+        value: "false"
+      - key: RUN_MIGRATIONS_ON_BOOT
+        value: "true"
+      - key: RUN_SEED_ON_BOOT
+        value: "true"
+      - key: CORS_ORIGIN
+        sync: false
+
+  - type: web
+    name: edupulse-frontend
+    runtime: docker
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    plan: free
+    region: singapore
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        value: /api
+      - key: BACKEND_PROXY_URL
+        fromService:
+          name: edupulse-backend
+          type: web
+          property: host

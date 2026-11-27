@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -14,6 +15,7 @@ import { PasswordService } from './security/password.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { Role } from '../../common/constants/roles.enum';
+import { getJwtSecrets, isCookieSecure } from '../../common/config/security.config';
 
 @Injectable()
 export class AuthService {
@@ -36,8 +38,13 @@ export class AuthService {
       throw new ConflictException('Email này đã được đăng ký trong hệ thống');
     }
 
-    // 2. Validate role
+    // 2. Enforce public registration role allowlist (defense-in-depth against privilege escalation)
     const requestedRole = dto.role || Role.STUDENT;
+    if (requestedRole !== Role.STUDENT && requestedRole !== Role.INSTRUCTOR) {
+      throw new ForbiddenException(
+        'Public registration is restricted to student or instructor roles',
+      );
+    }
     const roleRecord = await this.db.queryOne(
       'SELECT id, name FROM roles WHERE name = $1',
       [requestedRole],
@@ -139,9 +146,7 @@ export class AuthService {
     }
 
     try {
-      const refreshSecret =
-        this.configService.get<string>('JWT_REFRESH_SECRET') ||
-        'super-secret-refresh-key-edupulse-2026';
+      const { refreshSecret } = getJwtSecrets(this.configService);
 
       const payload = this.jwtService.verify(refreshToken, {
         secret: refreshSecret,
@@ -226,12 +231,7 @@ export class AuthService {
       fullName: user.fullName,
     };
 
-    const accessSecret =
-      this.configService.get<string>('JWT_SECRET') ||
-      'super-secret-edupulse-jwt-key-2026-hk261';
-    const refreshSecret =
-      this.configService.get<string>('JWT_REFRESH_SECRET') ||
-      'super-secret-refresh-key-edupulse-2026';
+    const { accessSecret, refreshSecret } = getJwtSecrets(this.configService);
 
     const accessToken = this.jwtService.sign(payload, {
       secret: accessSecret,
@@ -247,12 +247,12 @@ export class AuthService {
   }
 
   private setAuthCookies(res: Response, accessToken: string, refreshToken: string) {
-    const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
+    const secureCookie = isCookieSecure(this.configService);
 
     // Access Token Cookie (1 hour)
     res.cookie('access_token', accessToken, {
       httpOnly: true,
-      secure: isProduction,
+      secure: secureCookie,
       sameSite: 'lax',
       path: '/',
       maxAge: 60 * 60 * 1000, // 1 hour
@@ -261,7 +261,7 @@ export class AuthService {
     // Refresh Token Cookie (7 days)
     res.cookie('refresh_token', refreshToken, {
       httpOnly: true,
-      secure: isProduction,
+      secure: secureCookie,
       sameSite: 'lax',
       path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
@@ -269,16 +269,16 @@ export class AuthService {
   }
 
   private clearAuthCookies(res: Response) {
-    const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
+    const secureCookie = isCookieSecure(this.configService);
     res.clearCookie('access_token', {
       httpOnly: true,
-      secure: isProduction,
+      secure: secureCookie,
       sameSite: 'lax',
       path: '/',
     });
     res.clearCookie('refresh_token', {
       httpOnly: true,
-      secure: isProduction,
+      secure: secureCookie,
       sameSite: 'lax',
       path: '/',
     });
