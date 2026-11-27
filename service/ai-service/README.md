@@ -5,8 +5,9 @@ Python/FastAPI microservice for the Track 1 advanced component. It ingests cours
 Related issues: #115 (chunking and ingestion), #117 (retrieval guardrails and out-of-scope fallback), #122 (RAGAS evaluation).
 
 > **Prototype status.** Ingestion, hybrid retrieval, the out-of-scope gate, feedback and the review queue are real.
-> Answer generation is a **mock**: it extracts sentences from the top-ranked chunk and returns real citations
-> (`"mode": "mock-extractive"` in the `done` event). An LLM will replace it later.
+> Answers are written by an LLM from the retrieved chunks only: Gemini through the API, or a local model served by
+> Ollama (`LLM_PROVIDER`). `"mode"` in the `done` event is the model name. Without a Gemini key, or when the LLM
+> call fails, a **mock** extracts sentences from the top-ranked chunk (`"mode": "mock-extractive"`).
 
 ## Architecture
 
@@ -120,7 +121,11 @@ data: {"answer_id": "…", "in_scope": true, "top_score": 0.71, "suggest_forum":
 ```
 
 When the best cosine similarity is below `OOS_THRESHOLD`, the answer is a refusal, no citations are sent,
-`suggest_forum` is `true` and the question is flagged for instructor review.
+`suggest_forum` is `true` and the question is flagged for instructor review. The same happens when the LLM replies
+that the chunks do not contain the answer, or answers without citing any chunk.
+
+The LLM sees the top `TOP_K` chunks numbered `[1]`…`[n]`. The service keeps only the chunks the answer cites and
+renumbers them in order of first use, so `[1]` in the text is always the first `citation` event.
 
 ## Retrieval
 
@@ -141,7 +146,11 @@ Chunking: one chunk per slide; Markdown split by heading, then by a recursive ch
 | `DATABASE_URL` | *(required)* | Set by docker compose; for local runs copy `.env.example` to `.env` |
 | `INTERNAL_TOKEN` | *(empty)* | Shared secret with the NestJS backend (`AI_INTERNAL_TOKEN` in the root `.env`) |
 | `EMBED_MODEL` / `EMBED_DIM` | `BAAI/bge-m3` / `1024` | Must match each other |
-| `OOS_THRESHOLD` | `0.65` | Placeholder from the proposal; calibrate on the evaluation question set (#122) |
+| `OOS_THRESHOLD` | `0.55` | Lowest value that refused every out-of-scope question in the #122 baseline (95.4% of in-scope questions answered) |
+| `LLM_PROVIDER` | `gemini` | `gemini` (API) or `ollama` (local model) |
+| `LLM_MODEL` | `gemini-3.5-flash-lite` | Model that writes the answer, for example `qwen2.5:7b` with Ollama |
+| `GEMINI_API_KEY` | *(empty)* | Key from Google AI Studio; with `gemini` and no key the mock answer is used |
+| `OLLAMA_URL` | `http://127.0.0.1:11434` | Ollama server; compose uses `http://host.docker.internal:11434` |
 | `TOP_K`, `CANDIDATE_POOL`, `RRF_K` | `5`, `20`, `60` | Retrieval tuning |
 | `LESSON_BOOST`, `VIDEO_WINDOW_BOOST` | `0.005`, `0.005` | Added to the fused RRF score |
 | `FILE_ROOT`, `MAX_DOWNLOAD_MB` | `/app/sample_data`, `50` | Limits for `file_url` |
@@ -153,19 +162,37 @@ pip install -r requirements.txt -r requirements-dev.txt
 pytest
 ```
 
-The unit tests cover the parsers, chunking, rank fusion, boosts, citation labels and the mock answer, and need no database.
+The unit tests cover the parsers, chunking, rank fusion, boosts, citation labels, the mock answer and the citation
+handling of the LLM answer (with a fake client), and need no database or API key.
+
+## Answer quality (RAGAS)
+
+`python -m eval.run_ragas --provider gemini|ollama --model <name>` answers the 87 in-scope #122 questions and
+scores each answer with RAGAS (`pip install -r eval/requirements.txt`). Results from 24/11, top 5 hybrid chunks,
+`OOS_THRESHOLD` 0.55, judge `gemini-3.5-flash-lite`:
+
+| Answer model | Answered | Refused by the model | Faithfulness | Answer relevancy | Median answer time |
+|---|---|---|---|---|---|
+| `gemini-3.5-flash-lite` (API) | 75 | 3 | 1.000 | 0.929 | 1.5 s |
+| `qwen2.5:7b` (Ollama, RTX 3070 Ti) | 74 | 9 | 0.967 | 0.936 | 1.2 s |
+
+On the 70 questions both models answered, faithfulness is 1.000 vs 0.965 and answer relevancy 0.935 vs 0.942.
+Four questions were refused by the out-of-scope gate for both models; 5 Gemini answers hit the free-tier daily quota
+and were not scored. The judge is a Gemini model, so it may favour Gemini answers.
 
 ## Known limitations
 
-- The full-text query joins every word with AND and keeps stop words, so long natural-language questions rarely
-  match; retrieval then relies on the vector ranking alone.
-- `OOS_THRESHOLD = 0.65` is not calibrated: with a small test model some in-scope questions score below it.
+- Hybrid retrieval is not better than vector-only on the #122 questions (Hit@1 78.2% vs 80.5%). Joining the
+  keywords with OR lowered hybrid Hit@1 to 58.6%; dropping stop words but keeping AND only matched vector-only.
+- `OOS_THRESHOLD = 0.55` was calibrated on 106 BK-LMS questions; the highest out-of-scope question scored 0.532 and the lowest in-scope one 0.525, so a few in-scope questions are still refused.
 - The mock answer uses only the top chunk; the refusal message is English only.
+- The LLM answer is generated in full and then streamed word by word, so `first_token_ms` includes the whole
+  LLM call. With Gemini on the free tier, course chunks are sent to Google and rate limits apply.
+- `qwen2.5:7b` wrote 4 of its 30 Vietnamese answers partly in Chinese, and refused 5 questions that Gemini
+  answered; RAGAS scored one of the Chinese answers 0 for faithfulness but did not flag the others.
 - Ingestion jobs are kept in memory, and a question is logged only after its answer stream finishes.
 - The API has no automated tests yet; it was checked manually with FastAPI's `TestClient`.
 
 ## Next steps
 
 - #117: agree the ingestion hook and table ownership with the backend, then open the pull request.
-- #122: build the evaluation question set, calibrate `OOS_THRESHOLD` and compare vector-only with hybrid retrieval.
-- Replace the mock generator with an LLM that answers only from the retrieved chunks and keeps the citations.

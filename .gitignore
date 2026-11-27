@@ -34,6 +34,8 @@ ENV/
 *.egg-info/
 dist/
 build/
+# Generated answers quote copyrighted course material
+service/ai-service/eval/results/*.answers.jsonl
 
 # ==============================================================================
 # 3. BUILD ARTIFACTS & CACHE

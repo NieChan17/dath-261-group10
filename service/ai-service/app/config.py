@@ -16,7 +16,12 @@ class Settings(BaseSettings):
     embed_model: str = "BAAI/bge-m3"
     embed_dim: int = 1024
 
-    oos_threshold: float = 0.65
+    llm_provider: Literal["gemini", "ollama"] = "gemini"
+    llm_model: str = "gemini-3.5-flash-lite"
+    gemini_api_key: str = ""
+    ollama_url: str = "http://127.0.0.1:11434"
+
+    oos_threshold: float = 0.55
     top_k: int = 5
     candidate_pool: int = 20
     rrf_k: int = 60
