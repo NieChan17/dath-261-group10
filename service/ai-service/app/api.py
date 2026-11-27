@@ -9,7 +9,7 @@ from . import ingest
 from .config import get_settings
 from .db import connection
 from .embedding import get_embedder
-from .generation import MODE, REFUSAL, citation_label, mock_answer, stream_words
+from .generation import MODE, REFUSAL, citation_label, generate_answer, stream_words
 from .models import (
     AskRequest,
     DeleteResult,
@@ -108,7 +108,8 @@ def ask(req: AskRequest) -> StreamingResponse:
     hits = _retrieve(req.course_id, query, req.lesson_id, req.video_time, settings.top_k)
     top_score = max((hit.cosine for hit in hits), default=0.0)
     in_scope = bool(hits) and top_score >= settings.oos_threshold
-    answer, cited = mock_answer(hits) if in_scope else (REFUSAL, [])
+    answer, cited, mode = generate_answer(query, hits) if in_scope else (REFUSAL, [], MODE)
+    in_scope = bool(cited)
 
     def events() -> Iterator[str]:
         first_token_ms = None
@@ -137,7 +138,7 @@ def ask(req: AskRequest) -> StreamingResponse:
                 "in_scope": in_scope,
                 "top_score": round(top_score, 4),
                 "suggest_forum": not in_scope,
-                "mode": MODE,
+                "mode": mode,
                 "first_token_ms": first_token_ms,
                 "total_ms": total_ms,
             },
