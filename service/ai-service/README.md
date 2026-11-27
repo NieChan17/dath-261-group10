@@ -141,7 +141,7 @@ Chunking: one chunk per slide; Markdown split by heading, then by a recursive ch
 | `DATABASE_URL` | *(required)* | Set by docker compose; for local runs copy `.env.example` to `.env` |
 | `INTERNAL_TOKEN` | *(empty)* | Shared secret with the NestJS backend (`AI_INTERNAL_TOKEN` in the root `.env`) |
 | `EMBED_MODEL` / `EMBED_DIM` | `BAAI/bge-m3` / `1024` | Must match each other |
-| `OOS_THRESHOLD` | `0.65` | Placeholder from the proposal; calibrate on the evaluation question set (#122) |
+| `OOS_THRESHOLD` | `0.55` | Lowest value that refused every out-of-scope question in the #122 baseline (95.4% of in-scope questions answered) |
 | `TOP_K`, `CANDIDATE_POOL`, `RRF_K` | `5`, `20`, `60` | Retrieval tuning |
 | `LESSON_BOOST`, `VIDEO_WINDOW_BOOST` | `0.005`, `0.005` | Added to the fused RRF score |
 | `FILE_ROOT`, `MAX_DOWNLOAD_MB` | `/app/sample_data`, `50` | Limits for `file_url` |
@@ -157,9 +157,9 @@ The unit tests cover the parsers, chunking, rank fusion, boosts, citation labels
 
 ## Known limitations
 
-- The full-text query joins every word with AND and keeps stop words, so long natural-language questions rarely
-  match; retrieval then relies on the vector ranking alone.
-- `OOS_THRESHOLD = 0.65` is not calibrated: with a small test model some in-scope questions score below it.
+- Hybrid retrieval is not better than vector-only on the #122 questions (Hit@1 78.2% vs 80.5%). Joining the
+  keywords with OR lowered hybrid Hit@1 to 58.6%; dropping stop words but keeping AND only matched vector-only.
+- `OOS_THRESHOLD = 0.55` was calibrated on 106 BK-LMS questions; the highest out-of-scope question scored 0.532 and the lowest in-scope one 0.525, so a few in-scope questions are still refused.
 - The mock answer uses only the top chunk; the refusal message is English only.
 - Ingestion jobs are kept in memory, and a question is logged only after its answer stream finishes.
 - The API has no automated tests yet; it was checked manually with FastAPI's `TestClient`.
@@ -167,5 +167,5 @@ The unit tests cover the parsers, chunking, rank fusion, boosts, citation labels
 ## Next steps
 
 - #117: agree the ingestion hook and table ownership with the backend, then open the pull request.
-- #122: build the evaluation question set, calibrate `OOS_THRESHOLD` and compare vector-only with hybrid retrieval.
+- #122: score the answers with RAGAS once an LLM writes them.
 - Replace the mock generator with an LLM that answers only from the retrieved chunks and keeps the citations.

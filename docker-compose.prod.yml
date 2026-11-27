@@ -93,7 +93,7 @@ services:
       AI_INTERNAL_TOKEN: ${AI_INTERNAL_TOKEN:?AI_INTERNAL_TOKEN must be set}
       EMBED_MODEL: ${EMBED_MODEL:-BAAI/bge-m3}
       EMBED_DIM: ${EMBED_DIM:-1024}
-      OOS_THRESHOLD: ${OOS_THRESHOLD:-0.65}
+      OOS_THRESHOLD: ${OOS_THRESHOLD:-0.55}
     depends_on:
       postgres:
         condition: service_healthy
