@@ -2,9 +2,11 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/constants";
-import { Bell, LayoutGrid, Search, Sparkles } from "lucide-react";
+import { extractAuthUser, getCurrentUser, logoutUser } from "@/lib/api/auth";
+import type { User } from "@/types/auth";
+import { Bell, LayoutGrid, LogOut, Search, Sparkles } from "lucide-react";
 import { ChatDrawer } from "@/components/ai/chat-drawer";
 
 interface NavItem {
@@ -15,8 +17,41 @@ interface NavItem {
 
 export function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const [imgError, setImgError] = React.useState(false);
   const [isAiDrawerOpen, setIsAiDrawerOpen] = React.useState(false);
+  const [currentUser, setCurrentUser] = React.useState<User | null>(null);
+
+  React.useEffect(() => {
+    let active = true;
+    getCurrentUser()
+      .then((res) => {
+        if (!active) return;
+        const user = extractAuthUser(res);
+        setCurrentUser(user);
+      })
+      .catch(() => {
+        if (!active) return;
+        setCurrentUser(null);
+      });
+    return () => {
+      active = false;
+    };
+  }, [pathname]);
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+    } catch {
+      // Clear local session state even if network request fails
+    }
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("edupulse_role");
+      localStorage.removeItem("edupulse_user");
+    }
+    setCurrentUser(null);
+    router.push(ROUTES.LOGIN);
+  };
 
   // Dedicated auth pages use their own specialized layout/header
   if (pathname === "/register" || pathname === "/forgot") {
@@ -196,22 +231,41 @@ export function Header() {
               </button>
             )}
 
-            {/* Quick Auth Links: Sign In & Register */}
+            {/* Quick Auth Links: Sign In & Register or Active Session Sign Out */}
             <div className="header__auth-links_01 hidden sm:flex items-center gap-1.5 border-l border-[#e2e8f0] pl-2.5 shrink-0">
-              {pathname !== ROUTES.LOGIN && (
-                <Link
-                  href={ROUTES.LOGIN}
-                  className="header__signin-link_01 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 text-[#434655] hover:text-[#0b1c30] hover:bg-[#f8f9ff] transition-colors"
-                >
-                  Sign In
-                </Link>
+              {currentUser ? (
+                <>
+                  <span className="px-2.5 py-1 rounded-full bg-[#f8f9ff] border border-[#e2e8f0] text-[11px] font-semibold text-[#0b1c30] max-w-[140px] truncate">
+                    {currentUser.fullName || currentUser.email}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="header__logout-btn_01 inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 text-[#ba1a1a] hover:bg-red-50 transition-colors cursor-pointer"
+                    title="Sign Out"
+                  >
+                    <LogOut className="h-3.5 w-3.5" />
+                    <span>Sign Out</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  {pathname !== ROUTES.LOGIN && (
+                    <Link
+                      href={ROUTES.LOGIN}
+                      className="header__signin-link_01 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap shrink-0 text-[#434655] hover:text-[#0b1c30] hover:bg-[#f8f9ff] transition-colors"
+                    >
+                      Sign In
+                    </Link>
+                  )}
+                  <Link
+                    href={ROUTES.REGISTER}
+                    className="header__register-btn_01 px-3.5 py-1.5 rounded-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-bold whitespace-nowrap shrink-0 shadow-xs transition-all active:scale-95"
+                  >
+                    Register
+                  </Link>
+                </>
               )}
-              <Link
-                href={ROUTES.REGISTER}
-                className="header__register-btn_01 px-3.5 py-1.5 rounded-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-bold whitespace-nowrap shrink-0 shadow-xs transition-all active:scale-95"
-              >
-                Register
-              </Link>
             </div>
 
             {/* User Profile Avatar Button */}

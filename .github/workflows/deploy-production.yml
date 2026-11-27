@@ -1,0 +1,238 @@
+name: Production Verification & Deployment (CD)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      run_seed:
+        description: 'Run idempotent production test account seeding during deployment'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  verify-production-stack:
+    name: Verify Compose, Nginx, Migrations, Seed & Live Smoke Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: edupulse_ci
+          POSTGRES_PASSWORD: ci_ephemeral_pg_password_2026
+          POSTGRES_DB: edupulse_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+
+      - name: Validate Production Docker Compose Configuration
+        env:
+          DB_USER: edupulse_ci
+          DB_PASSWORD: ci_ephemeral_pg_password_2026
+          DB_NAME: edupulse_ci
+          JWT_SECRET: ci-compose-validation-access-secret-32chars
+          JWT_REFRESH_SECRET: ci-compose-validation-refresh-secret-32chars
+          CORS_ORIGIN: https://edupulse.example.com
+          AI_INTERNAL_TOKEN: ci-compose-validation-ai-token-32chars
+        run: docker compose -f docker-compose.prod.yml config --quiet
+
+      - name: Validate Nginx Security & Reverse Proxy Configuration
+        run: |
+          docker run --rm \
+            --add-host frontend:127.0.0.1 \
+            --add-host backend:127.0.0.1 \
+            --add-host rag-service:127.0.0.1 \
+            -v "$PWD/nginx/nginx.conf:/etc/nginx/nginx.conf:ro" \
+            nginx:1.25-alpine nginx -t
+
+      - name: Install & Build Backend
+        working-directory: ./backend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Install & Build Frontend
+        working-directory: ./frontend
+        env:
+          NEXT_PUBLIC_API_URL: /api
+        run: |
+          npm ci || npm install
+          npm run build
+
+      - name: Run Production Migrations & Verify Seeder Idempotency
+        working-directory: ./backend
+        env:
+          NODE_ENV: production
+          DATABASE_URL: postgresql://edupulse_ci:ci_ephemeral_pg_password_2026@127.0.0.1:5432/edupulse_ci
+          DATABASE_SSL: 'false'
+        run: |
+          npm run db:migrate:prod
+          npm run db:seed:prod
+          npm run db:seed:prod
+
+      - name: Boot Compiled Production Backend & Run OWASP/RBAC Smoke Tests
+        env:
+          NODE_ENV: production
+          PORT: 5000
+          DATABASE_URL: postgresql://edupulse_ci:ci_ephemeral_pg_password_2026@127.0.0.1:5432/edupulse_ci
+          DATABASE_SSL: 'false'
+          JWT_SECRET: ci_smoke_test_access_secret_minimum_32_characters_long
+          JWT_REFRESH_SECRET: ci_smoke_test_refresh_secret_minimum_32_characters_long
+          CORS_ORIGIN: http://localhost:3000
+          COOKIE_SECURE: 'false'
+          ENABLE_SWAGGER: 'false'
+        run: |
+          node backend/dist/main.js > /tmp/backend-prod.log 2>&1 &
+          BACKEND_PID=$!
+          trap 'cat /tmp/backend-prod.log; kill $BACKEND_PID || true' EXIT
+
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:5000/api/v1/health >/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+
+          # 1. Health check + Helmet headers (no X-Powered-By, nosniff present)
+          HEALTH_HEADERS=$(curl -fsS -D - http://127.0.0.1:5000/api/v1/health -o /tmp/health.json)
+          cat /tmp/health.json
+          grep -q '"database":"connected"' /tmp/health.json
+          echo "$HEALTH_HEADERS" | grep -iq 'x-content-type-options: nosniff'
+          if echo "$HEALTH_HEADERS" | grep -iq 'x-powered-by:'; then
+            echo "ERROR: X-Powered-By header was exposed!"
+            exit 1
+          fi
+
+          # 2. Swagger must be disabled in production
+          SWAGGER_STATUS=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:5000/api/docs)
+          if [ "$SWAGGER_STATUS" -ne 404 ]; then
+            echo "ERROR: Expected Swagger /api/docs to return 404 in production, got $SWAGGER_STATUS"
+            exit 1
+          fi
+
+          # 3. Public registration privilege escalation must fail
+          ESCALATE_STATUS=$(curl -s -o /dev/null -w '%{http_code}' \
+            -X POST http://127.0.0.1:5000/api/v1/auth/register \
+            -H 'Content-Type: application/json' \
+            -d '{"email":"attacker@example.com","password":"Password@123","fullName":"Attacker","role":"admin"}')
+          if [ "$ESCALATE_STATUS" -ne 400 ] && [ "$ESCALATE_STATUS" -ne 403 ]; then
+            echo "ERROR: Expected admin self-registration to be rejected (400/403), got $ESCALATE_STATUS"
+            exit 1
+          fi
+
+          # 4. All three seeded accounts authenticate cleanly via HttpOnly cookies
+          for pair in \
+            "admin@edupulse.hcmut.edu.vn|Admin@123456|/tmp/admin.cookies" \
+            "instructor@edupulse.hcmut.edu.vn|Instructor@123456|/tmp/instructor.cookies" \
+            "student@edupulse.hcmut.edu.vn|Student@123456|/tmp/student.cookies"; do
+            EMAIL="${pair%%|*}"
+            REST="${pair#*|}"
+            PASS="${REST%%|*}"
+            COOKIE_JAR="${REST#*|}"
+
+            LOGIN_STATUS=$(curl -s -o /tmp/login.json -w '%{http_code}' -c "$COOKIE_JAR" \
+              -X POST http://127.0.0.1:5000/api/v1/auth/login \
+              -H 'Content-Type: application/json' \
+              -d "{\"email\":\"$EMAIL\",\"password\":\"$PASS\"}")
+            if [ "$LOGIN_STATUS" -ne 200 ] && [ "$LOGIN_STATUS" -ne 201 ]; then
+              echo "ERROR: Seeded login failed for $EMAIL with status $LOGIN_STATUS"
+              cat /tmp/login.json
+              exit 1
+            fi
+          done
+
+          # 5. RBAC & Draft visibility checks
+          STUDENT_USERS_STATUS=$(curl -s -o /dev/null -w '%{http_code}' -b /tmp/student.cookies http://127.0.0.1:5000/api/v1/users)
+          if [ "$STUDENT_USERS_STATUS" -ne 403 ]; then
+            echo "ERROR: Student accessed admin user list (expected 403, got $STUDENT_USERS_STATUS)"
+            exit 1
+          fi
+
+          ADMIN_USERS_STATUS=$(curl -s -o /tmp/users.json -w '%{http_code}' -b /tmp/admin.cookies http://127.0.0.1:5000/api/v1/users)
+          if [ "$ADMIN_USERS_STATUS" -ne 200 ]; then
+            echo "ERROR: Admin could not list users (got $ADMIN_USERS_STATUS)"
+            exit 1
+          fi
+
+          curl -fsS -b /tmp/student.cookies http://127.0.0.1:5000/api/v1/courses -o /tmp/student-courses.json
+          grep -q 'CO3001' /tmp/student-courses.json
+          if grep -q 'SE4990' /tmp/student-courses.json; then
+            echo "ERROR: Unpublished draft course SE4990 leaked to student catalog!"
+            exit 1
+          fi
+
+          echo "All production verification & OWASP smoke tests passed."
+
+  deploy-production:
+    name: Deploy to Production Environment
+    needs: verify-production-stack
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Render Deploy Hooks (if configured)
+        env:
+          RENDER_BACKEND_DEPLOY_HOOK: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}
+          RENDER_FRONTEND_DEPLOY_HOOK: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}
+        run: |
+          if [ -n "$RENDER_BACKEND_DEPLOY_HOOK" ]; then
+            curl -fsS -X POST "$RENDER_BACKEND_DEPLOY_HOOK" >/dev/null
+            echo "Triggered Render backend deployment hook."
+          fi
+          if [ -n "$RENDER_FRONTEND_DEPLOY_HOOK" ]; then
+            curl -fsS -X POST "$RENDER_FRONTEND_DEPLOY_HOOK" >/dev/null
+            echo "Triggered Render frontend deployment hook."
+          fi
+
+      - name: Deploy Production Docker Compose Stack via SSH (if configured)
+        env:
+          PROD_HOST: ${{ secrets.PROD_HOST }}
+          PROD_USER: ${{ secrets.PROD_USER }}
+          PROD_PORT: ${{ secrets.PROD_PORT }}
+          PROD_SSH_KEY: ${{ secrets.PROD_SSH_KEY }}
+          PROD_DEPLOY_PATH: ${{ secrets.PROD_DEPLOY_PATH }}
+          RUN_SEED: ${{ inputs.run_seed || false }}
+        run: |
+          if [ -z "$PROD_HOST" ] || [ -z "$PROD_USER" ] || [ -z "$PROD_SSH_KEY" ]; then
+            echo "No SSH production secrets configured (PROD_HOST/PROD_USER/PROD_SSH_KEY); skipping VPS deploy."
+            exit 0
+          fi
+
+          mkdir -p ~/.ssh
+          echo "$PROD_SSH_KEY" > ~/.ssh/prod_key
+          chmod 600 ~/.ssh/prod_key
+
+          TARGET_DIR="${PROD_DEPLOY_PATH:-~/dath-261-group10}"
+          SSH_PORT="${PROD_PORT:-22}"
+
+          ssh -o StrictHostKeyChecking=no -p "$SSH_PORT" -i ~/.ssh/prod_key "$PROD_USER@$PROD_HOST" << EOF
+            set -euo pipefail
+            cd $TARGET_DIR
+            git fetch origin main
+            git checkout main
+            git pull origin main
+            docker compose -f docker-compose.prod.yml up -d --build
+            docker compose -f docker-compose.prod.yml exec -T backend npm run db:migrate:prod
+            if [ "$RUN_SEED" = "true" ]; then
+              docker compose -f docker-compose.prod.yml exec -T backend npm run db:seed:prod
+            fi
+          EOF

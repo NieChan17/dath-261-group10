@@ -7,6 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { isStrictEnvironment } from '../config/security.config';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -18,15 +19,20 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
-    let message: any = 'Lỗi máy chủ nội bộ';
+    let message: any = 'Internal server error';
 
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const res = exception.getResponse();
       message = typeof res === 'object' && (res as any).message ? (res as any).message : res;
     } else if (exception instanceof Error) {
-      this.logger.error(`Unhandled Exception: ${exception.message}`, exception.stack);
-      message = exception.message;
+      this.logger.error(
+        `Unhandled Exception on ${request.method} ${request.url}: ${exception.message}`,
+        exception.stack,
+      );
+      if (!isStrictEnvironment(process.env.NODE_ENV)) {
+        message = exception.message;
+      }
     }
 
     response.status(status).json({

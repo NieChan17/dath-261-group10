@@ -1,36 +1,32 @@
-#!/bin/bash
-# ==============================================================================
-# Helper Script: Cấp phát chứng chỉ SSL Let's Encrypt cho EduPulse Staging
-# Sử dụng: ./nginx/init-ssl.sh <staging-domain> <admin-email>
-# Ví dụ:   ./nginx/init-ssl.sh staging.edupulse.example.com admin@example.com
-# ==============================================================================
+#!/bin/sh
+set -eu
 
-set -e
+# Provision Let's Encrypt TLS certificates for EduPulse production Nginx.
+# Usage: DOMAIN_NAME=edupulse.example.com CERTBOT_EMAIL=ops@example.com ./nginx/init-ssl.sh
 
-DOMAIN=$1
-EMAIL=$2
+DOMAIN="${1:-${DOMAIN_NAME:-}}"
+EMAIL="${2:-${CERTBOT_EMAIL:-}}"
+COMPOSE_FILE="${COMPOSE_FILE:-docker-compose.prod.yml}"
 
 if [ -z "$DOMAIN" ] || [ -z "$EMAIL" ]; then
-  echo "Lỗi: Vui lòng cung cấp Domain và Email quản trị."
-  echo "Cách dùng: $0 <staging-domain> <admin-email>"
+  echo "Usage: DOMAIN_NAME=<domain> CERTBOT_EMAIL=<email> $0"
   exit 1
 fi
 
-echo "==> 1. Đảm bảo thư mục certbot tồn tại..."
-mkdir -p certbot/conf certbot/www
+echo "[SSL Init] Requesting Let's Encrypt certificate for domain: $DOMAIN"
 
-echo "==> 2. Khởi động Nginx để phục vụ ACME challenge..."
-docker compose up -d nginx
+docker compose -f "$COMPOSE_FILE" up -d nginx
 
-echo "==> 3. Yêu cầu cấp phát chứng chỉ SSL từ Let's Encrypt..."
-docker compose run --rm certbot certonly \
-  --webroot \
+docker compose -f "$COMPOSE_FILE" run --rm --entrypoint "" certbot \
+  certbot certonly --webroot \
   --webroot-path=/var/www/certbot \
   --email "$EMAIL" \
   --agree-tos \
   --no-eff-email \
+  --non-interactive \
   -d "$DOMAIN"
 
-echo "==> 4. Cấp phát chứng chỉ thành công cho domain: $DOMAIN!"
-echo "Tiếp theo: Hãy bỏ comment khối server 443 trong nginx/nginx.conf, thay your-domain.com bằng $DOMAIN và chạy: docker compose restart nginx"
+echo "[SSL Init] Reloading Nginx with provisioned certificate..."
+docker compose -f "$COMPOSE_FILE" exec nginx nginx -s reload
 
+echo "[SSL Init] TLS setup completed for $DOMAIN."

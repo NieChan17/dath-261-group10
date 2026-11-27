@@ -81,4 +81,26 @@ The platform enforces Role-Based Access Control (RBAC) across three primary acto
 
 ## 🚀 Getting Started
 
-*(Detailed installation and configuration instructions will be updated upon finalizing the technology stack.)*
+### Quick Start (Local Development with Docker)
+
+1. Copy `.env.example` to `.env` and set database/JWT variables for your local environment.
+2. Start PostgreSQL (`pgvector`), AI RAG service, backend, frontend, and Nginx:
+   ```bash
+   docker compose up --build
+   ```
+3. Run database migrations and idempotent demo seeding (`backend/`):
+   ```bash
+   cd backend
+   npm ci
+   npm run db:migrate
+   npm run db:seed
+   ```
+4. Seeded demo credentials (`http://localhost:3000/login`):
+   - **Student:** `student@edupulse.hcmut.edu.vn` / `Student@123456`
+   - **Instructor:** `instructor@edupulse.hcmut.edu.vn` / `Instructor@123456`
+   - **Admin:** `admin@edupulse.hcmut.edu.vn` / `Admin@123456`
+
+### Further Documentation
+
+- Production architecture, cloud PaaS Blueprint (`render.yaml`), TLS setup, and backup procedures: [DEPLOYMENT.md](./DEPLOYMENT.md)
+- OWASP Top 10 security audit findings and hardening controls: [SECURITY.md](./SECURITY.md)

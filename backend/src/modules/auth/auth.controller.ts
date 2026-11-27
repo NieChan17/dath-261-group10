@@ -10,6 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -24,12 +25,15 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Đăng ký tài khoản người dùng mới' })
-  @ApiResponse({ status: 201, description: 'Đăng ký thành công, trả về token và thiết lập HttpOnly cookie' })
-  @ApiResponse({ status: 400, description: 'Dữ liệu đầu vào không hợp lệ' })
-  @ApiResponse({ status: 409, description: 'Email đã tồn tại' })
+  @ApiOperation({ summary: 'Register a new user account (student or instructor only)' })
+  @ApiResponse({ status: 201, description: 'Registration succeeded and HttpOnly cookies set' })
+  @ApiResponse({ status: 400, description: 'Invalid input payload' })
+  @ApiResponse({ status: 403, description: 'Disallowed role requested during registration' })
+  @ApiResponse({ status: 409, description: 'Email already registered' })
+  @ApiResponse({ status: 429, description: 'Too many registration requests' })
   async register(
     @Body() dto: RegisterDto,
     @Res({ passthrough: true }) res: Response,
@@ -38,11 +42,13 @@ export class AuthController {
   }
 
   @Public()
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Đăng nhập vào hệ thống' })
-  @ApiResponse({ status: 200, description: 'Đăng nhập thành công, thiết lập HttpOnly cookie access_token và refresh_token' })
-  @ApiResponse({ status: 401, description: 'Email hoặc mật khẩu không chính xác' })
+  @ApiOperation({ summary: 'Authenticate user and issue HttpOnly JWT cookies' })
+  @ApiResponse({ status: 200, description: 'Login succeeded; HttpOnly access_token & refresh_token set' })
+  @ApiResponse({ status: 401, description: 'Invalid email or password' })
+  @ApiResponse({ status: 429, description: 'Too many login attempts' })
   async login(
     @Body() dto: LoginDto,
     @Res({ passthrough: true }) res: Response,
@@ -51,11 +57,12 @@ export class AuthController {
   }
 
   @Public()
+  @Throttle({ default: { limit: 20, ttl: 60000 } })
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Làm mới Access Token thông qua Refresh Token trong cookie' })
-  @ApiResponse({ status: 200, description: 'Cấp mới token thành công' })
-  @ApiResponse({ status: 401, description: 'Refresh token không hợp lệ hoặc đã hết hạn' })
+  @ApiOperation({ summary: 'Refresh Access Token using HttpOnly Refresh Token cookie' })
+  @ApiResponse({ status: 200, description: 'Tokens refreshed successfully' })
+  @ApiResponse({ status: 401, description: 'Invalid or expired refresh token' })
   async refresh(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
@@ -67,8 +74,8 @@ export class AuthController {
   @Public()
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Đăng xuất và hủy bỏ toàn bộ Auth Cookies' })
-  @ApiResponse({ status: 200, description: 'Đăng xuất thành công' })
+  @ApiOperation({ summary: 'Log out and clear authentication cookies' })
+  @ApiResponse({ status: 200, description: 'Logout succeeded' })
   logout(@Res({ passthrough: true }) res: Response) {
     return this.authService.logout(res);
   }
@@ -76,9 +83,9 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Lấy thông tin tài khoản đang đăng nhập' })
-  @ApiResponse({ status: 200, description: 'Thông tin tài khoản và vai trò' })
-  @ApiResponse({ status: 401, description: 'Chưa xác thực hoặc token không hợp lệ' })
+  @ApiOperation({ summary: 'Get authenticated user profile and permissions' })
+  @ApiResponse({ status: 200, description: 'Authenticated user info and role' })
+  @ApiResponse({ status: 401, description: 'Unauthorized or invalid token' })
   async getMe(@CurrentUser() user: CurrentUserPayload) {
     return this.authService.getMe(user.userId);
   }

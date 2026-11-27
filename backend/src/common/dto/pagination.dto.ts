@@ -1,16 +1,16 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
+import { IsInt, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
 
 export class PaginationQueryDto {
-  @ApiPropertyOptional({ description: 'Số trang (bắt đầu từ 1)', default: 1 })
+  @ApiPropertyOptional({ description: 'Page number (1-indexed)', default: 1 })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(1)
   page?: number = 1;
 
-  @ApiPropertyOptional({ description: 'Số lượng mục trên mỗi trang', default: 10 })
+  @ApiPropertyOptional({ description: 'Items per page', default: 10 })
   @IsOptional()
   @Type(() => Number)
   @IsInt()
@@ -18,9 +18,10 @@ export class PaginationQueryDto {
   @Max(100)
   limit?: number = 10;
 
-  @ApiPropertyOptional({ description: 'Từ khóa tìm kiếm' })
+  @ApiPropertyOptional({ description: 'Search keyword' })
   @IsOptional()
   @IsString()
+  @MaxLength(120)
   search?: string;
 
   @ApiPropertyOptional({ description: 'Trường sắp xếp', default: 'created_at' })

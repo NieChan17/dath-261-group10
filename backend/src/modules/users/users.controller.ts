@@ -15,6 +15,7 @@ import { PaginationQueryDto } from '../../common/dto/pagination.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { CurrentUser, CurrentUserPayload } from '../../common/decorators/current-user.decorator';
 import { Role } from '../../common/constants/roles.enum';
 
 @ApiTags('Users Management')
@@ -26,20 +27,24 @@ export class UsersController {
 
   @Get()
   @Roles(Role.ADMIN)
-  @ApiOperation({ summary: 'Danh sách người dùng có phân trang và tìm kiếm (Chỉ Admin)' })
-  @ApiResponse({ status: 200, description: 'Danh sách người dùng phân trang' })
-  @ApiResponse({ status: 403, description: 'Không có quyền truy cập' })
+  @ApiOperation({ summary: 'Paginated user directory search (Admin only)' })
+  @ApiResponse({ status: 200, description: 'Paginated user list' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
   async findAll(@Query() query: PaginationQueryDto) {
     return this.usersService.findAll(query);
   }
 
   @Get(':id')
   @Roles(Role.ADMIN, Role.INSTRUCTOR, Role.STUDENT)
-  @ApiOperation({ summary: 'Xem chi tiết thông tin người dùng theo ID' })
-  @ApiResponse({ status: 200, description: 'Thông tin chi tiết người dùng' })
-  @ApiResponse({ status: 404, description: 'Không tìm thấy người dùng' })
-  async findById(@Param('id', ParseUUIDPipe) id: string) {
-    return this.usersService.findById(id);
+  @ApiOperation({ summary: 'Get user profile details by ID (Self or Admin only)' })
+  @ApiResponse({ status: 200, description: 'User profile details' })
+  @ApiResponse({ status: 403, description: 'Forbidden: cannot access another user profile' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  async findById(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() currentUser: CurrentUserPayload,
+  ) {
+    return this.usersService.findById(id, currentUser);
   }
 
   @Patch(':id/role')

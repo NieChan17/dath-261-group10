@@ -4,10 +4,16 @@ import type { User } from "@/types/auth";
 export interface AuthResponse {
   success: boolean;
   message?: string;
-  data: {
+  user?: User;
+  accessToken?: string;
+  data?: {
     user: User;
     accessToken?: string;
   };
+}
+
+export function extractAuthUser(res: AuthResponse): User | null {
+  return res.user ?? res.data?.user ?? null;
 }
 
 export async function loginUser(email: string, password: string): Promise<AuthResponse> {

@@ -14,7 +14,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { ROUTES } from "@/lib/constants";
-import { loginUser } from "@/lib/api/auth";
+import { extractAuthUser, loginUser } from "@/lib/api/auth";
 import {
   AlertCircle,
   ArrowLeft,
@@ -27,6 +27,7 @@ interface RoleMetadata {
   title: string;
   roleLabel: string;
   defaultEmail: string;
+  defaultPassword: string;
   targetRoute: string;
   targetWorkspaceName: string;
 }
@@ -36,6 +37,7 @@ const ROLE_CONFIG: Record<string, RoleMetadata> = {
     title: "Sign in to Learner Portal",
     roleLabel: "Learner & Student",
     defaultEmail: "student@edupulse.hcmut.edu.vn",
+    defaultPassword: "Student@123456",
     targetRoute: ROUTES.HOME,
     targetWorkspaceName: "Learner Dashboard",
   },
@@ -43,6 +45,7 @@ const ROLE_CONFIG: Record<string, RoleMetadata> = {
     title: "Sign in to Instructor Workspace",
     roleLabel: "Faculty & Instructor",
     defaultEmail: "instructor@edupulse.hcmut.edu.vn",
+    defaultPassword: "Instructor@123456",
     targetRoute: ROUTES.INSTRUCTOR.OVERVIEW,
     targetWorkspaceName: "Instructor Workspace",
   },
@@ -50,10 +53,18 @@ const ROLE_CONFIG: Record<string, RoleMetadata> = {
     title: "Sign in to Admin Portal",
     roleLabel: "System Administrator",
     defaultEmail: "admin@edupulse.hcmut.edu.vn",
+    defaultPassword: "Admin@123456",
     targetRoute: ROUTES.ADMIN.OVERVIEW,
     targetWorkspaceName: "System Admin Portal",
   },
 };
+
+function resolveWorkspaceRoute(serverRole: string | undefined, fallbackRoute: string) {
+  if (serverRole === "admin") return ROUTES.ADMIN.OVERVIEW;
+  if (serverRole === "instructor") return ROUTES.INSTRUCTOR.OVERVIEW;
+  if (serverRole === "student") return ROUTES.HOME;
+  return fallbackRoute;
+}
 
 function LoginForm() {
   const router = useRouter();
@@ -63,15 +74,16 @@ function LoginForm() {
   const config = ROLE_CONFIG[roleKey];
 
   const [email, setEmail] = React.useState(config.defaultEmail);
-  const [password, setPassword] = React.useState("password123");
+  const [password, setPassword] = React.useState(config.defaultPassword);
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState<string | null>(null);
 
-  // Sync default email if role query param changes
+  // Sync default demo credentials if role query param changes
   React.useEffect(() => {
     setEmail(config.defaultEmail);
-  }, [config.defaultEmail]);
+    setPassword(config.defaultPassword);
+  }, [config.defaultEmail, config.defaultPassword]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,22 +92,24 @@ function LoginForm() {
     setSuccess(null);
 
     try {
-      await loginUser(email, password);
-      // Persist chosen role session
+      const response = await loginUser(email, password);
+      const user = extractAuthUser(response);
+      const serverRole = user?.role;
+      const uiRole = serverRole === "student" ? "learner" : serverRole || roleKey;
+      const destination = resolveWorkspaceRoute(serverRole, config.targetRoute);
+
       if (typeof window !== "undefined") {
-        localStorage.setItem("edupulse_role", roleKey);
+        localStorage.setItem("edupulse_role", uiRole);
         localStorage.setItem(
           "edupulse_user",
-          JSON.stringify({ email, role: roleKey })
+          JSON.stringify(user ?? { email, role: uiRole })
         );
       }
 
-      setSuccess(
-        `Signed in successfully! Redirecting to ${config.targetWorkspaceName}...`
-      );
+      setSuccess(`Signed in as ${uiRole}! Redirecting...`);
       setTimeout(() => {
-        router.push(config.targetRoute);
-      }, 700);
+        router.push(destination);
+      }, 600);
     } catch (err: any) {
       setError(err?.message || "Invalid email or password. Please try again.");
     } finally {
@@ -105,7 +119,7 @@ function LoginForm() {
 
   const handleQuickFill = () => {
     setEmail(config.defaultEmail);
-    setPassword("password123");
+    setPassword(config.defaultPassword);
   };
 
   return (
@@ -160,7 +174,7 @@ function LoginForm() {
                     className="text-[11px] text-[#2563eb] hover:underline cursor-pointer flex items-center gap-1"
                   >
                     <Sparkles className="h-3 w-3" />
-                    <span>Use Demo Email</span>
+                    <span>Fill Demo Account</span>
                   </button>
                 </div>
                 <Input
@@ -194,6 +208,13 @@ function LoginForm() {
                   className="h-10 text-xs bg-[#f8f9ff] focus:bg-white border-[#e2e8f0]"
                 />
               </div>
+
+              <div className="rounded-lg border border-[#dce9ff] bg-[#eff4ff]/60 p-3 text-[11px] text-[#434655] space-y-1">
+                <p className="font-bold text-[#0b1c30]">Seeded Staging / Demo Accounts:</p>
+                <p>Student: <code className="font-mono">student@edupulse.hcmut.edu.vn</code> / <code className="font-mono">Student@123456</code></p>
+                <p>Instructor: <code className="font-mono">instructor@edupulse.hcmut.edu.vn</code> / <code className="font-mono">Instructor@123456</code></p>
+                <p>Admin: <code className="font-mono">admin@edupulse.hcmut.edu.vn</code> / <code className="font-mono">Admin@123456</code></p>
+              </div>
             </CardContent>
 
             <CardFooter className="flex flex-col gap-3 pt-2">
@@ -214,7 +235,7 @@ function LoginForm() {
                     <span>Signing In...</span>
                   </>
                 ) : (
-                  <span>Sign In & Enter Portal</span>
+                  <span>Sign In &amp; Enter Portal</span>
                 )}
               </Button>
               <p className="text-xs text-center text-[#737686]">
