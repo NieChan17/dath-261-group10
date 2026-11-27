@@ -1,0 +1,1135 @@
+{
+  "date": "2026-11-24",
+  "questions_file": "questions.jsonl",
+  "provider": "gemini",
+  "model": "gemini-3.5-flash-lite",
+  "judge_model": "gemini-3.5-flash-lite",
+  "embed_model": "BAAI/bge-m3",
+  "oos_threshold": 0.55,
+  "answer_ms_median": 1466,
+  "status": {
+    "answered": 75,
+    "refused_by_gate": 4,
+    "refused_by_llm": 3,
+    "error": 5
+  },
+  "scores": {
+    "all": {
+      "n": 75,
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9288
+    },
+    "en": {
+      "n": 44,
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9443
+    },
+    "vi": {
+      "n": 31,
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9068
+    }
+  },
+  "rows": [
+    {
+      "id": "C01",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.7884,
+      "status": "answered",
+      "citations": [
+        "Slide 6",
+        "Slide 25",
+        "Slide 4"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9114010062633188
+    },
+    {
+      "id": "C02",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.652,
+      "answer_ms": 2692,
+      "status": "answered",
+      "citations": [
+        "Slide 7"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.8935904983341549
+    },
+    {
+      "id": "C03",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.793,
+      "status": "answered",
+      "citations": [
+        "Slide 12"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.995357484249607
+    },
+    {
+      "id": "C04",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.7185,
+      "status": "answered",
+      "citations": [
+        "Slide 16"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.8742821962327855
+    },
+    {
+      "id": "C05",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.7016,
+      "status": "answered",
+      "citations": [
+        "Slide 17",
+        "Slide 26"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.8266711210864436
+    },
+    {
+      "id": "C06",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.7403,
+      "status": "answered",
+      "citations": [
+        "Slide 18"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9919517630742022
+    },
+    {
+      "id": "C07",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.6528,
+      "status": "answered",
+      "citations": [
+        "Slide 19"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9343983186635881
+    },
+    {
+      "id": "C08",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.6615,
+      "status": "answered",
+      "citations": [
+        "Slide 14"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9999999999999994
+    },
+    {
+      "id": "C09",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.6941,
+      "status": "answered",
+      "citations": [
+        "Slide 8"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9999999999999994
+    },
+    {
+      "id": "C10",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.5342,
+      "status": "refused_by_gate"
+    },
+    {
+      "id": "C11",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.7079,
+      "status": "answered",
+      "citations": [
+        "Slide 16"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9999999999999991
+    },
+    {
+      "id": "C12",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.6347,
+      "status": "answered",
+      "citations": [
+        "Slide 22"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 1.0
+    },
+    {
+      "id": "C13",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.5712,
+      "status": "answered",
+      "citations": [
+        "Slide 27"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 1.0
+    },
+    {
+      "id": "C14",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.7934,
+      "status": "answered",
+      "citations": [
+        "Slide 34"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.880251718105684
+    },
+    {
+      "id": "C15",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.6862,
+      "status": "answered",
+      "citations": [
+        "Slide 39"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9434598323193738
+    },
+    {
+      "id": "C16",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.6223,
+      "status": "answered",
+      "citations": [
+        "Slide 42",
+        "Slide 45"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.8071748737828721
+    },
+    {
+      "id": "C17",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.6652,
+      "status": "answered",
+      "citations": [
+        "Slide 6",
+        "Slide 9"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.8888418810964781
+    },
+    {
+      "id": "C18",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.7486,
+      "answer_ms": 1427,
+      "status": "answered",
+      "citations": [
+        "Slide 10",
+        "Slide 21",
+        "Slide 9"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.7719842190240572
+    },
+    {
+      "id": "C19",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.7168,
+      "status": "answered",
+      "citations": [
+        "Slide 13",
+        "Slide 23"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9640884558475378
+    },
+    {
+      "id": "C20",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.6877,
+      "status": "answered",
+      "citations": [
+        "Slide 31",
+        "Slide 20"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9925684196331268
+    },
+    {
+      "id": "C21",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.6371,
+      "status": "answered",
+      "citations": [
+        "Slide 23",
+        "Slide 34"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9431623102617706
+    },
+    {
+      "id": "C22",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.6883,
+      "answer_ms": 1324,
+      "status": "answered",
+      "citations": [
+        "Slide 30",
+        "Slide 48",
+        "Slide 28"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9974063274018551
+    },
+    {
+      "id": "C23",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.6354,
+      "answer_ms": 2618,
+      "status": "answered",
+      "citations": [
+        "Slide 31",
+        "Slide 49"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9833765809778493
+    },
+    {
+      "id": "C24",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.6599,
+      "answer_ms": 21566,
+      "status": "answered",
+      "citations": [
+        "Slide 39",
+        "Slide 59",
+        "Slide 4"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.8755955377947005
+    },
+    {
+      "id": "C25",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.6432,
+      "answer_ms": 1036,
+      "status": "answered",
+      "citations": [
+        "Slide 18"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.938652030251068
+    },
+    {
+      "id": "C26",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.6766,
+      "answer_ms": 1336,
+      "status": "answered",
+      "citations": [
+        "Slide 24"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9999999999999994
+    },
+    {
+      "id": "C27",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.6362,
+      "answer_ms": 1899,
+      "status": "answered",
+      "citations": [
+        "Slide 54",
+        "Slide 74",
+        "Slide 21"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.999695441997932
+    },
+    {
+      "id": "C28",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.6596,
+      "answer_ms": 1229,
+      "status": "answered",
+      "citations": [
+        "Slide 3",
+        "Slide 3"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9467655481183911
+    },
+    {
+      "id": "C29",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.6477,
+      "answer_ms": 1217,
+      "status": "answered",
+      "citations": [
+        "Slide 5",
+        "Slide 5"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9861332144902378
+    },
+    {
+      "id": "C30",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.6591,
+      "answer_ms": 8567,
+      "status": "answered",
+      "citations": [
+        "Slide 7",
+        "Slide 7",
+        "Slide 45"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9999999999999994
+    },
+    {
+      "id": "C31",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.6571,
+      "answer_ms": 1295,
+      "status": "answered",
+      "citations": [
+        "Slide 11",
+        "Slide 12"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9808337568685831
+    },
+    {
+      "id": "C32",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.6544,
+      "answer_ms": 1193,
+      "status": "answered",
+      "citations": [
+        "Slide 16",
+        "Slide 15"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9930487310426835
+    },
+    {
+      "id": "C33",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.7268,
+      "answer_ms": 1327,
+      "status": "refused_by_llm"
+    },
+    {
+      "id": "C34",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.6189,
+      "answer_ms": 1634,
+      "status": "answered",
+      "citations": [
+        "Slide 27",
+        "Slide 28"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.7420924367316557
+    },
+    {
+      "id": "C35",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.6242,
+      "answer_ms": 1505,
+      "status": "answered",
+      "citations": [
+        "Slide 35",
+        "Slide 37"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9115128317125524
+    },
+    {
+      "id": "C36",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.7527,
+      "answer_ms": 2154,
+      "status": "answered",
+      "citations": [
+        "Slide 50",
+        "Slide 51",
+        "Slide 3",
+        "Slide 3"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9292396283541758
+    },
+    {
+      "id": "C37",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.5526,
+      "answer_ms": 1846,
+      "status": "answered",
+      "citations": [
+        "Slide 7",
+        "Slide 7"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9999999999999994
+    },
+    {
+      "id": "C38",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.5849,
+      "answer_ms": 1592,
+      "status": "answered",
+      "citations": [
+        "Slide 10",
+        "Slide 10"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9999999999999992
+    },
+    {
+      "id": "C39",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.638,
+      "answer_ms": 1508,
+      "status": "answered",
+      "citations": [
+        "Slide 10",
+        "Slide 10"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9827177019582587
+    },
+    {
+      "id": "C40",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.6318,
+      "answer_ms": 1108,
+      "status": "answered",
+      "citations": [
+        "Slide 18",
+        "Slide 18"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9913979478210772
+    },
+    {
+      "id": "C41",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.6937,
+      "answer_ms": 1287,
+      "status": "answered",
+      "citations": [
+        "Slide 21",
+        "Slide 21"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9470558462523391
+    },
+    {
+      "id": "C42",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.5877,
+      "answer_ms": 1219,
+      "status": "answered",
+      "citations": [
+        "Slide 26",
+        "Slide 27",
+        "Slide 26",
+        "Slide 25"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.80193488680068
+    },
+    {
+      "id": "C43",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.7363,
+      "answer_ms": 1390,
+      "status": "answered",
+      "citations": [
+        "Slide 39",
+        "Slide 40"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9916579806179954
+    },
+    {
+      "id": "C44",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.8215,
+      "answer_ms": 962,
+      "status": "answered",
+      "citations": [
+        "Slide 33",
+        "Slide 34"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9365095230402657
+    },
+    {
+      "id": "C45",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.6996,
+      "answer_ms": 1790,
+      "status": "answered",
+      "citations": [
+        "Slide 4",
+        "Slide 6"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9999999999999997
+    },
+    {
+      "id": "C46",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.6083,
+      "answer_ms": 2805,
+      "status": "answered",
+      "citations": [
+        "Slide 8",
+        "Slide 6"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.8763588459831393
+    },
+    {
+      "id": "C47",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.5832,
+      "answer_ms": 1594,
+      "status": "answered",
+      "citations": [
+        "Slide 8",
+        "Slide 10"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9167320493187013
+    },
+    {
+      "id": "C48",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.6182,
+      "answer_ms": 1822,
+      "status": "answered",
+      "citations": [
+        "Slide 13",
+        "Slide 15"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.8591995798967051
+    },
+    {
+      "id": "C49",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.6505,
+      "answer_ms": 1140,
+      "status": "answered",
+      "citations": [
+        "Slide 18",
+        "Slide 22"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 1.0
+    },
+    {
+      "id": "C50",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.6725,
+      "answer_ms": 1085,
+      "status": "answered",
+      "citations": [
+        "Slide 15",
+        "Slide 17"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.947351746390614
+    },
+    {
+      "id": "C51",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.6985,
+      "answer_ms": 6259,
+      "status": "answered",
+      "citations": [
+        "Slide 40",
+        "Slide 24"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.8651274002418247
+    },
+    {
+      "id": "C52",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.7424,
+      "answer_ms": 1063,
+      "status": "answered",
+      "citations": [
+        "Slide 26",
+        "Slide 43"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9145730363120522
+    },
+    {
+      "id": "C53",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.7014,
+      "answer_ms": 5611,
+      "status": "answered",
+      "citations": [
+        "Slide 9",
+        "Slide 7"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.7250048921470201
+    },
+    {
+      "id": "C54",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.7744,
+      "answer_ms": 6005,
+      "status": "answered",
+      "citations": [
+        "Slide 23",
+        "Slide 39"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.98768941594055
+    },
+    {
+      "id": "C55",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.7374,
+      "answer_ms": 2414,
+      "status": "answered",
+      "citations": [
+        "Slide 5"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.8234586243213807
+    },
+    {
+      "id": "C56",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.7407,
+      "answer_ms": 1438,
+      "status": "answered",
+      "citations": [
+        "Slide 29",
+        "Slide 20"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9659673433867387
+    },
+    {
+      "id": "C57",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.7236,
+      "answer_ms": 1206,
+      "status": "answered",
+      "citations": [
+        "Slide 34"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.8903769460724105
+    },
+    {
+      "id": "C58",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.7051,
+      "answer_ms": 1351,
+      "status": "answered",
+      "citations": [
+        "Slide 55"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9007884315858098
+    },
+    {
+      "id": "C59",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.641,
+      "answer_ms": 1111,
+      "status": "answered",
+      "citations": [
+        "Slide 16"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9410495046666331
+    },
+    {
+      "id": "C60",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.5252,
+      "status": "refused_by_gate"
+    },
+    {
+      "id": "C61",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.5966,
+      "answer_ms": 1767,
+      "status": "answered",
+      "citations": [
+        "Slide 20"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.989516571937076
+    },
+    {
+      "id": "C62",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.6495,
+      "answer_ms": 1055,
+      "status": "answered",
+      "citations": [
+        "Slide 22"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9943098730859132
+    },
+    {
+      "id": "C63",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.7019,
+      "answer_ms": 1851,
+      "status": "answered",
+      "citations": [
+        "Slide 26"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9932288395003646
+    },
+    {
+      "id": "C64",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.7394,
+      "answer_ms": 1728,
+      "status": "answered",
+      "citations": [
+        "Slide 3",
+        "Slide 16"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9525218753604213
+    },
+    {
+      "id": "C65",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.6538,
+      "answer_ms": 1125,
+      "status": "refused_by_llm"
+    },
+    {
+      "id": "C66",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.6471,
+      "answer_ms": 1358,
+      "status": "answered",
+      "citations": [
+        "Slide 7"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.8226321267721666
+    },
+    {
+      "id": "C67",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.5695,
+      "answer_ms": 2044,
+      "status": "refused_by_llm"
+    },
+    {
+      "id": "C68",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.7096,
+      "answer_ms": 1679,
+      "status": "answered",
+      "citations": [
+        "Slide 7"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9762489156989628
+    },
+    {
+      "id": "C69",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.6786,
+      "answer_ms": 1842,
+      "status": "answered",
+      "citations": [
+        "Slide 6",
+        "Slide 5"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.8428707868033873
+    },
+    {
+      "id": "C70",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.6367,
+      "answer_ms": 1579,
+      "status": "answered",
+      "citations": [
+        "Slide 8"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.8585451473670952
+    },
+    {
+      "id": "C71",
+      "course_id": "CO3001",
+      "lang": "vi",
+      "top_cosine": 0.5767,
+      "answer_ms": 1493,
+      "status": "answered",
+      "citations": [
+        "Slide 22"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.6639766835215194
+    },
+    {
+      "id": "C72",
+      "course_id": "CO3001",
+      "lang": "en",
+      "top_cosine": 0.7182,
+      "answer_ms": 914,
+      "status": "answered",
+      "citations": [
+        "Slide 48",
+        "Slide 49"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.8868406481427998
+    },
+    {
+      "id": "X01",
+      "course_id": "CO2003",
+      "lang": "en",
+      "top_cosine": 0.6806,
+      "answer_ms": 1033,
+      "status": "answered",
+      "citations": [
+        "Slide 19"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9984227667670793
+    },
+    {
+      "id": "X02",
+      "course_id": "CO2003",
+      "lang": "vi",
+      "top_cosine": 0.6121,
+      "answer_ms": 1408,
+      "status": "answered",
+      "citations": [
+        "Slide 24",
+        "Slide 45"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.7449268237465422
+    },
+    {
+      "id": "X03",
+      "course_id": "CO2003",
+      "lang": "vi",
+      "top_cosine": 0.7609,
+      "answer_ms": 1432,
+      "status": "answered",
+      "citations": [
+        "Slide 9"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9889243809846286
+    },
+    {
+      "id": "X04",
+      "course_id": "CO2003",
+      "lang": "en",
+      "top_cosine": 0.7102,
+      "answer_ms": 893,
+      "status": "answered",
+      "citations": [
+        "Slide 26"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9999999999999988
+    },
+    {
+      "id": "X05",
+      "course_id": "CO2003",
+      "lang": "vi",
+      "top_cosine": 0.5433,
+      "status": "refused_by_gate"
+    },
+    {
+      "id": "X06",
+      "course_id": "CO2003",
+      "lang": "en",
+      "top_cosine": 0.7439,
+      "answer_ms": 1675,
+      "status": "answered",
+      "citations": [
+        "Slide 4",
+        "Slide 7",
+        "Slide 8"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.844135567877425
+    },
+    {
+      "id": "X07",
+      "course_id": "CO2003",
+      "lang": "vi",
+      "top_cosine": 0.6995,
+      "answer_ms": 1617,
+      "status": "answered",
+      "citations": [
+        "Slide 29",
+        "Slide 37"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9516707386947312
+    },
+    {
+      "id": "X08",
+      "course_id": "CO3005",
+      "lang": "en",
+      "top_cosine": 0.6788,
+      "answer_ms": 1677,
+      "status": "answered",
+      "citations": [
+        "Slide 5"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9999999999999994
+    },
+    {
+      "id": "X09",
+      "course_id": "CO3005",
+      "lang": "vi",
+      "top_cosine": 0.6249,
+      "answer_ms": 974,
+      "status": "answered",
+      "citations": [
+        "Slide 2"
+      ],
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.9834581342768628
+    },
+    {
+      "id": "X10",
+      "course_id": "CO3005",
+      "lang": "en",
+      "status": "error",
+      "error": "ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Q"
+    },
+    {
+      "id": "X11",
+      "course_id": "CO3005",
+      "lang": "en",
+      "status": "error",
+      "error": "ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Q"
+    },
+    {
+      "id": "X12",
+      "course_id": "CO1023",
+      "lang": "en",
+      "status": "error",
+      "error": "ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Q"
+    },
+    {
+      "id": "X13",
+      "course_id": "CO1023",
+      "lang": "vi",
+      "status": "error",
+      "error": "ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Q"
+    },
+    {
+      "id": "X14",
+      "course_id": "CO1023",
+      "lang": "en",
+      "status": "error",
+      "error": "ClientError: 429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Q"
+    },
+    {
+      "id": "X15",
+      "course_id": "CO1023",
+      "lang": "vi",
+      "top_cosine": 0.5478,
+      "status": "refused_by_gate"
+    }
+  ]
+}

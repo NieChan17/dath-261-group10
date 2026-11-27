@@ -165,6 +165,21 @@ pytest
 The unit tests cover the parsers, chunking, rank fusion, boosts, citation labels, the mock answer and the citation
 handling of the LLM answer (with a fake client), and need no database or API key.
 
+## Answer quality (RAGAS)
+
+`python -m eval.run_ragas --provider gemini|ollama --model <name>` answers the 87 in-scope #122 questions and
+scores each answer with RAGAS (`pip install -r eval/requirements.txt`). Results from 24/11, top 5 hybrid chunks,
+`OOS_THRESHOLD` 0.55, judge `gemini-3.5-flash-lite`:
+
+| Answer model | Answered | Refused by the model | Faithfulness | Answer relevancy | Median answer time |
+|---|---|---|---|---|---|
+| `gemini-3.5-flash-lite` (API) | 75 | 3 | 1.000 | 0.929 | 1.5 s |
+| `qwen2.5:7b` (Ollama, RTX 3070 Ti) | 74 | 9 | 0.967 | 0.936 | 1.2 s |
+
+On the 70 questions both models answered, faithfulness is 1.000 vs 0.965 and answer relevancy 0.935 vs 0.942.
+Four questions were refused by the out-of-scope gate for both models; 5 Gemini answers hit the free-tier daily quota
+and were not scored. The judge is a Gemini model, so it may favour Gemini answers.
+
 ## Known limitations
 
 - Hybrid retrieval is not better than vector-only on the #122 questions (Hit@1 78.2% vs 80.5%). Joining the
@@ -173,10 +188,11 @@ handling of the LLM answer (with a fake client), and need no database or API key
 - The mock answer uses only the top chunk; the refusal message is English only.
 - The LLM answer is generated in full and then streamed word by word, so `first_token_ms` includes the whole
   LLM call. With Gemini on the free tier, course chunks are sent to Google and rate limits apply.
+- `qwen2.5:7b` wrote 4 of its 30 Vietnamese answers partly in Chinese, and refused 5 questions that Gemini
+  answered; RAGAS scored one of the Chinese answers 0 for faithfulness but did not flag the others.
 - Ingestion jobs are kept in memory, and a question is logged only after its answer stream finishes.
 - The API has no automated tests yet; it was checked manually with FastAPI's `TestClient`.
 
 ## Next steps
 
 - #117: agree the ingestion hook and table ownership with the backend, then open the pull request.
-- #122: score the answers with RAGAS once an LLM writes them.
