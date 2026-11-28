@@ -30,7 +30,7 @@ services:
           name: edupulse-db
           property: connectionString
       - key: DATABASE_SSL
-        value: "false"
+        value: "true"
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_REFRESH_SECRET
@@ -66,7 +66,5 @@ services:
       - key: NEXT_PUBLIC_API_URL
         value: /api
       - key: BACKEND_PROXY_URL
-        fromService:
-          name: edupulse-backend
-          type: web
-          property: host
+        # Set to your public HTTPS backend URL, e.g. https://edupulse-backend.onrender.com
+        sync: false

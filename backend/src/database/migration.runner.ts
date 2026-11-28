@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Pool } from 'pg';
 import * as dotenv from 'dotenv';
+import { getDatabasePoolSsl } from '../common/config/security.config';
 
 dotenv.config();
 
@@ -10,7 +11,11 @@ const connectionString =
   'postgresql://edupulse_user:secure_staging_password@localhost:5432/edupulse_staging';
 
 async function runMigrations() {
-  const pool = new Pool({ connectionString });
+  const ssl = getDatabasePoolSsl(connectionString, process.env.DATABASE_SSL);
+  const pool = new Pool({
+    connectionString,
+    ...(ssl ? { ssl } : {}),
+  });
   const client = await pool.connect();
 
   console.log('===> Starting PostgreSQL Migrations for EduPulse...');

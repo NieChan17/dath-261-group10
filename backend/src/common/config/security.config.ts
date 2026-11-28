@@ -120,6 +120,27 @@ export function isOriginAllowed(
 }
 
 /**
+ * Resolves PostgreSQL SSL options for cloud-managed databases (e.g. Render, RDS).
+ */
+export function getDatabasePoolSsl(
+  connectionString: string,
+  databaseSsl?: string | null,
+): { rejectUnauthorized: boolean } | undefined {
+  const normalizedFlag = databaseSsl?.trim().toLowerCase();
+  if (normalizedFlag === 'false') {
+    return undefined;
+  }
+  if (
+    normalizedFlag === 'true' ||
+    connectionString.includes('sslmode=require') ||
+    connectionString.includes('render.com')
+  ) {
+    return { rejectUnauthorized: false };
+  }
+  return undefined;
+}
+
+/**
  * Escapes PostgreSQL LIKE/ILIKE metacharacters (% and _) to prevent wildcard DoS.
  */
 export function escapeLikePattern(value: string): string {

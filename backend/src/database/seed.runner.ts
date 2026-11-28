@@ -1,6 +1,7 @@
 import { Pool, PoolClient } from 'pg';
 import * as dotenv from 'dotenv';
 import { PasswordService } from '../modules/auth/security/password.service';
+import { getDatabasePoolSsl } from '../common/config/security.config';
 
 dotenv.config();
 
@@ -401,12 +402,12 @@ export async function runSeed(providedPool?: Pool): Promise<SeedSummary> {
     process.env.DATABASE_URL ||
     'postgresql://edupulse_user:secure_staging_password@localhost:5432/edupulse_staging';
 
-  const useSsl = process.env.DATABASE_SSL === 'true';
+  const ssl = getDatabasePoolSsl(connectionString, process.env.DATABASE_SSL);
   const pool =
     providedPool ||
     new Pool({
       connectionString,
-      ...(useSsl ? { ssl: { rejectUnauthorized: false } } : {}),
+      ...(ssl ? { ssl } : {}),
     });
 
   const passwordService = new PasswordService();
