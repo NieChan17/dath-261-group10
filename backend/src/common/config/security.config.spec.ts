@@ -1,6 +1,7 @@
 import { ConfigService } from '@nestjs/config';
 import {
   escapeLikePattern,
+  getDatabasePoolSsl,
   getJwtSecrets,
   isCookieSecure,
   isOriginAllowed,
@@ -95,6 +96,32 @@ describe('SecurityConfig', () => {
   describe('escapeLikePattern', () => {
     it('should escape LIKE wildcard characters', () => {
       expect(escapeLikePattern('100%_test\\path')).toBe('100\\%\\_test\\\\path');
+    });
+  });
+
+  describe('getDatabasePoolSsl', () => {
+    it('should enable relaxed TLS validation for explicit DATABASE_SSL=true or Render hosts', () => {
+      expect(
+        getDatabasePoolSsl('postgresql://user:pass@localhost:5432/db', 'true'),
+      ).toEqual({ rejectUnauthorized: false });
+      expect(
+        getDatabasePoolSsl('postgresql://user:pass@dpg-123-a.singapore-postgres.render.com/db'),
+      ).toEqual({ rejectUnauthorized: false });
+      expect(
+        getDatabasePoolSsl('postgresql://user:pass@postgres:5432/db?sslmode=require'),
+      ).toEqual({ rejectUnauthorized: false });
+    });
+
+    it('should disable SSL when DATABASE_SSL=false or connecting locally', () => {
+      expect(
+        getDatabasePoolSsl('postgresql://user:pass@localhost:5432/db'),
+      ).toBeUndefined();
+      expect(
+        getDatabasePoolSsl(
+          'postgresql://user:pass@dpg-123-a.singapore-postgres.render.com/db',
+          'false',
+        ),
+      ).toBeUndefined();
     });
   });
 });

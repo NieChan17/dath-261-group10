@@ -97,14 +97,16 @@ docker compose -f docker-compose.prod.yml exec -T backend npm run db:seed:prod
 ## 4. Option B — Managed Cloud PaaS (Render Blueprint)
 
 The root `render.yaml` Blueprint defines:
-- `edupulse-db` (Managed PostgreSQL)
+- `edupulse-db` (Managed PostgreSQL with SSL enabled via `DATABASE_SSL=true`)
 - `edupulse-backend` (Dockerized NestJS API with auto-generated `JWT_SECRET`, `JWT_REFRESH_SECRET`, `AI_INTERNAL_TOKEN`, `RUN_MIGRATIONS_ON_BOOT=true`, `RUN_SEED_ON_BOOT=true`)
-- `edupulse-frontend` (Dockerized Next.js app with `NEXT_PUBLIC_API_URL=/api` and `BACKEND_PROXY_URL` forwarding `/api/*` same-origin so `HttpOnly` `SameSite=Lax` cookies persist cleanly over HTTPS)
+- `edupulse-frontend` (Dockerized Next.js app with `NEXT_PUBLIC_API_URL=/api` and a runtime `/api/[...path]` proxy using `BACKEND_PROXY_URL` so `HttpOnly` `SameSite=Lax` cookies persist cleanly over HTTPS)
 
 Steps:
 1. Create a new **Blueprint** in Render connected to the GitHub repository (`main` branch).
-2. When prompted for `CORS_ORIGIN` on `edupulse-backend`, enter the frontend public HTTPS URL (e.g., `https://edupulse-frontend.onrender.com`).
-3. Wait for `edupulse-backend` `/api/v1/health` and `edupulse-frontend` `/` health checks to turn green.
+2. In the Render Blueprint prompt, enter:
+   - `CORS_ORIGIN`: your frontend public HTTPS URL (e.g. `https://edupulse-frontend.onrender.com`)
+   - `BACKEND_PROXY_URL`: your backend public HTTPS URL (e.g. `https://edupulse-backend.onrender.com`)
+3. Wait for `edupulse-backend` `/api/v1/health` and `edupulse-frontend` `/` health checks to turn green. If Render added a unique suffix to either `.onrender.com` subdomain, update `CORS_ORIGIN` and `BACKEND_PROXY_URL` in each service's **Environment** tab to match the assigned HTTPS URLs.
 
 ---
 

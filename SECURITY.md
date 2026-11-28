@@ -39,7 +39,7 @@ This document summarizes the OWASP Top 10:2021 security audit, threat remediatio
    - *Remediation:* `PasswordService` hashes passwords with Argon2id (`memoryCost: 65536`, `timeCost: 3`, `parallelism: 1`). Running `backend/src/database/seed.runner.ts` upgrades legacy V009 demo hashes into Argon2id hashes aligned with role credentials.
 3. **HttpOnly Session Cookies**
    - *Remediation:* Tokens are issued as `HttpOnly`, `SameSite=Lax` cookies. `isCookieSecure()` defaults `Secure=true` in `production` (overrideable via `COOKIE_SECURE=false` for local HTTP integration tests).
-   - *PaaS Note:* `frontend/next.config.mjs` supports `BACKEND_PROXY_URL` to proxy `/api/*` same-origin so `SameSite=Lax` `HttpOnly` cookies work cleanly without downgrading to `SameSite=None`.
+   - *PaaS Note:* `frontend/src/app/api/[...path]/route.ts` supports runtime `BACKEND_PROXY_URL` to proxy `/api/*` same-origin so `SameSite=Lax` `HttpOnly` cookies work cleanly without downgrading to `SameSite=None`.
 4. **Repository Secret Hygiene**
    - *Remediation:* Removed sample secret literals from `.env.example` and `backend/.env.example`, keeping `.env` ignored in `.gitignore` and enforced by the `security-audit` job in `.github/workflows/ci.yml`.
 

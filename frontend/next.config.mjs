@@ -26,21 +26,6 @@ const nextConfig = {
       },
     ];
   },
-  async rewrites() {
-    const rawProxy = process.env.BACKEND_PROXY_URL?.trim().replace(/\/+$/, "");
-    if (!rawProxy) {
-      return [];
-    }
-    const backendProxyUrl = /^https?:\/\//i.test(rawProxy)
-      ? rawProxy
-      : `https://${rawProxy}`;
-    return [
-      {
-        source: "/api/:path*",
-        destination: `${backendProxyUrl}/api/:path*`,
-      },
-    ];
-  },
 };
 
 export default nextConfig;
